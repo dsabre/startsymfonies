@@ -118,14 +118,8 @@ class SymfoniesService{
 	 * @param Symfony $symfony
 	 *
 	 * @return $this
-	 * @throws \Exception
 	 */
 	public function start(Symfony $symfony){
-		// check for a symfony already working on the same location
-		if($this->container->get('doctrine')->getRepository(Symfony::class)->findOneBy(['ip' => $symfony->getIp(), 'port' => $symfony->getPort()])){
-			throw new \Exception('There is already a symfony in the same location');
-		}
-		
 		$dirConsole = $symfony->getVersion(true) === 2 ? 'app' : 'bin';
 		
 		$command = sprintf('%s %s/console -q server:start %s:%d &', $this->container->getParameter('php_executable'), $dirConsole, $symfony->getIp(), $symfony->getPort());
@@ -143,11 +137,17 @@ class SymfoniesService{
 	 * @param Symfony $symfony
 	 *
 	 * @return $this
+	 * @throws \Exception
 	 */
 	public function startAndSave(Symfony $symfony, $ip, $port, $entry){
 		$symfony->setIp($ip);
 		$symfony->setPort($port);
 		$symfony->setEntryPoint($entry);
+		
+		// check for a symfony already working on the same location
+		if($this->container->get('doctrine')->getRepository(Symfony::class)->findOneBy(['ip' => $symfony->getIp(), 'port' => $symfony->getPort()])){
+			throw new \Exception('There is already a symfony in the same location');
+		}
 		
 		$this->start($symfony);
 		
