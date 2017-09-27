@@ -41,6 +41,7 @@
 				<td>
 					{% if symfony.ip and symfony.port %}
 						<a href="{{ path('stop', {'symfony': symfony.id}) }}" class="btn btn-warning btn-sm swalContinue">Stop</a>
+						<a href="{{ path('restart', {'symfony': symfony.id}) }}" class="btn btn-outline-success btn-sm swalContinue">Restart</a>
 					{% else %}
 						<a href="#" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modalSymfony{{ symfony.id }}">Start</a>
 

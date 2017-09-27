@@ -57,6 +57,24 @@ class DefaultController extends Controller{
 	}
 	
 	/**
+	 * @Route("/restart/{symfony}", name="restart")
+	 */
+	public function restartAction(Symfony $symfony){
+		try{
+			$this->get(SymfoniesService::class)->stop($symfony);
+			$this->get(SymfoniesService::class)->start($symfony);
+			
+			$this->addFlash('success', 'Symfony restarted correctly');
+		}
+		catch(\Exception $exc){
+			$msg = $exc->getMessage();
+			$this->addFlash('error', $msg);
+		}
+		
+		return $this->redirectToRoute('app_default_index');
+	}
+	
+	/**
 	 * @Route("/stop/{symfony}", name="stop")
 	 */
 	public function stopAction(Symfony $symfony){
