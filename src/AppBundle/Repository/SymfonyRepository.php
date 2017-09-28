@@ -64,6 +64,7 @@ class SymfonyRepository extends \Doctrine\ORM\EntityRepository{
 	public function getMaxLocalSymfonyByPort(){
 		$q = $this->createQueryBuilder('s');
 		$q
+			->where('s.port IS NOT NULL')
 			->orderBy('s.port', 'DESC')
 			->setMaxResults(1)
 		;
