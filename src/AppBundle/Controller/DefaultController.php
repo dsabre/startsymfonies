@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Symfony;
 use AppBundle\Utils\Services\SymfoniesService;
+use AppBundle\Utils\Services\UtilService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -15,13 +16,25 @@ class DefaultController extends Controller{
 	
 	/**
 	 * @Route("/")
-	 * @Template()
 	 */
 	public function indexAction(){
-		return [
+		$response = $this->render('AppBundle:Default:index.html.twig', [
 			'symfonies'   => $this->getDoctrine()->getRepository('AppBundle:Symfony')->getAll(),
 			'nextLocalIp' => $this->get(SymfoniesService::class)->getNextLocalIp()
-		];
+		]);
+		
+		$utilService = $this->get(UtilService::class);
+		$currentVer = $utilService->getCurrentVersionNumber($response);
+		$localVer = $utilService->getLocalVersionNumber();
+		
+		// if local version is different from the current remote version, show
+		// an info message
+		if($currentVer !== $localVer){
+			$msg = sprintf('An update is available, download or clone it from <a href="%s" target="_blank">GitHub</a>', UtilService::URL_GITHUB);
+			$this->addFlash('info', $msg);
+		}
+		
+		return $response;
 	}
 	
 	/**
