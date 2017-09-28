@@ -306,4 +306,13 @@ class SymfoniesService{
 		$maxPort = (int)$symfony->getPort();
 		return ++$maxPort;
 	}
+	
+	/**
+	 * Return all active symfonies
+	 *
+	 * @return array
+	 */
+	public function getActives(){
+		return $this->container->get('doctrine')->getRepository(Symfony::class)->getActives();
+	}
 }

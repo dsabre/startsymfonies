@@ -39,6 +39,7 @@ twig:
     strict_variables: '%kernel.debug%'
     globals:
         util_service: '@AppBundle\Utils\Services\UtilService'
+        symfonies_service: '@AppBundle\Utils\Services\SymfoniesService'
 
 # Doctrine Configuration
 doctrine:

@@ -53,7 +53,7 @@
 
             <div class="form-check" style="margin-left: 10px;">
                 <label class="form-check-label navbar-text">
-                    <input id="flgHideStopped" type="checkbox" class="form-check-input" checked>
+                    <input id="flgHideStopped" type="checkbox" class="form-check-input" {{ symfonies_service.actives|length > 0 ? ' checked' : '' }}>
                     Hide stopped>
                 </label>
             </div>
