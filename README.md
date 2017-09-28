@@ -4,10 +4,9 @@ One Symfony to rule them all, One Symfony to find them, One Symfony to bring the
 ## Installation
 1) Clone or download this repository and put where you want under your home directory.
 2) Use terminal to enter in the startsymfonies2 directory.
-3) Launch the command `composer install` to initialize the project, (if you don't have composer, get it here: https://getcomposer.org/).
-4) Launch the command `php bin/console doctrine:schema:create` to initialize the database.
-5) Launch the command `php bin/console server:start 127.0.0.1:8000` to start the symfony.
-6) OPTIONAL: for a more automated experience put the following two rows in your crontab file:<br>
+3) Launch the `./install.sh` to install the project, (if you don't have composer, get it here: https://getcomposer.org/).
+4) Launch the command `php bin/console server:start 127.0.0.1:8000` to start the symfony.
+5) OPTIONAL: for a more automated experience put the following two rows in your crontab file:<br>
 - Auto-start the startsymfonies2, 12 seconds after the boot of pc:<br>
 `@reboot sleep 12 && /path/of/php /home/username/your_beautiful_project_directory/startsymfonies2/bin/console server:start 127.0.0.1:8000`
 - Auto-start all symfonies with an ip and a port, 15 seconds after the boot of pc:<br>
