@@ -18,7 +18,16 @@
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="#">Startsymfonies <small class="text-warning">{{ util_service.localVersionNumber }}</small></a>
+    <a class="navbar-brand" href="{{ path('app_default_index') }}">
+        Startsymfonies
+        <small class="text-warning">
+            <span class="badge badge-secondary">{{ util_service.localVersionNumber }}</span>
+
+			{% if updateAvailable %}
+                <span class="badge badge-danger" id="badgeUpdate">Update available</span>
+			{% endif %}
+        </small>
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -62,6 +71,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
 
 <script>
 	{% include '@App/templates/flashes.js.twig' %}

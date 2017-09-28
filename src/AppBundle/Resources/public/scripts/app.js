@@ -4,8 +4,16 @@ $(function(){
 	var flgHideStopped = $("#flgHideStopped");
 	var clearSearch    = $("#clearSearch");
 	var starControl    = $(".starControl");
+	var badgeUpdate    = $('#badgeUpdate');
 	
 	manageRows();
+	
+	badgeUpdatePulsate();
+	setInterval(badgeUpdatePulsate, 10000);
+	
+	function badgeUpdatePulsate(){
+		badgeUpdate.effect("pulsate", {}, 400);
+	}
 	
 	$('.setDefaultVal').click(function(e){
 		e.preventDefault();
@@ -82,5 +90,5 @@ $(function(){
 		});
 		
 		return false;
-	})
+	});
 });

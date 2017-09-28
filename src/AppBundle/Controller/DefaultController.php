@@ -18,9 +18,13 @@ class DefaultController extends Controller{
 	 * @Route("/")
 	 */
 	public function indexAction(){
+		$symfonies = $this->getDoctrine()->getRepository('AppBundle:Symfony')->getAll();
+		$nextLocalIp = $this->get(SymfoniesService::class)->getNextLocalIp();
+		
 		$response = $this->render('AppBundle:Default:index.html.twig', [
-			'symfonies'   => $this->getDoctrine()->getRepository('AppBundle:Symfony')->getAll(),
-			'nextLocalIp' => $this->get(SymfoniesService::class)->getNextLocalIp()
+			'symfonies'   => $symfonies,
+			'nextLocalIp' => $nextLocalIp,
+			'updateAvailable' => false
 		]);
 		
 		$utilService = $this->get(UtilService::class);
@@ -30,8 +34,14 @@ class DefaultController extends Controller{
 		// if local version is different from the current remote version, show
 		// an info message
 		if($currentVer !== $localVer){
-			$msg = sprintf('An update is available, download or clone it from <a href="%s" target="_blank">GitHub</a>', UtilService::URL_GITHUB);
-			$this->addFlash('info', $msg);
+//			$msg = sprintf('An update is available, download or clone it from <a href="%s" target="_blank">GitHub</a>', UtilService::URL_GITHUB);
+//			$this->addFlash('info', $msg);
+			
+			$response = $this->render('AppBundle:Default:index.html.twig', [
+				'symfonies'   => $symfonies,
+				'nextLocalIp' => $nextLocalIp,
+				'updateAvailable' => true
+			]);
 		}
 		
 		return $response;
