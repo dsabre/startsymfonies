@@ -57,4 +57,11 @@ class UtilService{
 		
 		return trim($curVersion);
 	}
+	
+	/**
+	 * @return string
+	 */
+	public function getUrlGitHub(){
+		return self::URL_GITHUB;
+	}
 }
