@@ -328,6 +328,10 @@ class SymfoniesService{
 			return null;
 		}
 		
+		if($alias = $this->getAlias($symfony)){
+			return $alias;
+		}
+		
 		return 'http://' . $symfony->getIp() . ':' . $symfony->getPort() . $symfony->getEntryPoint();
 	}
 	
@@ -338,7 +342,7 @@ class SymfoniesService{
 	 *
 	 * @return null|string
 	 */
-	public function getAlias(Symfony $symfony){
+	private function getAlias(Symfony $symfony){
 		$hosts = $this->container->get(UtilService::class)->getHosts();
 		
 		foreach($hosts as $host){
