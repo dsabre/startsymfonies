@@ -37,6 +37,8 @@ framework:
 twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
+    globals:
+        util_service: '@AppBundle\Utils\Services\UtilService'
 
 # Doctrine Configuration
 doctrine:
