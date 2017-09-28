@@ -15,33 +15,38 @@ use Symfony\Component\HttpFoundation\Request;
 class DefaultController extends Controller{
 	
 	/**
-	 * @Route("/")
+	 * @param bool $updateAvailable
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
-	public function indexAction(){
-		$symfonies = $this->getDoctrine()->getRepository('AppBundle:Symfony')->getAll();
+	private function getIndexResponse($updateAvailable){
+		$symfonies = $this->getDoctrine()->getRepository(Symfony::class)->getAll();
 		$nextLocalIp = $this->get(SymfoniesService::class)->getNextLocalIp();
 		$nextLocalPort = $this->get(SymfoniesService::class)->getNextLocalPort();
 		
-		$response = $this->render('AppBundle:Default:index.html.twig', [
+		return $this->render('AppBundle:Default:index.html.twig', [
 			'symfonies'       => $symfonies,
 			'nextLocalIp'     => $nextLocalIp,
 			'nextLocalPort'   => $nextLocalPort,
-			'updateAvailable' => false
+			'updateAvailable' => $updateAvailable
 		]);
-		
+	}
+	
+	/**
+	 * @Route("/")
+	 */
+	public function indexAction(){
 		$utilService = $this->get(UtilService::class);
+		
+		$response = $this->getIndexResponse(false);
+		
 		$currentVer = $utilService->getCurrentVersionNumber($response);
 		$localVer = $utilService->getLocalVersionNumber();
 		
 		// if local version is different from the current remote version, show
 		// an info message
 		if($currentVer !== $localVer){
-			$response = $this->render('AppBundle:Default:index.html.twig', [
-				'symfonies'       => $symfonies,
-				'nextLocalIp'     => $nextLocalIp,
-				'nextLocalPort'   => $nextLocalPort,
-				'updateAvailable' => true
-			]);
+			$response = $this->getIndexResponse(true);
 		}
 		
 		return $response;

@@ -33,7 +33,14 @@
 				</td>
 				<td class="colLink">
 					{% if symfony.ip and symfony.port %}
-						<a href="http://{{ symfony.ip }}:{{ symfony.port }}{{ symfony.entryPoint }}">http://{{ symfony.ip }}:{{ symfony.port }}{{ symfony.entryPoint }}</a>
+						{% set alias = symfonies_service.alias(symfony) %}
+
+						{% if alias %}
+							<a href="{{ alias }}">{{ alias }}</a>
+						{% else %}
+							{% set link = symfonies_service.link(symfony) %}
+							<a href="{{ link }}">{{ link }}</a>
+						{% endif %}
 					{% else %}
 						<span class="text-danger">Stopped</span>
 					{% endif %}

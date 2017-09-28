@@ -315,4 +315,41 @@ class SymfoniesService{
 	public function getActives(){
 		return $this->container->get('doctrine')->getRepository(Symfony::class)->getActives();
 	}
+	
+	/**
+	 * Return the link of a running symfony
+	 *
+	 * @param Symfony $symfony
+	 *
+	 * @return string
+	 */
+	public function getLink(Symfony $symfony){
+		if(!$symfony->getIp() || !$symfony->getPort()){
+			return null;
+		}
+		
+		return 'http://' . $symfony->getIp() . ':' . $symfony->getPort() . $symfony->getEntryPoint();
+	}
+	
+	/**
+	 * Return an eventual alias for the symfony
+	 *
+	 * @param Symfony $symfony
+	 *
+	 * @return null|string
+	 */
+	public function getAlias(Symfony $symfony){
+		$hosts = $this->container->get(UtilService::class)->getHosts();
+		
+		foreach($hosts as $host){
+			if(preg_match('/^' . $symfony->getIp() . '/', $host)){
+				$host = str_replace($symfony->getIp(), '', $host);
+				$host = trim($host);
+				
+				return 'http://' . $host . ':' . $symfony->getPort() . $symfony->getEntryPoint();
+			}
+		}
+		
+		return null;
+	}
 }
