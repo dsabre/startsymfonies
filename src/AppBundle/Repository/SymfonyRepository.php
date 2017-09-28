@@ -51,7 +51,9 @@ class SymfonyRepository extends \Doctrine\ORM\EntityRepository{
 			->setMaxResults(1)
 		;
 		
-		return $q->getQuery()->getResult()[0];
+		$results = $q->getQuery()->getResult();
+		
+		return count($results) > 0 ? $results[0] : null;
 	}
 	
 	/**
@@ -66,7 +68,9 @@ class SymfonyRepository extends \Doctrine\ORM\EntityRepository{
 			->setMaxResults(1)
 		;
 		
-		return $q->getQuery()->getResult()[0];
+		$results = $q->getQuery()->getResult();
+		
+		return count($results) > 0 ? $results[0] : null;
 	}
 	
 }
