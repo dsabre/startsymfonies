@@ -336,13 +336,17 @@ class SymfoniesService{
 	}
 	
 	/**
-	 * Return an eventual alias for the symfony
+	 * Return an eventual alias for the symfony (excluded 127.0.0.1)
 	 *
 	 * @param Symfony $symfony
 	 *
 	 * @return null|string
 	 */
 	private function getAlias(Symfony $symfony){
+		if($symfony->getIp() == '127.0.0.1'){
+			return null;
+		}
+		
 		$hosts = $this->container->get(UtilService::class)->getHosts();
 		
 		foreach($hosts as $host){
