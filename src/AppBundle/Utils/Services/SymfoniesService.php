@@ -317,22 +317,21 @@ class SymfoniesService{
 	}
 	
 	/**
-	 * Return the link of a running symfony
+	 * Return the links of a running symfony
 	 *
 	 * @param Symfony $symfony
 	 *
-	 * @return string
+	 * @return array
 	 */
-	public function getLink(Symfony $symfony){
+	public function getLinks(Symfony $symfony){
 		if(!$symfony->getIp() || !$symfony->getPort()){
-			return null;
+			return [];
 		}
 		
-		if($alias = $this->getAlias($symfony)){
-			return $alias;
-		}
-		
-		return 'http://' . $symfony->getIp() . ':' . $symfony->getPort() . $symfony->getEntryPoint();
+		return [
+			'alias' => $this->getAlias($symfony),
+			'link' => 'http://' . $symfony->getIp() . ':' . $symfony->getPort() . $symfony->getEntryPoint()
+		];
 	}
 	
 	/**

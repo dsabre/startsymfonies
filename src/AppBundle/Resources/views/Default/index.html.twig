@@ -33,8 +33,11 @@
 				</td>
 				<td class="colLink">
 					{% if symfony.ip and symfony.port %}
-						{% set link = symfonies_service.link(symfony) %}
-						<a href="{{ link }}">{{ link }}</a>
+						<ul class="list-unstyled" style="margin: 0;">
+							{% for key, link in symfonies_service.links(symfony) %}
+								<li><a href="{{ link }}">{{ link }}</a></li>
+							{% endfor %}
+						</ul>
 					{% else %}
 						<span class="text-danger">Stopped</span>
 					{% endif %}
