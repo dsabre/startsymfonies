@@ -14,7 +14,7 @@
 		</thead>
 		<tbody>
 		{% for symfony in symfonies %}
-			<tr>
+			<tr style="display: none;">
 				<th class="text-center">
 					<a href="#" data-id="{{ symfony.id }}" class="fa fa-star{{ symfony.starred ? ' text-warning' : '-o' }} starControl" aria-hidden="true"></a>
 				</th>
