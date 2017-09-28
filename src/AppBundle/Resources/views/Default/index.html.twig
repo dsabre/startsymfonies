@@ -58,13 +58,13 @@
 										<div class="modal-body">
 												<div class="form-group">
 													<label for="ip{{ symfony.id }}">IP</label>
-													<input type="text" class="form-control" id="ip{{ symfony.id }}" name="ip" placeholder="IP" required>
-													<a href="#" class="form-text text-info setDefaultVal" data-field="#ip{{ symfony.id }}" data-val="127.0.0.1">Set to 127.0.0.1</a>
+													<input type="text" class="form-control" id="ip{{ symfony.id }}" name="ip" placeholder="IP" value="{{ nextLocalIp }}" required>
+													{#<a href="#" class="form-text text-info setDefaultVal" data-field="#ip{{ symfony.id }}" data-val="{{ nextLocalIp }}">Set to {{ nextLocalIp }}</a>#}
 												</div>
 												<div class="form-group">
 													<label for="port{{ symfony.id }}">Port</label>
-													<input type="number" class="form-control" id="port{{ symfony.id }}" name="port" placeholder="Port" required>
-													<a href="#" class="form-text text-info setDefaultVal" data-field="#port{{ symfony.id }}" data-val="8000">Set to 8000</a>
+													<input type="number" class="form-control" id="port{{ symfony.id }}" name="port" placeholder="Port" value="8000" required>
+													{#<a href="#" class="form-text text-info setDefaultVal" data-field="#port{{ symfony.id }}" data-val="8000">Set to 8000</a>#}
 												</div>
 												<div class="form-group">
 													<label for="entry{{ symfony.id }}">Entry point</label>

@@ -19,7 +19,8 @@ class DefaultController extends Controller{
 	 */
 	public function indexAction(){
 		return [
-			'symfonies' => $this->getDoctrine()->getRepository('AppBundle:Symfony')->getAll()
+			'symfonies'   => $this->getDoctrine()->getRepository('AppBundle:Symfony')->getAll(),
+			'nextLocalIp' => $this->get(SymfoniesService::class)->getNextLocalIp()
 		];
 	}
 	

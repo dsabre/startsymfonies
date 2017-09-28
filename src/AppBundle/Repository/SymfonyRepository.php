@@ -2,6 +2,8 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Symfony;
+
 /**
  * SymfonyRepository
  *
@@ -10,11 +12,18 @@ namespace AppBundle\Repository;
  */
 class SymfonyRepository extends \Doctrine\ORM\EntityRepository{
 	
+	/**
+	 * Return all symfonies ordinated
+	 *
+	 * @return array
+	 */
 	public function getAll(){
 		return $this->findBy([], ['starred' => 'DESC', 'path' => 'ASC', 'ip' => 'DESC']);
 	}
 	
 	/**
+	 * Return all active symfonies
+	 *
 	 * @return array
 	 */
 	public function getActives(){
@@ -27,8 +36,22 @@ class SymfonyRepository extends \Doctrine\ORM\EntityRepository{
 		return $q->getQuery()->getResult();
 	}
 	
-	public function getMaxPort(){
-		dump($this->findOneBy([], ['port' => 'DESC']));die;
+	/**
+	 * Return the symfony with the max local ip
+	 *
+	 * @return Symfony
+	 */
+	public function getMaxLocalSymfony(){
+		$q = $this->createQueryBuilder('s');
+		$q
+			->where($q->expr()->like('s.ip', ':ip'))
+			->andWhere('s.port IS NOT NULL')
+			->setParameter('ip','127.0.0.%')
+			->orderBy('s.ip', 'DESC')
+			->setMaxResults(1)
+		;
+		
+		return $q->getQuery()->getResult()[0];
 	}
 	
 }

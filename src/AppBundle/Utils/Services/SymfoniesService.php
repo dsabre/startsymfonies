@@ -270,4 +270,19 @@ class SymfoniesService{
 		
 		return $this;
 	}
+	
+	/**
+	 * Return the next local ip available
+	 *
+	 * @return string
+	 */
+	public function getNextLocalIp(){
+		$maxIp = $this->container->get('doctrine')->getRepository(Symfony::class)->getMaxLocalSymfony()->getIp();
+		$localPrefix = '127.0.0.';
+		$i = (int)str_replace($localPrefix, '', $maxIp);
+		
+		$i++;
+		
+		return $localPrefix . $i;
+	}
 }
