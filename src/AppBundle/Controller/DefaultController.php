@@ -7,7 +7,6 @@ use AppBundle\Utils\Services\SymfoniesService;
 use AppBundle\Utils\Services\UtilService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -158,5 +157,16 @@ class DefaultController extends Controller{
 		$em->flush();
 		
 		return new JsonResponse('OK');
+	}
+	
+	/**
+	 * @Route("/recheck-version", name="recheck-version")
+	 */
+	public function recheckVersionAction(){
+	    $response = $this->redirectToRoute('app_default_index');
+		
+		$this->get(UtilService::class)->getCurrentVersionNumber($response);
+	    
+	    return $response;
 	}
 }
