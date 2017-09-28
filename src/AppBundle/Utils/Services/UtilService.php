@@ -18,7 +18,7 @@ class UtilService{
 	use ContainerAwareTrait;
 	
 	const URL_VERSION = 'https://raw.githubusercontent.com/raniel86/startsymfonies2/master/.version_number';
-	const COOKIE_VERSION = 'version';
+	const COOKIE_VERSION = 'remote_version';
 	const URL_GITHUB = 'https://github.com/raniel86/startsymfonies2';
 	
 	/**
@@ -51,7 +51,7 @@ class UtilService{
 		
 		if(!$curVersion){
 			// get current version from remote github url
-			$curVersion = file_get_contents(self::URL_VERSION);
+			$curVersion = file_get_contents(self::URL_VERSION . '?' . uniqid());
 			$response->headers->setCookie(new Cookie(self::COOKIE_VERSION, $curVersion));
 		}
 		
