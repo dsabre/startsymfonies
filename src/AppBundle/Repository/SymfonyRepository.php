@@ -41,13 +41,28 @@ class SymfonyRepository extends \Doctrine\ORM\EntityRepository{
 	 *
 	 * @return Symfony
 	 */
-	public function getMaxLocalSymfony(){
+	public function getMaxLocalSymfonyByIp(){
 		$q = $this->createQueryBuilder('s');
 		$q
 			->where($q->expr()->like('s.ip', ':ip'))
 			->andWhere('s.port IS NOT NULL')
 			->setParameter('ip','127.0.0.%')
 			->orderBy('s.ip', 'DESC')
+			->setMaxResults(1)
+		;
+		
+		return $q->getQuery()->getResult()[0];
+	}
+	
+	/**
+	 * Return the symfony with the max local port
+	 *
+	 * @return Symfony
+	 */
+	public function getMaxLocalSymfonyByPort(){
+		$q = $this->createQueryBuilder('s');
+		$q
+			->orderBy('s.port', 'DESC')
 			->setMaxResults(1)
 		;
 		

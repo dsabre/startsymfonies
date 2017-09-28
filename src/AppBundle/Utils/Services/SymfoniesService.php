@@ -277,12 +277,22 @@ class SymfoniesService{
 	 * @return string
 	 */
 	public function getNextLocalIp(){
-		$maxIp = $this->container->get('doctrine')->getRepository(Symfony::class)->getMaxLocalSymfony()->getIp();
+		$maxIp = $this->container->get('doctrine')->getRepository(Symfony::class)->getMaxLocalSymfonyByIp()->getIp();
 		$localPrefix = '127.0.0.';
 		$i = (int)str_replace($localPrefix, '', $maxIp);
 		
 		$i++;
 		
 		return $localPrefix . $i;
+	}
+	
+	/**
+	 * Return the next local port available
+	 *
+	 * @return int
+	 */
+	public function getNextLocalPort(){
+		$maxPort = (int)$this->container->get('doctrine')->getRepository(Symfony::class)->getMaxLocalSymfonyByPort()->getPort();
+		return ++$maxPort;
 	}
 }
