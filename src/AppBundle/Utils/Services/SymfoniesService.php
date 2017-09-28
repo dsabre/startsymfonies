@@ -277,13 +277,18 @@ class SymfoniesService{
 	 * @return string
 	 */
 	public function getNextLocalIp(){
-		$maxIp = $this->container->get('doctrine')->getRepository(Symfony::class)->getMaxLocalSymfonyByIp()->getIp();
 		$localPrefix = '127.0.0.';
+		$i = 1;
+		$symfony = $this->container->get('doctrine')->getRepository(Symfony::class)->getMaxLocalSymfonyByIp();
+		
+		if($symfony === null){
+			return $localPrefix . ++$i;
+		}
+		
+		$maxIp = $symfony->getIp();
 		$i = (int)str_replace($localPrefix, '', $maxIp);
 		
-		$i++;
-		
-		return $localPrefix . $i;
+		return $localPrefix . ++$i;
 	}
 	
 	/**
@@ -292,7 +297,13 @@ class SymfoniesService{
 	 * @return int
 	 */
 	public function getNextLocalPort(){
-		$maxPort = (int)$this->container->get('doctrine')->getRepository(Symfony::class)->getMaxLocalSymfonyByPort()->getPort();
+		$symfony = $this->container->get('doctrine')->getRepository(Symfony::class)->getMaxLocalSymfonyByPort();
+		
+		if($symfony === null){
+			return 8001;
+		}
+		
+		$maxPort = (int)$symfony->getPort();
 		return ++$maxPort;
 	}
 }
