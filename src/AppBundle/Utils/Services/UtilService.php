@@ -46,11 +46,11 @@ class UtilService{
 	 *
 	 * @return string
 	 */
-	public function getCurrentVersionNumber(Response $response){
+	public function getCurrentVersionNumber(Response $response, $forceGet = false){
 		// get current version from cookie
 		$curVersion = $this->container->get('request_stack')->getMasterRequest()->cookies->get(self::COOKIE_VERSION);
 		
-		if(!$curVersion){
+		if(!$curVersion || $forceGet){
 			// get current version from remote github url
 			$curVersion = file_get_contents(self::URL_VERSION . '?' . uniqid());
 			$response->headers->setCookie(new Cookie(self::COOKIE_VERSION, $curVersion));

@@ -165,7 +165,7 @@ class DefaultController extends Controller{
 	public function recheckVersionAction(){
 	    $response = $this->redirectToRoute('app_default_index');
 		
-		$this->get(UtilService::class)->getCurrentVersionNumber($response);
+		$this->get(UtilService::class)->getCurrentVersionNumber($response, true);
 	    
 	    return $response;
 	}
