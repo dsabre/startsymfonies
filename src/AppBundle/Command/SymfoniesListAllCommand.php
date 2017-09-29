@@ -9,7 +9,7 @@ use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ListSymfoniesCommand extends ContainerAwareCommand{
+class SymfoniesListAllCommand extends ContainerAwareCommand{
 	
 	/**
 	 * {@inheritdoc}
@@ -19,6 +19,8 @@ class ListSymfoniesCommand extends ContainerAwareCommand{
 			->setName('app:symfonies:list-all')
 			->setDescription('List all symfonies')
 			->addOption('only-active', 'a', null, 'Get only active symfonies')
+			->addOption('no-header', 'o', null, 'Avoid to print the header table')
+			->addOption('simple', 's', null, 'Print a reduced table')
 		;
 	}
 	
@@ -42,33 +44,49 @@ class ListSymfoniesCommand extends ContainerAwareCommand{
 			}
 		}
 		
-		// print header row
-		$string = sprintf('%4s | %-' . $pathMaxLength . 's | %-8s | %s',
-			'ID',
-			'PATH',
-			'VERSION',
-			'LINK'
-		);
-		
-		$output->writeln($string);
+		// print header row if required
+		if(!$input->getOption('no-header')){
+			if(!$input->getOption('simple')){
+				$string = sprintf('%4s | %-' . $pathMaxLength . 's | %-8s | %s',
+					'ID',
+					'PATH',
+					'VERSION',
+					'LINK'
+				);
+			}
+			else{
+				$string = sprintf('%-' . $pathMaxLength . 's | %s',
+					'PATH',
+					'LINK'
+				);
+			}
+			
+			$output->writeln($string);
+		}
 		
 		/** @var Symfony $symfony */
 		foreach($symfonies as $symfony){
 			$link = '<stopped>Stopped</stopped>';
 			if($symfony->getIp() && $symfony->getPort()){
-				$link = sprintf('<info>http://%s:%s/%s</info>',
-					$symfony->getIp(),
-					$symfony->getPort(),
-					$symfony->getEntryPoint()
+				$link = sprintf('<info>%s</info>',
+					$this->getContainer()->get(SymfoniesService::class)->getLinks($symfony, true)
 				);
 			}
 			
-			$string = sprintf('%4d | %-' . $pathMaxLength . 's | %-8s | %s',
-				$symfony->getId(),
-				$symfony->getPath(),
-				$symfony->getVersion(),
-				$link
-			);
+			if(!$input->getOption('simple')){
+				$string = sprintf('%4d | %-' . $pathMaxLength . 's | %-8s | %s',
+					$symfony->getId(),
+					$symfony->getPath(),
+					$symfony->getVersion(),
+					$link
+				);
+			}
+			else{
+				$string = sprintf('%-' . $pathMaxLength . 's | %s',
+					$symfony->getPath(),
+					$link
+				);
+			}
 			
 			$output->writeln($string);
 		}

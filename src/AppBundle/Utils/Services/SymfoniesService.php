@@ -323,15 +323,24 @@ class SymfoniesService{
 	 *
 	 * @return array
 	 */
-	public function getLinks(Symfony $symfony){
+	public function getLinks(Symfony $symfony, $forceOne = false){
 		if(!$symfony->getIp() || !$symfony->getPort()){
 			return [];
 		}
 		
-		return [
+		$links = [
 			'alias' => $this->getAlias($symfony),
-			'link' => 'http://' . $symfony->getIp() . ':' . $symfony->getPort() . $symfony->getEntryPoint()
+			'link'  => 'http://' . $symfony->getIp() . ':' . $symfony->getPort() . $symfony->getEntryPoint()
 		];
+		
+		// if required, this remove the null value (alias) and return the first
+		// link in array
+		if($forceOne){
+			$links = array_diff($links, [null]);
+			return reset($links);
+		}
+		
+		return $links;
 	}
 	
 	/**
