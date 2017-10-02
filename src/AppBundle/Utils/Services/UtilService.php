@@ -53,7 +53,8 @@ class UtilService{
 		if(!$curVersion || $forceGet){
 			// get current version from remote github url
 			$curVersion = file_get_contents(self::URL_VERSION . '?' . uniqid());
-			$response->headers->setCookie(new Cookie(self::COOKIE_VERSION, $curVersion));
+			$expire = strtotime('now + 12 hours');
+			$response->headers->setCookie(new Cookie(self::COOKIE_VERSION, $curVersion, $expire));
 		}
 		
 		return trim($curVersion);
