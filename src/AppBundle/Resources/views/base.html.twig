@@ -17,7 +17,9 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+{% set theme = util_service.theme %}
+
+<nav class="navbar navbar-expand-lg navbar-{{ theme.brightness }} bg-{{ theme.color }}">
     <span class="navbar-brand">
         Startsymfonies
         <small class="text-warning">

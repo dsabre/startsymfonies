@@ -21,6 +21,7 @@ class UtilService{
 	const URL_VERSION = 'https://raw.githubusercontent.com/raniel86/startsymfonies2/master/.version_number';
 	const COOKIE_VERSION = 'remote_version';
 	const URL_GITHUB = 'https://github.com/raniel86/startsymfonies2';
+	const DEFAULT_THEME = 'blue';
 	
 	/**
 	 * UtilService constructor.
@@ -36,6 +37,7 @@ class UtilService{
 	 */
 	public function getLocalVersionNumber(){
 		$version = file_get_contents($this->container->get('kernel')->getRootDir() . '/../.version_number');
+		
 		return trim($version);
 	}
 	
@@ -91,6 +93,48 @@ class UtilService{
 		}
 		
 		return $hosts;
+	}
+	
+	/**
+	 * Return the theme to use for the navbar
+	 *
+	 * @return array
+	 */
+	public function getTheme(){
+		$themes = [
+			'red'    => [
+				'brightness' => 'light',
+				'color'      => 'danger',
+			],
+			'yellow' => [
+				'brightness' => 'light',
+				'color'      => 'warning',
+			],
+			'cyan'   => [
+				'brightness' => 'dark',
+				'color'      => 'info',
+			],
+			'blue'   => [
+				'brightness' => 'dark',
+				'color'      => 'primary',
+			],
+			'white'  => [
+				'brightness' => 'light',
+				'color'      => 'default',
+			],
+			'black'  => [
+				'brightness' => 'dark',
+				'color'      => 'dark'
+			],
+			'green'  => [
+				'brightness' => 'light',
+				'color'      => 'success'
+			],
+		];
+		
+		$theme = $this->container->getParameter('theme');
+		
+		return isset($themes[$theme]) ? $themes[$theme] : $themes[self::DEFAULT_THEME];
 	}
 	
 }

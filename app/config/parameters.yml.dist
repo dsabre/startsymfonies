@@ -21,3 +21,4 @@ parameters:
     directories_to_scan: '/home/username,/home/username/documents'
     php_executable: /usr/bin/php
     hosts_file: /etc/hosts
+    theme: blue|white|black|red|yellow|cyan|green
