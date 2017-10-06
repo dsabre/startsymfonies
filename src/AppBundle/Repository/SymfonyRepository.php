@@ -42,18 +42,33 @@ class SymfonyRepository extends \Doctrine\ORM\EntityRepository{
 	 * @return Symfony
 	 */
 	public function getMaxLocalSymfonyByIp(){
-		$q = $this->createQueryBuilder('s');
-		$q
-			->where($q->expr()->like('s.ip', ':ip'))
-			->andWhere('s.port IS NOT NULL')
-			->setParameter('ip','127.0.0.%')
-			->orderBy('s.ip', 'DESC')
-			->setMaxResults(1)
-		;
+		$symfonies = $this->getActives();
 		
-		$results = $q->getQuery()->getResult();
+		if(!$symfonies){
+			return null;
+		}
 		
-		return count($results) > 0 ? $results[0] : null;
+		$maxIp = 0;
+		$ret = null;
+		$localIpPrefix = '127.0.0.';
+		
+		/** @var Symfony $symfony */
+		foreach($symfonies as $symfony){
+			$ip = $symfony->getIp();
+			
+			if(!preg_match('/^' . $localIpPrefix . '\d/', $ip)){
+				continue;
+			}
+			
+			$ip = (int)str_replace($localIpPrefix, '', $ip);
+			
+			if($ip > $maxIp){
+				$maxIp = $ip;
+				$ret = $symfony;
+			}
+		}
+		
+		return $ret;
 	}
 	
 	/**
