@@ -78,7 +78,7 @@ class SymfoniesService{
 		$process = new Process($command);
 		$process->run();
 		
-		if (!$process->isSuccessful()) {
+		if(!$process->isSuccessful()){
 			throw new ProcessFailedException($process);
 		}
 		
@@ -102,6 +102,7 @@ class SymfoniesService{
 	 */
 	private function getDirectories(){
 		$dirs = $this->container->getParameter('directories_to_scan');
+		
 		return explode(',', $dirs);
 	}
 	
@@ -304,6 +305,7 @@ class SymfoniesService{
 		}
 		
 		$maxPort = (int)$symfony->getPort();
+		
 		return ++$maxPort;
 	}
 	
@@ -329,14 +331,17 @@ class SymfoniesService{
 		}
 		
 		$links = [
-			'alias' => $this->getAlias($symfony),
-			'link'  => 'http://' . $symfony->getIp() . ':' . $symfony->getPort() . $symfony->getEntryPoint()
+			'aliases' => $this->getAliases($symfony),
+			'link'    => [
+				'http://' . $symfony->getIp() . ':' . $symfony->getPort() . $symfony->getEntryPoint()
+			]
 		];
 		
 		// if required, this remove the null value (alias) and return the first
 		// link in array
 		if($forceOne){
 			$links = array_diff($links, [null]);
+			
 			return reset($links);
 		}
 		
@@ -350,22 +355,24 @@ class SymfoniesService{
 	 *
 	 * @return null|string
 	 */
-	private function getAlias(Symfony $symfony){
+	private function getAliases(Symfony $symfony){
 		if($symfony->getIp() == '127.0.0.1'){
 			return null;
 		}
 		
 		$hosts = $this->container->get(UtilService::class)->getHosts();
 		
+		$aliases = [];
+		
 		foreach($hosts as $host){
 			if(preg_match('/^' . $symfony->getIp() . '/', $host)){
 				$host = str_replace($symfony->getIp(), '', $host);
 				$host = trim($host);
 				
-				return 'http://' . $host . ':' . $symfony->getPort() . $symfony->getEntryPoint();
+				$aliases[] = 'http://' . $host . ':' . $symfony->getPort() . $symfony->getEntryPoint();
 			}
 		}
 		
-		return null;
+		return $aliases;
 	}
 }

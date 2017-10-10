@@ -1,13 +1,13 @@
 {% extends '::base.html.twig' %}
 
 {% block body %}
-	<table class="table table-hover table-sm table-bordered">
+	<table class="table table-hover table-sm table-bordered tableVertAlignMiddle">
 		<thead>
 		<tr>
 			<th class="text-center">Starred</th>
-			<th>Favicon</th>
+			<th class="text-center">Favicon</th>
 			<th>Path</th>
-			<th>Version</th>
+			<th class="text-center">Version</th>
 			<th>Link</th>
 			<th>Operations</th>
 		</tr>
@@ -15,9 +15,9 @@
 		<tbody>
 		{% for symfony in symfonies %}
 			<tr style="display: none;">
-				<th class="text-center">
+				<td class="text-center">
 					<a href="#" data-id="{{ symfony.id }}" class="fa fa-star{{ symfony.starred ? ' text-warning' : '-o' }} starControl" aria-hidden="true"></a>
-				</th>
+				</td>
 				<td class="text-center">
 					{% if symfony.ip and symfony.port %}
 						<img src="http://{{ symfony.ip }}:{{ symfony.port }}/favicon.ico" alt="" width="16">
@@ -28,14 +28,21 @@
 				<td>
 					{{ symfony.path }}
 				</td>
-				<td>
+				<td class="text-center">
 					{{ symfony.version }}
 				</td>
 				<td class="colLink">
 					{% if symfony.ip and symfony.port %}
 						<ul class="list-unstyled" style="margin: 0;">
-							{% for key, link in symfonies_service.links(symfony) %}
-								<li><a href="{{ link }}">{{ link }}</a></li>
+							{% set symfonyLinks = symfonies_service.links(symfony) %}
+							{% for key, links in symfonyLinks %}
+								{% for link in links %}
+									{% if key == 'link' and symfonyLinks.aliases|length > 0 %}
+										<li><a class="text-muted" href="{{ link }}"><small>{{ link }}</small></a></li>
+									{% else %}
+										<li><a href="{{ link }}">{{ link }}</a></li>
+									{% endif %}
+								{% endfor %}
 							{% endfor %}
 						</ul>
 					{% else %}
@@ -92,6 +99,15 @@
 		</tbody>
 	</table>
 {% endblock %}
+
+{% block stylesheets %}
+	<style>
+		.tableVertAlignMiddle th, .tableVertAlignMiddle td{
+			vertical-align: middle;
+		}
+	</style>
+{% endblock %}
+
 
 {% block javascripts %}
 	<script src="{{ asset('bundles/app/scripts/app.js') }}"></script>
