@@ -103,7 +103,7 @@ class UtilService{
 	public function getTheme(){
 		$themes = [
 			'red'    => [
-				'brightness' => 'light',
+				'brightness' => 'dark',
 				'color'      => 'danger',
 			],
 			'yellow' => [
