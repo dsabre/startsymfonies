@@ -52,6 +52,24 @@ if [ "$lineAutoStartSymfoniesExist" -eq "0" ]; then
     fi
 fi
 
+# only for mac users is needed to generate the loopback for addresses other than 127.0.0.1 (e.g. 127.0.0.2)
+if [ "$(uname)" == "Darwin" ]; then
+    echo
+    read -p "Do you want get loopback addresses other than 127.0.0.1 to work on OS X [y/N]? " -n 1 -r
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo
+        read -p "How many addresses to loopback [30]? " -r
+
+        if [ -z $REPLY ]; then
+            REPLY=30
+        fi
+
+        for i in $(seq 2 $REPLY); do
+            sudo ifconfig lo0 alias 127.0.0.$i up
+        done
+    fi
+fi
+
 # run startsymfonies2 now if not running
 if [ "$serverRunning" -eq "1" ]; then
     $(echo $phpExecutable) bin/console server:start $baseIp:$basePort

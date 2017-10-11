@@ -1,7 +1,5 @@
 {% extends '::base.html.twig' %}
 
-{% set isMac = util_service.mac %}
-
 {% block body %}
 	<table class="table table-hover table-sm table-bordered tableVertAlignMiddle">
 		<thead>
@@ -40,9 +38,9 @@
 							{% for key, links in symfonyLinks %}
 								{% for link in links %}
 									{% if key == 'link' and symfonyLinks.aliases|length > 0 %}
-										<li><a class="text-muted" href="{{ link }}"><small>{{ link }}</small></a></li>
+										<li><a class="text-muted" href="{{ link }}" target="_blank"><small>{{ link }}</small></a></li>
 									{% else %}
-										<li><a href="{{ link }}">{{ link }}</a></li>
+										<li><a href="{{ link }}" target="_blank">{{ link }}</a></li>
 									{% endif %}
 								{% endfor %}
 							{% endfor %}
@@ -71,23 +69,13 @@
 										<div class="modal-body">
 												<div class="form-group">
 													<label for="ip{{ symfony.id }}">IP</label>
-													{% if not isMac %}
-														<input type="text" class="form-control" id="ip{{ symfony.id }}" name="ip" placeholder="IP" value="{{ nextLocalIp }}" required>
-														<a href="#" class="form-text text-info setDefaultVal" data-field="#ip{{ symfony.id }}" data-val="127.0.0.1">Set to 127.0.0.1</a>
-													{% else %}
-														<input type="text" class="form-control" id="ip{{ symfony.id }}" name="ip" placeholder="IP" value="127.0.0.1" required>
-														<a href="#" class="form-text text-info setDefaultVal" data-field="#ip{{ symfony.id }}" data-val="{{ nextLocalIp }}">Set to {{ nextLocalIp }}</a>
-													{% endif %}
+													<input type="text" class="form-control" id="ip{{ symfony.id }}" name="ip" placeholder="IP" value="{{ nextLocalIp }}" required>
+													<a href="#" class="form-text text-info setDefaultVal" data-field="#ip{{ symfony.id }}" data-val="127.0.0.1">Set to 127.0.0.1</a>
 												</div>
 												<div class="form-group">
 													<label for="port{{ symfony.id }}">Port</label>
-													{% if not isMac %}
-														<input type="number" class="form-control" id="port{{ symfony.id }}" name="port" placeholder="Port" value="8000" required>
-														<a href="#" class="form-text text-info setDefaultVal" data-field="#port{{ symfony.id }}" data-val="{{ nextLocalPort }}">Set to {{ nextLocalPort }}</a>
-													{% else %}
-														<input type="number" class="form-control" id="port{{ symfony.id }}" name="port" placeholder="Port" value="{{ nextLocalPort }}" required>
-														<a href="#" class="form-text text-info setDefaultVal" data-field="#port{{ symfony.id }}" data-val="8000">Set to 8000</a>
-													{% endif %}
+													<input type="number" class="form-control" id="port{{ symfony.id }}" name="port" placeholder="Port" value="8000" required>
+													<a href="#" class="form-text text-info setDefaultVal" data-field="#port{{ symfony.id }}" data-val="{{ nextLocalPort }}">Set to {{ nextLocalPort }}</a>
 												</div>
 												<div class="form-group">
 													<label for="entry{{ symfony.id }}">Entry point</label>
