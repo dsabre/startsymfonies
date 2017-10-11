@@ -12,8 +12,12 @@ class SymfoniesService{
 	
 	use ContainerAwareTrait;
 	
+	const SCAN_PROCESS_TIMEOUT = 300;
+	
 	/**
 	 * SymfoniesService constructor.
+	 *
+	 * @param ContainerInterface $container
 	 */
 	public function __construct(ContainerInterface $container){
 		$this->setContainer($container);
@@ -23,7 +27,7 @@ class SymfoniesService{
 	 * Scan the directories and save all symfonies found on db
 	 */
 	public function scan(){
-		set_time_limit(120);
+		set_time_limit(0);
 		
 		$doctrine = $this->container->get('doctrine');
 		$em = $doctrine->getManager();
@@ -53,9 +57,7 @@ class SymfoniesService{
 	 *
 	 * @return array
 	 */
-	public function getSymfonies(){
-		set_time_limit(120);
-		
+	private function getSymfonies(){
 		$symofnies = [];
 		
 		foreach($this->getDirectories() as $directory){
@@ -75,7 +77,7 @@ class SymfoniesService{
 	private function getSymfoniesFromDir($directory){
 		$command = sprintf('%s/../commands/get_symfonies.py %s', __DIR__, $directory);
 		
-		$process = new Process($command);
+		$process = new Process($command, null, null, null, self::SCAN_PROCESS_TIMEOUT);
 		$process->run();
 		
 		if(!$process->isSuccessful()){
