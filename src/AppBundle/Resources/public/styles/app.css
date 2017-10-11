@@ -1,3 +1,16 @@
 .navbar-dark .navbar-nav .nav-link{
 	color : #FFF;
 }
+
+.navbar-light .navbar-nav .nav-link{
+	color : #222;
+}
+
+.bg-danger {
+	background-color: #e51f23 !important;
+}
+
+.btn-danger {
+	background-color: #e51f23 !important;
+	border-color: #e51f23 !important;
+}

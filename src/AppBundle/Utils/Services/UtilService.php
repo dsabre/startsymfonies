@@ -128,7 +128,7 @@ class UtilService{
 				'color'      => 'dark'
 			],
 			'green'  => [
-				'brightness' => 'light',
+				'brightness' => 'dark',
 				'color'      => 'success'
 			],
 		];
