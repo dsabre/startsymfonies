@@ -23,6 +23,13 @@ class DefaultController extends Controller{
 		$nextLocalIp = $this->get(SymfoniesService::class)->getNextLocalIp();
 		$nextLocalPort = $this->get(SymfoniesService::class)->getNextLocalPort();
 		
+//		dump([
+//			'symfonies'       => $symfonies,
+//			'nextLocalIp'     => $nextLocalIp,
+//			'nextLocalPort'   => $nextLocalPort,
+//			'updateAvailable' => $updateAvailable
+//		]);die;
+		
 		return $this->render('AppBundle:Default:index.html.twig', [
 			'symfonies'       => $symfonies,
 			'nextLocalIp'     => $nextLocalIp,
@@ -34,7 +41,7 @@ class DefaultController extends Controller{
 	/**
 	 * @Route("/")
 	 */
-	public function indexAction(){
+	public function indexAction(Request $request){
 		$utilService = $this->get(UtilService::class);
 		
 		$response = $this->getIndexResponse(false);
@@ -169,4 +176,5 @@ class DefaultController extends Controller{
 	    
 	    return $response;
 	}
+	
 }

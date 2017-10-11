@@ -12,6 +12,7 @@ use AppBundle\Entity\Symfony;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class UtilService{
@@ -135,6 +136,23 @@ class UtilService{
 		$theme = $this->container->getParameter('theme');
 		
 		return isset($themes[$theme]) ? $themes[$theme] : $themes[self::DEFAULT_THEME];
+	}
+	
+	/**
+	 * Return if a pc is a mac
+	 *
+	 * @param Request|null $request
+	 *
+	 * @return bool
+	 */
+	public function isMac(Request $request = null){
+		if($request === null){
+			$request = $this->container->get('request_stack')->getMasterRequest();
+		}
+		
+		$userAgent = $request->server->get('HTTP_USER_AGENT');
+		
+		return (bool)strstr($userAgent, 'Macintosh');
 	}
 	
 }
