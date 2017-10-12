@@ -14,3 +14,13 @@
 	background-color: #e51f23 !important;
 	border-color: #e51f23 !important;
 }
+
+.badge-symfony-version-2 {
+	color: #6BA51C;
+	background-color: #EEE;
+}
+
+.badge-symfony-version-3 {
+	color: #FFF;
+	background-color: #7aba20;
+}
