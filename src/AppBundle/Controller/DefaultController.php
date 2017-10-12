@@ -125,6 +125,28 @@ class DefaultController extends Controller{
 	}
 	
 	/**
+	 * @Route("/composer/install/{symfony}", name="composer_install")
+	 */
+	public function composerInstallAction(Symfony $symfony){
+		$this->get(SymfoniesService::class)->composerInstall($symfony);
+		
+		$this->addFlash('success', 'Composer install executed correctly');
+		
+		return $this->redirectToRoute('app_default_index');
+	}
+	
+	/**
+	 * @Route("/cache-assets-reset/{symfony}", name="cache_assets_reset")
+	 */
+	public function cacheAssetsResetAction(Symfony $symfony){
+		$this->get(SymfoniesService::class)->cacheAssetsReset($symfony);
+		
+		$this->addFlash('success', 'Cache and assets resetted correctly');
+		
+		return $this->redirectToRoute('app_default_index');
+	}
+	
+	/**
 	 * @Route("/start-all", name="start-all")
 	 */
 	public function startAllAction(){

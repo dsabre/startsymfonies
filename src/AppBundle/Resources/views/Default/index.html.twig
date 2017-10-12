@@ -52,7 +52,7 @@
 				<td>
 					{% if symfony.ip and symfony.port %}
 						<a href="{{ path('stop', {'symfony': symfony.id}) }}" class="btn btn-warning btn-sm swalContinue">Stop</a>
-						<a href="{{ path('restart', {'symfony': symfony.id}) }}" class="btn btn-outline-success btn-sm swalContinue">Restart</a>
+						<a href="{{ path('restart', {'symfony': symfony.id}) }}" class="btn btn-success btn-sm swalContinue">Restart</a>
 					{% else %}
 						<a href="#" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modalSymfony{{ symfony.id }}">Start</a>
 
@@ -91,6 +91,9 @@
 							</div>
 						</div>
 					{% endif %}
+
+					<a href="{{ path('cache_assets_reset', {'symfony': symfony.id}) }}" class="btn btn-dark btn-sm swalContinue">Cache & assets reset</a>
+					<a href="{{ path('composer_install', {'symfony': symfony.id}) }}" class="btn btn-info btn-sm swalContinue">Composer install</a>
 
 					<a href="{{ path('delete', {'symfony': symfony.id}) }}" class="btn btn-danger btn-sm swalContinue">Delete</a>
 				</td>

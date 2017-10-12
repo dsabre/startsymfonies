@@ -227,6 +227,45 @@ class SymfoniesService{
 	}
 	
 	/**
+	 * Perform composer install on symfony directory
+	 *
+	 * @param Symfony $symfony
+	 *
+	 * @return $this
+	 */
+	public function composerInstall(Symfony $symfony){
+		$process = new Process('composer install', $symfony->getPath());
+		$process->disableOutput();
+		$process->mustRun();
+		
+		return $this;
+	}
+	
+	/**
+	 * Perform cache and assets reset on symfony directory
+	 *
+	 * @param Symfony $symfony
+	 *
+	 * @return $this
+	 */
+	public function cacheAssetsReset(Symfony $symfony){
+		$dirConsole = $symfony->getVersion(true) === 2 ? 'app' : 'bin';
+		
+		$commands = [
+			sprintf('%s %s/console -q cache:clear &', $this->container->getParameter('php_executable'), $dirConsole),
+			sprintf('%s %s/console -q assets:install --symlink &', $this->container->getParameter('php_executable'), $dirConsole)
+		];
+		
+		foreach($commands as $command){
+			$process = new Process($command, $symfony->getPath());
+			$process->disableOutput();
+			$process->mustRun();
+		}
+		
+		return $this;
+	}
+	
+	/**
 	 * Start all symfonies with an ip and a port
 	 *
 	 * @return $this
