@@ -4,7 +4,7 @@ $(function(){
 	var flgHideStopped = $("#flgHideStopped");
 	var clearSearch    = $("#clearSearch");
 	var starControl    = $(".starControl");
-	var badgeUpdate    = $('#badgeUpdate');
+	var badgeUpdate    = $('.badgeUpdate');
 	
 	manageRows();
 	

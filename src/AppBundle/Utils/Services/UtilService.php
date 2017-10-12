@@ -14,6 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Process\Process;
 
 class UtilService{
 	
@@ -153,6 +154,40 @@ class UtilService{
 		$userAgent = $request->server->get('HTTP_USER_AGENT');
 		
 		return (bool)strstr($userAgent, 'Macintosh');
+	}
+	
+	/**
+	 * @return string|null
+	 */
+	public function getGitExecutable(){
+		return $this->container->getParameter('git_executable');
+	}
+	
+	/**
+	 * Update startsymfonies2 if git executable is configured
+	 *
+	 * @param Response $response
+	 *
+	 * @return $this
+	 */
+	public function updateStartsymfonies2(Response $response){
+		$gitExecutable = $this->getGitExecutable();
+		
+		// stop if git executable is not defined
+		if($gitExecutable === null){
+			return $this;
+		}
+		
+		$cwd = $this->container->get('kernel')->getRootDir() . '/..';
+		$command = sprintf('%s pull', $gitExecutable);
+		
+		$process = new Process($command, $cwd);
+		$process->disableOutput();
+		$process->mustRun();
+		
+		$this->getCurrentVersionNumber($response, true);
+		
+		return $this;
 	}
 	
 }

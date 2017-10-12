@@ -34,7 +34,7 @@ class DefaultController extends Controller{
 	/**
 	 * @Route("/")
 	 */
-	public function indexAction(Request $request){
+	public function indexAction(){
 		$utilService = $this->get(UtilService::class);
 		
 		$response = $this->getIndexResponse(false);
@@ -185,11 +185,21 @@ class DefaultController extends Controller{
 	 * @Route("/recheck-version", name="recheck-version")
 	 */
 	public function recheckVersionAction(){
-	    $response = $this->redirectToRoute('app_default_index');
+		$response = $this->redirectToRoute('app_default_index');
 		
 		$this->get(UtilService::class)->getCurrentVersionNumber($response, true);
-	    
-	    return $response;
+		
+		return $response;
 	}
 	
+	/**
+	 * @Route("/update-startsymfonies2", name="update_startsymfonies2")
+	 */
+	public function updateStartsymfonies2Action(){
+		$response = $this->redirectToRoute('app_default_index');
+		
+		$this->get(UtilService::class)->updateStartsymfonies2($response);
+		
+		return $response;
+	}
 }

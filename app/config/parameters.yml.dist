@@ -20,5 +20,6 @@ parameters:
 
     directories_to_scan: '/home/username,/home/username/documents'
     php_executable: /usr/bin/php
+    git_executable: /usr/bin/git|null
     hosts_file: /etc/hosts
     theme: blue|white|black|red|yellow|cyan|green
