@@ -142,12 +142,12 @@ class DefaultController extends Controller{
 	}
 	
 	/**
-	 * @Route("/composer/install/{symfony}", name="composer_install")
+	 * @Route("/composer/{activity}/{symfony}", name="composer")
 	 */
-	public function composerInstallAction(Symfony $symfony){
-		$this->get(SymfoniesService::class)->composerInstall($symfony);
+	public function composerAction($activity, Symfony $symfony){
+		$this->get(SymfoniesService::class)->composer($symfony, $activity);
 		
-		$this->addFlash('success', 'Composer install executed correctly');
+		$this->addFlash('success', 'Composer ' . $activity . ' executed correctly');
 		
 		return $this->redirectToRoute('app_default_index');
 	}

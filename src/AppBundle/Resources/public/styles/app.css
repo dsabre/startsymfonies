@@ -18,6 +18,7 @@
 .badge-symfony-version-2 {
 	color: #6BA51C;
 	background-color: #EEE;
+	border: 1px solid #6BA51C;
 }
 
 .badge-symfony-version-3 {

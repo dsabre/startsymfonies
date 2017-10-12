@@ -39,13 +39,17 @@ class SymfoniesService{
 			$path = $info[0];
 			$version = $info[1];
 			
-			if($repo->findOneBy(['path' => $path])){
-				continue;
+			// check if symfony exist
+			if($symfony = $repo->findOneBy(['path' => $path])){
+				// if exist, upgrade the version (it can be changed)
+				$symfony->setVersion($version);
 			}
-			
-			$symfony = new Symfony();
-			$symfony->setPath($path);
-			$symfony->setVersion($version);
+			else{
+				// if not exist add a new row in database
+				$symfony = new Symfony();
+				$symfony->setPath($path);
+				$symfony->setVersion($version);
+			}
 			
 			$em->persist($symfony);
 			$em->flush();
@@ -233,8 +237,12 @@ class SymfoniesService{
 	 *
 	 * @return $this
 	 */
-	public function composerInstall(Symfony $symfony){
-		$process = new Process('composer install', $symfony->getPath());
+	public function composer(Symfony $symfony, $activity){
+		set_time_limit(0);
+		
+		$command = sprintf('composer %s', $activity);
+		
+		$process = new Process($command, $symfony->getPath());
 		$process->disableOutput();
 		$process->mustRun();
 		

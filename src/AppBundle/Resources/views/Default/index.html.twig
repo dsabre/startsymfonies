@@ -8,7 +8,7 @@
 			<th class="text-center">Favicon</th>
 			<th>Path</th>
 			<th class="text-center">Version</th>
-			<th>Link</th>
+			<th>Links</th>
 			<th>Operations</th>
 		</tr>
 		</thead>
@@ -22,7 +22,7 @@
 					{% if symfony.ip and symfony.port %}
 						<img src="http://{{ symfony.ip }}:{{ symfony.port }}/favicon.ico" alt="" width="16">
 					{% else %}
-						--
+						<span class="text-muted">--</span>
 					{% endif %}
 				</td>
 				<td>
@@ -48,7 +48,7 @@
 							{% endfor %}
 						</ul>
 					{% else %}
-						<span class="text-danger">Stopped</span>
+						<span class="text-muted">Stopped</span>
 					{% endif %}
 				</td>
 				<td>
@@ -104,7 +104,8 @@
 								{% endif %}
 
 								<a class="dropdown-item swalContinue" href="{{ path('cache_assets_reset', {'symfony': symfony.id}) }}">Cache & assets reset</a>
-								<a class="dropdown-item swalContinue" href="{{ path('composer_install', {'symfony': symfony.id}) }}">Composer install</a>
+								<a class="dropdown-item swalContinue" href="{{ path('composer', {'activity': 'install', 'symfony': symfony.id}) }}">Composer install</a>
+								<a class="dropdown-item swalContinue" href="{{ path('composer', {'activity': 'update', 'symfony': symfony.id}) }}">Composer update</a>
 								<a class="dropdown-item swalContinue text-danger" href="{{ path('delete', {'symfony': symfony.id}) }}">Delete</a>
 							</div>
 						</div>
