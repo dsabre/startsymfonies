@@ -23,7 +23,6 @@ class UtilService{
 	const URL_VERSION = 'https://raw.githubusercontent.com/raniel86/startsymfonies2/master/.version_number';
 	const COOKIE_VERSION = 'remote_version';
 	const URL_GITHUB = 'https://github.com/raniel86/startsymfonies2';
-	const DEFAULT_THEME = 'blue';
 	
 	/**
 	 * UtilService constructor.
@@ -104,6 +103,10 @@ class UtilService{
 	 */
 	public function getTheme(){
 		$themes = [
+			'blue'   => [
+				'brightness' => 'dark',
+				'color'      => 'primary',
+			],
 			'red'    => [
 				'brightness' => 'dark',
 				'color'      => 'danger',
@@ -115,10 +118,6 @@ class UtilService{
 			'cyan'   => [
 				'brightness' => 'dark',
 				'color'      => 'info',
-			],
-			'blue'   => [
-				'brightness' => 'dark',
-				'color'      => 'primary',
 			],
 			'white'  => [
 				'brightness' => 'light',
@@ -132,11 +131,23 @@ class UtilService{
 				'brightness' => 'dark',
 				'color'      => 'success'
 			],
+			'gray'  => [
+				'brightness' => 'dark',
+				'color'      => 'secondary'
+			]
 		];
 		
 		$theme = $this->container->getParameter('theme');
 		
-		return isset($themes[$theme]) ? $themes[$theme] : $themes[self::DEFAULT_THEME];
+		// check if the theme selected is random
+		if(isset($themes[$theme])){
+			return $themes[$theme];
+		}
+		else{
+			shuffle($themes);
+			
+			return reset($themes);
+		}
 	}
 	
 	/**

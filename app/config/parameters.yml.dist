@@ -23,4 +23,4 @@ parameters:
     git_executable: /usr/bin/git|null
     autoupdate: true
     hosts_file: /etc/hosts
-    theme: blue|white|black|red|yellow|cyan|green
+    theme: blue|white|black|red|yellow|cyan|green|gray|random
