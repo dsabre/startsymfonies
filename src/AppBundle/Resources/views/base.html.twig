@@ -42,10 +42,13 @@
                 <a class="nav-link swalContinue" href="{{ path('scan') }}">Launch scan</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link swalContinue" href="{{ path('start-all') }}">Start all</a>
+                <a class="nav-link swalContinue" href="{{ path('start_all') }}">Start all</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link swalContinue" href="{{ path('stop-all') }}">Stop all</a>
+                <a class="nav-link swalContinue" href="{{ path('stop_all') }}">Stop all</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link swalContinue" href="{{ path('delete_all') }}">Delete all</a>
             </li>
 
 			{% if updateAvailable and util_service.gitExecutable is not null %}
@@ -54,7 +57,7 @@
                 </li>
 			{% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('recheck-version') }}">Check updates</a>
+                    <a class="nav-link" href="{{ path('recheck_version') }}">Check updates</a>
                 </li>
 			{% endif %}
         </ul>

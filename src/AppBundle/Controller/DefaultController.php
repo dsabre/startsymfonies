@@ -131,6 +131,17 @@ class DefaultController extends Controller{
 	}
 	
 	/**
+	 * @Route("/delete/all", name="delete_all")
+	 */
+	public function deleteAllAction(Symfony $symfony){
+		$this->get(SymfoniesService::class)->deleteAll();
+		
+		$this->addFlash('success', 'Symfonies deleted correctly');
+		
+		return $this->redirectToRoute('app_default_index');
+	}
+	
+	/**
 	 * @Route("/composer/install/{symfony}", name="composer_install")
 	 */
 	public function composerInstallAction(Symfony $symfony){
@@ -153,7 +164,7 @@ class DefaultController extends Controller{
 	}
 	
 	/**
-	 * @Route("/start-all", name="start-all")
+	 * @Route("/start-all", name="start_all")
 	 */
 	public function startAllAction(){
 		$this->get(SymfoniesService::class)->startAll();
@@ -164,7 +175,7 @@ class DefaultController extends Controller{
 	}
 	
 	/**
-	 * @Route("/stop-all", name="stop-all")
+	 * @Route("/stop-all", name="stop_all")
 	 */
 	public function stopAllAction(){
 		$this->get(SymfoniesService::class)->stopAll();
@@ -188,7 +199,7 @@ class DefaultController extends Controller{
 	}
 	
 	/**
-	 * @Route("/recheck-version", name="recheck-version")
+	 * @Route("/recheck-version", name="recheck_version")
 	 */
 	public function recheckVersionAction(){
 		$response = $this->redirectToRoute('app_default_index');
