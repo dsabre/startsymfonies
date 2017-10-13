@@ -214,6 +214,17 @@ class SymfoniesService{
 	}
 	
 	/**
+	 * @param Symfony $symfony
+	 *
+	 * @return $this
+	 */
+	public function restart(Symfony $symfony){
+		$this->stop($symfony)->start($symfony);
+		
+		return $this;
+	}
+	
+	/**
 	 * Delete a symfony from db
 	 *
 	 * @param Symfony $symfony

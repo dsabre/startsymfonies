@@ -30,8 +30,7 @@ class SymfonyRestartCommand extends ContainerAwareCommand{
 		
 		$symfony = $this->getContainer()->get('doctrine')->getRepository(Symfony::class)->find($id);
 		
-		$this->getContainer()->get(SymfoniesService::class)->stop($symfony);
-		$this->getContainer()->get(SymfoniesService::class)->start($symfony);
+		$this->getContainer()->get(SymfoniesService::class)->restart($symfony);
 		
 		$output->writeln('<info>Symfony restarted correctly</info>');
 	}

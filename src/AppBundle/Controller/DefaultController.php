@@ -95,8 +95,7 @@ class DefaultController extends Controller{
 	 */
 	public function restartAction(Symfony $symfony){
 		try{
-			$this->get(SymfoniesService::class)->stop($symfony);
-			$this->get(SymfoniesService::class)->start($symfony);
+			$this->get(SymfoniesService::class)->restart($symfony);
 			
 			$this->addFlash('success', 'Symfony restarted correctly');
 		}
