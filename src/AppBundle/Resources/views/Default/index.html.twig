@@ -56,7 +56,7 @@
 						{% if symfony.ip and symfony.port %}
 							<a href="{{ path('stop', {'symfony': symfony.id}) }}" class="btn btn-warning btn-sm swalContinue">Stop</a>
 						{% else %}
-							<a href="#" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modalSymfony{{ symfony.id }}">Start</a>
+							<a href="#" class="btn btn-success btn-sm ajaxAction" data-toggle="modal" data-target="#modalSymfony{{ symfony.id }}">Start</a>
 
 							<div class="modal fade" id="modalSymfony{{ symfony.id }}" tabindex="-1" role="dialog" aria-labelledby="modalSymfony{{ symfony.id }}Label" aria-hidden="true">
 								<div class="modal-dialog modal-lg" role="document">
@@ -125,7 +125,8 @@
 	</style>
 {% endblock %}
 
-
 {% block javascripts %}
-	<script src="{{ asset('bundles/app/scripts/app.js') }}"></script>
+	<script src="{{ asset('bundles/app/scripts/index.js') }}"></script>
+	<script src="{{ asset('bundles/app/scripts/selectAll.js') }}"></script>
+	<script src="{{ asset('bundles/app/scripts/search.js') }}"></script>
 {% endblock %}
