@@ -252,12 +252,53 @@ class SymfoniesService{
 		set_time_limit(0);
 		
 		$command = sprintf('composer %s', $activity);
-		
+
 		$process = new Process($command, $symfony->getPath());
 		$process->disableOutput();
 		$process->mustRun();
 		
+		// if is an update we need to update the symfony version
+		if($activity === 'update'){
+			$version = $this->getVersion($symfony);
+			$symfony->setVersion($version);
+			
+			$em = $this->container->get('doctrine')->getManager();
+			$em->persist($symfony);
+			$em->flush();
+		}
+		
 		return $this;
+	}
+	
+	/**
+	 * Return the symfony version
+	 *
+	 * @param Symfony $symfony
+	 *
+	 * @return string
+	 */
+	public function getVersion(Symfony $symfony){
+		$dirConsole = $symfony->getVersion(true) === 2 ? 'app' : 'bin';
+		
+		$command = sprintf('%s %s/console', $this->container->getParameter('php_executable'), $dirConsole);
+		
+		$process = new Process($command, $symfony->getPath());
+		$process->mustRun();
+		
+		$output = $process->getOutput();
+		
+		if($symfony->getVersion(true) === 3){
+			$output = explode(PHP_EOL, $output)[0];
+			$output = explode(' (', $output)[0];
+			$output = '3' . explode(' 3', $output)[1];
+		}
+		else{
+			$output = explode(PHP_EOL, $output)[0];
+			$output = explode(' - ', $output)[0];
+			$output = '2' . explode(' 2', $output)[1];
+		}
+		
+		return $output;
 	}
 	
 	/**
