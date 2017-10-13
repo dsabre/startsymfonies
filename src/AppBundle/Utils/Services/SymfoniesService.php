@@ -271,6 +271,20 @@ class SymfoniesService{
 	}
 	
 	/**
+	 * Get the informations of a composer show command
+	 *
+	 * @param Symfony $symfony
+	 *
+	 * @return string
+	 */
+	public function composerShow(Symfony $symfony){
+		$process = new Process('composer show', $symfony->getPath());
+		$process->mustRun();
+		
+		return $process->getOutput();
+	}
+	
+	/**
 	 * Return the symfony version
 	 *
 	 * @param Symfony $symfony

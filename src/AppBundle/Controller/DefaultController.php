@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller{
 	
@@ -144,11 +145,17 @@ class DefaultController extends Controller{
 	 * @Route("/composer/{activity}/{symfony}", name="composer")
 	 */
 	public function composerAction($activity, Symfony $symfony){
-		$this->get(SymfoniesService::class)->composer($symfony, $activity);
-		
-		$this->addFlash('success', 'Composer ' . $activity . ' executed correctly');
-		
-		return $this->redirectToRoute('app_default_index');
+		if($activity !== 'show'){
+			$this->get(SymfoniesService::class)->composer($symfony, $activity);
+			
+			$this->addFlash('success', 'Composer ' . $activity . ' executed correctly');
+			
+			return $this->redirectToRoute('app_default_index');
+		}
+		else{
+			$response = $this->get(SymfoniesService::class)->composerShow($symfony);
+			return new Response($response);
+		}
 	}
 	
 	/**
