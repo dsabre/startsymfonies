@@ -190,11 +190,18 @@ class UtilService{
 		}
 		
 		$cwd = $this->container->get('kernel')->getRootDir() . '/..';
-		$command = sprintf('%s pull', $gitExecutable);
 		
-		$process = new Process($command, $cwd);
-		$process->disableOutput();
-		$process->mustRun();
+		$commands = [
+			sprintf('%s pull', $gitExecutable),
+			sprintf('%s bin/console -q cache:clear &', $this->container->getParameter('php_executable')),
+			sprintf('%s bin/console -q assets:install --symlink &', $this->container->getParameter('php_executable'))
+		];
+		
+		foreach($commands as $command){
+			$process = new Process($command, $cwd);
+			$process->disableOutput();
+			$process->mustRun();
+		}
 		
 		$this->getCurrentVersionNumber($response, true);
 		
