@@ -7,7 +7,15 @@ $(function() {
 			$.ajax({
 				url: '/composer/show/' + symfonyId,
 				success: function(response){
-					elmEmpty.after('<small><pre>' + response + '</pre></small>').remove();
+					var output = '';
+					var color = false;
+					
+					$.each(response, function(k, row){
+						output += '<span ' + (color ? 'class="text-info"' : '') + '> ' + row + ' </span><br>';
+						color = !color;
+					});
+					
+					elmEmpty.after('<small><pre>' + output + '</pre></small>').remove();
 				}
 			});
 		}

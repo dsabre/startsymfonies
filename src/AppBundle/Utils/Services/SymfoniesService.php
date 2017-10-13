@@ -281,7 +281,9 @@ class SymfoniesService{
 		$process = new Process('composer show', $symfony->getPath());
 		$process->mustRun();
 		
-		return $process->getOutput();
+		$output = $process->getOutput();
+		
+		return explode(PHP_EOL, $output);
 	}
 	
 	/**

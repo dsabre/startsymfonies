@@ -10,7 +10,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller{
 	
@@ -154,7 +153,7 @@ class DefaultController extends Controller{
 		}
 		else{
 			$response = $this->get(SymfoniesService::class)->composerShow($symfony);
-			return new Response($response);
+			return new JsonResponse($response);
 		}
 	}
 	
