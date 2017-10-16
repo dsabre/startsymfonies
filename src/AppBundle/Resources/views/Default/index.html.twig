@@ -60,7 +60,7 @@
 							{% if faviconUrl %}
 								<a href="{{ path('stop', {'symfony': symfony.id}) }}" class="btn btn-warning btn-sm swalContinue">Stop</a>
 							{% else %}
-								<a class="dropdown-item btn btn-danger btn-sm" href="{{ path('restart', {'symfony': symfony.id}) }}">Restart</a>
+								<a class="dropdown-item btn btn-danger btn-sm" href="{{ path('restart', {'symfony': symfony.id}) }}">Try to restart</a>
 							{% endif %}
 						{% else %}
 							<a href="#" class="btn btn-success btn-sm ajaxAction" data-toggle="modal" data-target="#modalSymfony{{ symfony.id }}">Start</a>
