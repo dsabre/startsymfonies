@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# check if is valid os
 if [ "$(uname)" == "Darwin" ]; then
     echo
     echo "Invalid OS, try to use install_mac.sh instead."
