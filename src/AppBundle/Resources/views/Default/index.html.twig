@@ -1,7 +1,5 @@
 {% extends '::base.html.twig' %}
 
-{% set faviconUrl = null %}
-
 {% block body %}
 	<table class="table table-hover table-sm table-bordered tableVertAlignMiddle">
 		<thead>
@@ -16,13 +14,14 @@
 		</thead>
 		<tbody>
 		{% for symfony in symfonies %}
+			{% set faviconUrl = symfony.faviconUrl %}
+
 			<tr style="display: none;">
 				<td class="text-center">
 					<a href="#" data-id="{{ symfony.id }}" class="fa fa-star{{ symfony.starred ? ' text-warning' : '-o text-secondary' }} starControl" aria-hidden="true"></a>
 				</td>
 				<td class="text-center">
-					{% if symfony.ip and symfony.port %}
-						{% set faviconUrl = symfony.faviconUrl %}
+					{% if symfony.ip and symfony.port and faviconUrl %}
 						<img src="{{ faviconUrl }}" alt="" width="16">
 					{% else %}
 						<span class="text-muted">--</span>
