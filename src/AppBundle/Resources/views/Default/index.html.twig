@@ -42,7 +42,7 @@
 									{% if key == 'link' and symfonyLinks.aliases|length > 0 %}
 										<li><a class="text-muted" href="{{ link }}" target="_blank"><small>{{ link }}</small></a></li>
 									{% else %}
-										<li><a href="{{ link }}" target="_blank">{{ link }}</a></li>
+										<li><a class="text-{{ theme.brightness != 'light' ? theme.color : 'dark' }}" href="{{ link }}" target="_blank">{{ link }}</a></li>
 									{% endif %}
 								{% endfor %}
 							{% endfor %}
