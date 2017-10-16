@@ -50,7 +50,7 @@ if [ "$fileAutoStartExist" -eq "0" ]; then
     echo
     read -p "Do you want to run startsymfonies2 on pc boot [y/N]? " -n 1 -r
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        echo '<?xml version="1.0" encoding="UTF-8"?>
+        sudo echo '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs$
 <plist version="1.0">
 <dict>
@@ -72,7 +72,7 @@ if [ "$fileAutoStartSymfoniesExist" -eq "0" ]; then
     echo
     read -p "Do you want to run all symfonies with an ip and a port on pc boot [y/N]? " -n 1 -r
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        echo '<?xml version="1.0" encoding="UTF-8"?>
+        sudo echo '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs$
 <plist version="1.0">
 <dict>
