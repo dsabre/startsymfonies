@@ -15,6 +15,10 @@
 	border-color: #e51f23 !important;
 }
 
+.text-danger {
+	color: #e51f23 !important;
+}
+
 .badge-symfony-version-2 {
 	color: #6BA51C;
 	background-color: #EEE;
