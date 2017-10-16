@@ -23,7 +23,7 @@
     <span class="navbar-brand">
         Startsymfonies
         <small class="text-warning">
-            <span class="badge badge-secondary">{{ util_service.localVersionNumber }}</span>
+            <a href="{{ util_service.urlGitHub }}" target="_blank" class="badge badge-secondary">{{ util_service.localVersionNumber }}</a>
 
 			{% if updateAvailable %}
                 <a href="{{ util_service.urlGitHub }}" target="_blank" class="badge badge-danger badgeUpdate">Update available</a>
