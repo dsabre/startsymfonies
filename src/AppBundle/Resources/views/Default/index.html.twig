@@ -1,5 +1,7 @@
 {% extends '::base.html.twig' %}
 
+{% set faviconUrl = null %}
+
 {% block body %}
 	<table class="table table-hover table-sm table-bordered tableVertAlignMiddle">
 		<thead>
@@ -20,7 +22,8 @@
 				</td>
 				<td class="text-center">
 					{% if symfony.ip and symfony.port %}
-						<img src="http://{{ symfony.ip }}:{{ symfony.port }}/favicon.ico" alt="" width="16">
+						{% set faviconUrl = symfony.faviconUrl %}
+						<img src="{{ faviconUrl }}" alt="" width="16">
 					{% else %}
 						<span class="text-muted">--</span>
 					{% endif %}
@@ -54,7 +57,11 @@
 				<td>
 					<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
 						{% if symfony.ip and symfony.port %}
-							<a href="{{ path('stop', {'symfony': symfony.id}) }}" class="btn btn-warning btn-sm swalContinue">Stop</a>
+							{% if faviconUrl %}
+								<a href="{{ path('stop', {'symfony': symfony.id}) }}" class="btn btn-warning btn-sm swalContinue">Stop</a>
+							{% else %}
+								<a class="dropdown-item btn btn-danger btn-sm" href="{{ path('restart', {'symfony': symfony.id}) }}">Restart</a>
+							{% endif %}
 						{% else %}
 							<a href="#" class="btn btn-success btn-sm ajaxAction" data-toggle="modal" data-target="#modalSymfony{{ symfony.id }}">Start</a>
 
@@ -99,7 +106,7 @@
 								Other actions
 							</button>
 							<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-								{% if symfony.ip and symfony.port %}
+								{% if symfony.ip and symfony.port and faviconUrl %}
 									<a class="dropdown-item swalContinue" href="{{ path('restart', {'symfony': symfony.id}) }}">Restart</a>
 								{% endif %}
 

@@ -210,4 +210,59 @@ class Symfony{
 	public function getVersion($returnMain = false){
 		return !$returnMain ? $this->version : (int)$this->version[0];
 	}
+	
+	/**
+	 * Get the favicon url of the symfony, it check if the favicon is readable
+	 * from url, if not return null
+	 *
+	 * @return null|string
+	 */
+	public function getFaviconUrl(){
+		$ret = sprintf('http://%s:%s/favicon.ico', $this->getIp(), $this->getPort());
+		
+		try{
+			$this->checkFaviconUrl($ret);
+		}
+		catch(\Exception $exc){
+			$ret = null;
+		}
+		
+		return $ret;
+	}
+	
+	/**
+	 * @param string $url
+	 *
+	 * @return $this
+	 * @throws \Exception
+	 */
+	private function checkFaviconUrl($url){
+		$curl = curl_init();
+		
+		curl_setopt_array($curl, array(
+			CURLOPT_PORT           => $this->getPort(),
+			CURLOPT_URL            => $url,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING       => "",
+			CURLOPT_MAXREDIRS      => 10,
+			CURLOPT_TIMEOUT        => 30,
+			CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST  => "GET",
+			CURLOPT_HTTPHEADER     => [
+				"cache-control: no-cache"
+			],
+		));
+		
+		curl_exec($curl);
+		$err = curl_error($curl);
+		
+		curl_close($curl);
+		
+		if($err){
+			throw new \Exception();
+		}
+		
+		return $this;
+	}
+	
 }
