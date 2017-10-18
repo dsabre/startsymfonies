@@ -16,6 +16,12 @@
 	color: #FFF;
 }
 
+.btn-primary {
+	color: #fff !important;
+	background-color: #007bff !important;
+	border-color: #007bff !important;
+}
+
 .text-danger {
 	color: #e51f23 !important;
 }
