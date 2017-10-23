@@ -31,7 +31,7 @@
 					{{ symfony.path }}
 				</td>
 				<td class="text-center">
-					<span class="badge badge-info badge-symfony-version-{{ symfony.version(true) }}">
+					<span class="badge badge-info badge-symfony-version-{{ 'x.x' not in symfony.version ? symfony.version(true) : 'error' }}">
 						{{ symfony.version }}
 					</span>
 				</td>

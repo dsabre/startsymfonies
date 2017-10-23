@@ -36,3 +36,8 @@
 	color: #FFF;
 	background-color: #7aba20;
 }
+
+.badge-symfony-version-error {
+	color: #e51f23;
+	background-color: #FFF;
+}
