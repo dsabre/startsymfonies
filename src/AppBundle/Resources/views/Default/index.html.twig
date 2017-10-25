@@ -31,85 +31,95 @@
 					{{ symfony.path }}
 				</td>
 				<td class="text-center">
-					<span class="badge badge-info badge-symfony-version-{{ 'x.x' not in symfony.version ? symfony.version(true) : 'error' }}">
+					<span class="badge badge-info badge-symfony-version-{{ symfony.ok ? symfony.version(true) : 'error' }}">
 						{{ symfony.version }}
 					</span>
 				</td>
 				<td class="colLink">
-					{% if symfony.ip and symfony.port %}
-						<ul class="list-unstyled" style="margin: 0;">
-							{% set symfonyLinks = symfonies_service.links(symfony) %}
-							{% for key, links in symfonyLinks %}
-								{% for link in links %}
-									{% if key == 'link' and symfonyLinks.aliases|length > 0 %}
-										<li><a class="text-muted" href="{{ link }}" target="_blank"><small>{{ link }}</small></a></li>
-									{% else %}
-										<li><a class="text-{{ theme.brightness != 'light' ? theme.color : 'dark' }}" href="{{ link }}" target="_blank">{{ link }}</a></li>
-									{% endif %}
+					{% if symfony.ok %}
+						{% if symfony.ip and symfony.port %}
+							<ul class="list-unstyled" style="margin: 0;">
+								{% set symfonyLinks = symfonies_service.links(symfony) %}
+								{% for key, links in symfonyLinks %}
+									{% for link in links %}
+										{% if key == 'link' and symfonyLinks.aliases|length > 0 %}
+											<li><a class="text-muted" href="{{ link }}" target="_blank"><small>{{ link }}</small></a></li>
+										{% else %}
+											<li><a class="text-{{ theme.brightness != 'light' ? theme.color : 'dark' }}" href="{{ link }}" target="_blank">{{ link }}</a></li>
+										{% endif %}
+									{% endfor %}
 								{% endfor %}
-							{% endfor %}
-						</ul>
+							</ul>
+						{% else %}
+							<span class="text-muted">Stopped</span>
+						{% endif %}
 					{% else %}
-						<span class="text-muted">Stopped</span>
+						<span class="d-none">Stopped</span>
+						<span class="text-danger">Error</span>
 					{% endif %}
 				</td>
 				<td>
-					<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-						{% if symfony.ip and symfony.port %}
+					<div class="btn-group" role="group" aria-label="Operations">
+						{% if symfony.ip and symfony.port and symfony.ok %}
 							{% if faviconUrl %}
 								<a href="{{ path('stop', {'symfony': symfony.id}) }}" class="btn btn-warning btn-sm swalContinue">Stop</a>
 							{% else %}
 								<a class="dropdown-item btn btn-primary btn-sm" href="{{ path('restart', {'symfony': symfony.id}) }}">Restart</a>
 							{% endif %}
 						{% else %}
-							<a href="#" class="btn btn-success btn-sm ajaxAction" data-toggle="modal" data-target="#modalSymfony{{ symfony.id }}">Start</a>
+							{% if symfony.ok %}
+								<a href="#" class="btn btn-success btn-sm ajaxAction" data-toggle="modal" data-target="#modalSymfony{{ symfony.id }}">Start</a>
 
-							<div class="modal fade" id="modalSymfony{{ symfony.id }}" tabindex="-1" role="dialog" aria-labelledby="modalSymfony{{ symfony.id }}Label" aria-hidden="true">
-								<div class="modal-dialog modal-lg" role="document">
-									<div class="modal-content">
-										<div class="modal-header">
-											<h5 class="modal-title" id="modalSymfony{{ symfony.id }}Label">{{ symfony.path }}</h5>
-											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-												<span aria-hidden="true">&times;</span>
-											</button>
+								<div class="modal fade" id="modalSymfony{{ symfony.id }}" tabindex="-1" role="dialog" aria-labelledby="modalSymfony{{ symfony.id }}Label" aria-hidden="true">
+									<div class="modal-dialog modal-lg" role="document">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h5 class="modal-title" id="modalSymfony{{ symfony.id }}Label">{{ symfony.path }}</h5>
+												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+													<span aria-hidden="true">&times;</span>
+												</button>
+											</div>
+											<form action="{{ path('start', {'symfony': symfony.id}) }}" method="post">
+												<div class="modal-body">
+													<div class="form-group">
+														<label for="ip{{ symfony.id }}">IP</label>
+														<input type="text" class="form-control" id="ip{{ symfony.id }}" name="ip" placeholder="IP" value="{{ nextLocalIp }}" required>
+														<a href="#" class="form-text text-info setDefaultVal" data-field="#ip{{ symfony.id }}" data-val="127.0.0.1">Set to 127.0.0.1</a>
+													</div>
+													<div class="form-group">
+														<label for="port{{ symfony.id }}">Port</label>
+														<input type="number" class="form-control" id="port{{ symfony.id }}" name="port" placeholder="Port" value="8000" required>
+														<a href="#" class="form-text text-info setDefaultVal" data-field="#port{{ symfony.id }}" data-val="{{ nextLocalPort }}">Set to {{ nextLocalPort }}</a>
+													</div>
+													<div class="form-group">
+														<label for="entry{{ symfony.id }}">Entry point</label>
+														<input type="text" class="form-control" id="entry{{ symfony.id }}" name="entry" placeholder="Entry point">
+													</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+													<button type="submit" class="btn btn-primary">Save changes</button>
+												</div>
+											</form>
 										</div>
-										<form action="{{ path('start', {'symfony': symfony.id}) }}" method="post">
-											<div class="modal-body">
-												<div class="form-group">
-													<label for="ip{{ symfony.id }}">IP</label>
-													<input type="text" class="form-control" id="ip{{ symfony.id }}" name="ip" placeholder="IP" value="{{ nextLocalIp }}" required>
-													<a href="#" class="form-text text-info setDefaultVal" data-field="#ip{{ symfony.id }}" data-val="127.0.0.1">Set to 127.0.0.1</a>
-												</div>
-												<div class="form-group">
-													<label for="port{{ symfony.id }}">Port</label>
-													<input type="number" class="form-control" id="port{{ symfony.id }}" name="port" placeholder="Port" value="8000" required>
-													<a href="#" class="form-text text-info setDefaultVal" data-field="#port{{ symfony.id }}" data-val="{{ nextLocalPort }}">Set to {{ nextLocalPort }}</a>
-												</div>
-												<div class="form-group">
-													<label for="entry{{ symfony.id }}">Entry point</label>
-													<input type="text" class="form-control" id="entry{{ symfony.id }}" name="entry" placeholder="Entry point">
-												</div>
-											</div>
-											<div class="modal-footer">
-												<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-												<button type="submit" class="btn btn-primary">Save changes</button>
-											</div>
-										</form>
 									</div>
 								</div>
-							</div>
+							{% endif %}
 						{% endif %}
 
 						<div class="btn-group" role="group">
-							<button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<button id="btnGroupOperations" type="button" class="btn btn-secondary dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								Other actions
 							</button>
-							<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-								{% if symfony.ip and symfony.port and faviconUrl %}
-									<a class="dropdown-item swalContinue" href="{{ path('restart', {'symfony': symfony.id}) }}">Restart</a>
+							<div class="dropdown-menu" aria-labelledby="btnGroupOperations">
+								{% if symfony.ok %}
+									{% if symfony.ip and symfony.port and faviconUrl %}
+										<a class="dropdown-item swalContinue" href="{{ path('restart', {'symfony': symfony.id}) }}">Restart</a>
+									{% endif %}
+
+									<a class="dropdown-item swalContinue" href="{{ path('cache_assets_reset', {'symfony': symfony.id}) }}">Cache & assets reset</a>
 								{% endif %}
 
-								<a class="dropdown-item swalContinue" href="{{ path('cache_assets_reset', {'symfony': symfony.id}) }}">Cache & assets reset</a>
 								<a class="dropdown-item composerShow" href="#" data-symfonyid="{{ symfony.id }}" data-toggle="modal" data-target="#modalComposerShow{{ symfony.id }}">Composer show</a>
 								<a class="dropdown-item swalContinue" href="{{ path('composer', {'activity': 'install', 'symfony': symfony.id}) }}">Composer install</a>
 								<a class="dropdown-item swalContinue" href="{{ path('composer', {'activity': 'update', 'symfony': symfony.id}) }}">Composer update</a>

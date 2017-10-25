@@ -265,4 +265,13 @@ class Symfony{
 		return $this;
 	}
 	
+	/**
+	 * Return if a symfony is in error or not
+	 *
+	 * @return bool
+	 */
+	public function isOk(){
+		return !(bool)strstr($this->getVersion(), 'x.x');
+	}
+	
 }
