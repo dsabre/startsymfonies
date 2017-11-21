@@ -183,10 +183,18 @@ class Symfony{
 	/**
 	 * Get entryPoint
 	 *
-	 * @return string
+	 * @param bool $jsonDecode
+	 *
+	 * @return array|string
 	 */
-	public function getEntryPoint(){
-		return $this->entryPoint;
+	public function getEntryPoint($jsonDecode = false){
+		$ret = $this->entryPoint;
+		
+		if($ret && $jsonDecode){
+			$ret = json_decode($ret);
+		}
+		
+		return $ret;
 	}
 	
 	/**

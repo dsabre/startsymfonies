@@ -78,6 +78,13 @@ class DefaultController extends Controller{
 			$port = $request->get('port');
 			$entry = $request->get('entry');
 			
+			// generate a json for each entry inserted
+			$entry = explode(PHP_EOL, $entry);
+			foreach($entry as $k => $v){
+				$entry[$k] = trim($v);
+			}
+			$entry = json_encode($entry);
+			
 			$this->get(SymfoniesService::class)->startAndSave($symfony, $ip, $port, $entry);
 			
 			$this->addFlash('success', 'Symfony started correctly');

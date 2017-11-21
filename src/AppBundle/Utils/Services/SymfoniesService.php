@@ -435,27 +435,42 @@ class SymfoniesService{
 	 * Return the links of a running symfony
 	 *
 	 * @param Symfony $symfony
+	 * @param bool    $forceOne
 	 *
-	 * @return array
+	 * @return array|mixed
 	 */
 	public function getLinks(Symfony $symfony, $forceOne = false){
 		if(!$symfony->getIp() || !$symfony->getPort()){
 			return [];
 		}
 		
+		$aliases = $this->getAliases($symfony);
+		$links = [];
+		$entryPoints = $symfony->getEntryPoint(true);
+		if($entryPoints && !$aliases){
+			foreach($entryPoints as $entryPoint){
+				$links[] = 'http://' . $symfony->getIp() . ':' . $symfony->getPort() . $entryPoint;
+			}
+		}
+		else{
+			$links[] = 'http://' . $symfony->getIp() . ':' . $symfony->getPort();
+		}
+		
 		$links = [
-			'aliases' => $this->getAliases($symfony),
-			'link'    => [
-				'http://' . $symfony->getIp() . ':' . $symfony->getPort() . $symfony->getEntryPoint()
-			]
+			'aliases' => $aliases,
+			'link'    => $links
 		];
 		
-		// if required, this remove the null value (alias) and return the first
+		// if required, this remove the empty value (alias) and return the first
 		// link in array
 		if($forceOne){
-			$links = array_diff($links, [null]);
+			foreach($links as $k => $v){
+				if($v === null || $v === []){
+					unset($links[$k]);
+				}
+			}
 			
-			return reset($links);
+			return reset($links)[0];
 		}
 		
 		return $links;
@@ -476,13 +491,20 @@ class SymfoniesService{
 		$hosts = $this->container->get(UtilService::class)->getHosts();
 		
 		$aliases = [];
-		
 		foreach($hosts as $host){
 			if(preg_match('/^' . $symfony->getIp() . '/', $host)){
 				$host = str_replace($symfony->getIp(), '', $host);
 				$host = trim($host);
 				
-				$aliases[] = 'http://' . $host . ':' . $symfony->getPort() . $symfony->getEntryPoint();
+				$entryPoints = $symfony->getEntryPoint(true);
+				if($entryPoints){
+					foreach($entryPoints as $entryPoint){
+						$aliases[] = 'http://' . $host . ':' . $symfony->getPort() . $entryPoint;
+					}
+				}
+				else{
+					$aliases[] = 'http://' . $host . ':' . $symfony->getPort();
+				}
 			}
 		}
 		
