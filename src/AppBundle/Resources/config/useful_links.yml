@@ -1,0 +1,26 @@
+-
+    url: 'https://symfony.com/'
+    label: 'Symfony site'
+    icon: favicon.ico
+
+-
+    url: 'https://symfony.com/roadmap'
+    label: 'Symfony roadmap'
+    icon: favicon.ico
+
+- DIVIDER
+
+-
+    url: 'http://www.yopmail.com/it/email-generator.php'
+    label: Yopmail
+    icon: 'http://www.yopmail.com/favicon.gif'
+
+-
+    url: 'https://regex101.com/'
+    label: regex101
+    icon: 'https://regex101.com/favicon.ico'
+
+-
+    url: 'https://getbootstrap.com/docs/4.0/getting-started/introduction/'
+    label: 'Bootstrap documentation'
+    icon: 'https://getbootstrap.com/favicon.ico'

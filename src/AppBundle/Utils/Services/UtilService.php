@@ -8,13 +8,14 @@
 
 namespace AppBundle\Utils\Services;
 
-use AppBundle\Entity\Symfony;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Yaml\Yaml;
 
 class UtilService{
 	
@@ -23,6 +24,8 @@ class UtilService{
 	const URL_VERSION = 'https://raw.githubusercontent.com/raniel86/startsymfonies2/master/.version_number';
 	const COOKIE_VERSION = 'remote_version';
 	const URL_GITHUB = 'https://github.com/raniel86/startsymfonies2';
+	
+	const FILEPATH_USEFUL_LINKS = '../src/AppBundle/Resources/config/useful_links.yml';
 	
 	/**
 	 * UtilService constructor.
@@ -206,6 +209,24 @@ class UtilService{
 		$this->getCurrentVersionNumber($response, true);
 		
 		return $this;
+	}
+	
+	/**
+	 * Return all useful link configured from a yaml file
+	 *
+	 * @return array
+	 */
+	public function getUsefulLinks(){
+		$file = new File(self::FILEPATH_USEFUL_LINKS);
+		
+		// check for file content
+		if($file->getSize() == 0){
+			return null;
+		}
+		
+		$fileContent = $file->openFile()->fread($file->getSize());
+		
+		return Yaml::parse($fileContent);
 	}
 	
 }

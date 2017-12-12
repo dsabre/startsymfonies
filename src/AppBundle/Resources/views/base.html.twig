@@ -59,7 +59,26 @@
                     <a class="nav-link" href="{{ path('recheck_version') }}">Check updates</a>
                 </li>
 			{% endif %}
+
+            {% set usefulLink = util_service.usefulLinks %}
+			{% if usefulLink is not empty %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Useful links
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						{% for link in usefulLink %}
+							{% if link == 'DIVIDER' %}
+                                <div class="dropdown-divider"></div>
+							{% else %}
+                                <a class="dropdown-item" href="{{ link.url }}" target="_blank"><img src="{{ link.icon }}" alt="" width="16"> {{ link.label }}</a>
+							{% endif %}
+						{% endfor %}
+                    </div>
+                </li>
+			{% endif %}
         </ul>
+
         <form class="form-inline my-2 my-lg-0">
             <div class="input-group mb-2 mb-sm-0">
                 <input id="search" type="search" class="form-control" placeholder="Search" aria-label="Search">
