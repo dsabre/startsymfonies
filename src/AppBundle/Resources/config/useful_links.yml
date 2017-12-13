@@ -1,26 +1,36 @@
 -
     url: 'https://symfony.com/'
     label: 'Symfony site'
-    icon: favicon.ico
+    icon: 'favicon.ico'
 
 -
     url: 'https://symfony.com/roadmap'
     label: 'Symfony roadmap'
-    icon: favicon.ico
+    icon: 'favicon.ico'
 
 - DIVIDER
 
 -
     url: 'http://www.yopmail.com/it/email-generator.php'
-    label: Yopmail
+    label: 'YOPmail'
     icon: 'http://www.yopmail.com/favicon.gif'
 
 -
     url: 'https://regex101.com/'
-    label: regex101
+    label: 'Regex101'
     icon: 'https://regex101.com/favicon.ico'
+
+-
+    url: 'https://jsonlint.com/'
+    label: 'JSONLint'
+    icon: 'https://jsonlint.com/icons/icon-hires.png'
 
 -
     url: 'https://getbootstrap.com/docs/4.0/getting-started/introduction/'
     label: 'Bootstrap documentation'
     icon: 'https://getbootstrap.com/favicon.ico'
+
+-
+    url: 'https://www.browserstack.com/'
+    label: 'BrowserStack'
+    icon: 'https://www.browserstack.com/favicon.ico'
