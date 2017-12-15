@@ -8,6 +8,11 @@
     label: 'Symfony roadmap'
     icon: 'favicon.ico'
 
+-
+    url: 'http://nux.net/secret'
+    label: 'Symfony Secret Generator'
+    icon: 'favicon.ico'
+
 - DIVIDER
 
 -
