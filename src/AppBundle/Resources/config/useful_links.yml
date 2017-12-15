@@ -36,6 +36,10 @@
     icon: 'https://getbootstrap.com/favicon.ico'
 
 -
+    url: 'https://passwordsgenerator.net/'
+    label: 'Secure Password Generator'
+    icon: 'https://passwordsgenerator.net/fav/fav322.ico'
+-
     url: 'https://www.browserstack.com/'
     label: 'BrowserStack'
     icon: 'https://www.browserstack.com/favicon.ico'
