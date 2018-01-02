@@ -24,3 +24,4 @@ parameters:
     autoupdate: true
     hosts_file: /etc/hosts
     theme: blue|white|black|red|yellow|cyan|green|gray|random
+    check_version: true

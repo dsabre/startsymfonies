@@ -50,9 +50,14 @@ class UtilService{
 	 *
 	 * @param Response $response
 	 *
-	 * @return string
+	 * @return string|null
 	 */
 	public function getCurrentVersionNumber(Response $response, $forceGet = false){
+		// check if the version checker is active
+		if(!$this->container->getParameter('check_version')){
+			return null;
+		}
+		
 		// get current version from cookie
 		$curVersion = $this->container->get('request_stack')->getMasterRequest()->cookies->get(self::COOKIE_VERSION);
 		

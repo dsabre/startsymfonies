@@ -44,7 +44,7 @@ class DefaultController extends Controller{
 		
 		// if local version is different from the current remote version, show
 		// an info message
-		if($currentVer !== $localVer){
+		if(!is_null($currentVer) && $currentVer !== $localVer){
 			// if autoupdate is available, perform the operation now
 			if($this->getParameter('autoupdate')){
 				$response = $this->redirectToRoute('update_startsymfonies2');
