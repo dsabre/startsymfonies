@@ -70,7 +70,7 @@ class SymfoniesService{
 		
 		// remove all path that contains 'vendor' word
 		foreach($symfonies as $k => $symfony){
-			if(strstr('/vendor/', $symfony)){
+			if(preg_match('/vendor/', $symfony) > 0){
 				unset($symfonies[$k]);
 			}
 		}
