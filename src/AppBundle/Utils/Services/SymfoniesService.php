@@ -62,13 +62,20 @@ class SymfoniesService{
 	 * @return array
 	 */
 	private function getSymfonies(){
-		$symofnies = [];
+		$symfonies = [];
 		
 		foreach($this->getDirectories() as $directory){
-			$symofnies = array_merge($symofnies, $this->getSymfoniesFromDir($directory));
+			$symfonies = array_merge($symfonies, $this->getSymfoniesFromDir($directory));
 		}
 		
-		return $symofnies;
+		// remove all path that contains 'vendor' word
+		foreach($symfonies as $k => $symfony){
+			if(strstr('/vendor/', $symfony)){
+				unset($symfonies[$k]);
+			}
+		}
+		
+		return $symfonies;
 	}
 	
 	/**
