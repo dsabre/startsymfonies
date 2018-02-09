@@ -26,8 +26,8 @@
     icon: 'https://regex101.com/favicon.ico'
 
 -
-    url: 'https://jsonlint.com/'
-    label: 'JSONLint'
+    url: 'https://jsoncompare.com/#!/simple/'
+    label: 'JSONCompare (ex JSONLint)'
     icon: 'https://jsonlint.com/icons/icon-hires.png'
 
 -
