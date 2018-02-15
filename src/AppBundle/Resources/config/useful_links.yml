@@ -31,6 +31,11 @@
     icon: 'https://jsonlint.com/icons/icon-hires.png'
 
 -
+    url: 'https://codebeautify.org/'
+    label: 'Code beautify (a Swiss Army knife :D)'
+    icon: 'https://codebeautify.org/img/cb.png'
+
+-
     url: 'https://getbootstrap.com/docs/4.0/getting-started/introduction/'
     label: 'Bootstrap documentation'
     icon: 'https://getbootstrap.com/favicon.ico'
