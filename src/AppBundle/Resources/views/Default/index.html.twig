@@ -71,6 +71,7 @@
 							{% else %}
 								<a href="{{ path('restart', {'symfony': symfony.id}) }}" class="btn btn-light fa fa-repeat text-primary" aria-hidden="true" title="Restart"></a>
 								<a href="{{ path('stop', {'symfony': symfony.id}) }}" class="btn btn-light fa fa-stop text-dark swalContinue" aria-hidden="true" title="Stop"></a>
+								<a href="#" class="btn btn-light fa fa-pencil text-info ajaxAction" aria-hidden="true" title="Edit" data-toggle="modal" data-target="#modalSymfony{{ symfony.id }}"></a>
 							{% endif %}
 
 							<a href="{{ path('cache_assets_reset', {'symfony': symfony.id}) }}" class="btn btn-light fa fa-refresh text-secondary swalContinue" aria-hidden="true" title="Cache & assets reset"></a>

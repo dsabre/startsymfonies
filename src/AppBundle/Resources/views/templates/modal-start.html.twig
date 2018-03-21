@@ -9,16 +9,20 @@
 			</div>
 			<form action="{{ path('start', {'symfony': symfony.id}) }}" method="post">
 				<div class="modal-body">
-					<div class="form-group">
-						<label for="ip{{ symfony.id }}">IP</label>
-						<input type="text" class="form-control" id="ip{{ symfony.id }}" name="ip" placeholder="IP" value="{{ symfony.ip is empty ? nextLocalIp : symfony.ip }}" required>
-						<a href="#" class="form-text text-info setDefaultVal" data-field="#ip{{ symfony.id }}" data-val="127.0.0.1">Set to 127.0.0.1</a>
-					</div>
-					<div class="form-group">
-						<label for="port{{ symfony.id }}">Port</label>
-						<input type="number" class="form-control" id="port{{ symfony.id }}" name="port" placeholder="Port" value="8000" required>
-						<a href="#" class="form-text text-info setDefaultVal" data-field="#port{{ symfony.id }}" data-val="{{ symfony.port is empty ? nextLocalPort : symfony.port }}">Set to {{ nextLocalPort }}</a>
-					</div>
+					{% if not faviconUrl %}
+						<div class="form-group">
+							<label for="ip{{ symfony.id }}">IP</label>
+							<input type="text" class="form-control" id="ip{{ symfony.id }}" name="ip" placeholder="IP" value="{{ symfony.ip is empty ? nextLocalIp : symfony.ip }}" required>
+							<a href="#" class="form-text text-info setDefaultVal" data-field="#ip{{ symfony.id }}" data-val="127.0.0.1">Set to 127.0.0.1</a>
+						</div>
+
+						<div class="form-group">
+							<label for="port{{ symfony.id }}">Port</label>
+							<input type="number" class="form-control" id="port{{ symfony.id }}" name="port" placeholder="Port" value="8000" required>
+							<a href="#" class="form-text text-info setDefaultVal" data-field="#port{{ symfony.id }}" data-val="{{ symfony.port is empty ? nextLocalPort : symfony.port }}">Set to {{ nextLocalPort }}</a>
+						</div>
+					{% endif %}
+
 					<div class="form-group">
 						<label for="entry{{ symfony.id }}">Entry point <small>(one per line)</small></label>
 						{#<input type="text" class="form-control" id="entry{{ symfony.id }}" name="entry" placeholder="Entry point">#}

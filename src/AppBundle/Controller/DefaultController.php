@@ -74,8 +74,11 @@ class DefaultController extends Controller{
 	 */
 	public function startAction(Symfony $symfony, Request $request){
 		try{
-			$ip = $request->get('ip');
-			$port = $request->get('port');
+			$ip = $symfony->getIp();
+			$port = $symfony->getPort();
+			
+			$ip = $request->get('ip', $ip);
+			$port = $request->get('port', $port);
 			$entry = $request->get('entry');
 			
 			// generate a json for each entry inserted
