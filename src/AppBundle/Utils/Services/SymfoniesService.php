@@ -159,9 +159,9 @@ class SymfoniesService{
 		$symfony->setEntryPoint($entry);
 		
 		// check for a symfony already working on the same location
-		if($this->container->get('doctrine')->getRepository(Symfony::class)->findOneBy(['ip' => $symfony->getIp(), 'port' => $symfony->getPort()])){
-			throw new \Exception('There is already a symfony in the same location');
-		}
+//		if($this->container->get('doctrine')->getRepository(Symfony::class)->findOneBy(['ip' => $symfony->getIp(), 'port' => $symfony->getPort()])){
+//			throw new \Exception('There is already a symfony in the same location');
+//		}
 		
 		$this->start($symfony);
 		
@@ -194,6 +194,10 @@ class SymfoniesService{
 			$process = new Process($command, $symfony->getPath());
 			$process->disableOutput();
 			$process->run();
+			
+			// this because is too fast and when the page is reloaded the
+			// symfony is not completely stopped
+			sleep(1);
 		}
 		
 		return $this;
@@ -207,8 +211,17 @@ class SymfoniesService{
 	 * @return $this
 	 */
 	public function stopAndSave(Symfony $symfony){
-		$this->stop($symfony);
-		
+		return $this->stop($symfony)->deleteSymfonyInfo($symfony);
+	}
+	
+	/**
+	 * Delete the symfony info connection
+	 *
+	 * @param Symfony $symfony
+	 *
+	 * @return $this
+	 */
+	public function deleteSymfonyInfo(Symfony $symfony){
 		$symfony->setIp(null);
 		$symfony->setPort(null);
 		$symfony->setEntryPoint(null);
@@ -374,7 +387,7 @@ class SymfoniesService{
 		
 		/** @var Symfony $symfony */
 		foreach($symfonies as $symfony){
-			$this->stopAndSave($symfony);
+			$this->stop($symfony);
 		}
 		
 		return $this;

@@ -28,6 +28,7 @@ class Utils extends \Twig_Extension{
 	public function getFilters(){
 		return [
 			new \Twig_SimpleFilter('array_replace', array($this, 'arrayReplace')),
+			new \Twig_SimpleFilter('json_decode', array($this, 'jsonDecode')),
 		];
 	}
 	
@@ -44,6 +45,15 @@ class Utils extends \Twig_Extension{
 		$arr[$key] = $val;
 		
 		return $arr;
+	}
+	
+	/**
+	 * @param string $string
+	 *
+	 * @return mixed
+	 */
+	public function jsonDecode($string){
+		return json_decode($string);
 	}
 }
 

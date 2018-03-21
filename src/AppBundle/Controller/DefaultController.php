@@ -118,7 +118,7 @@ class DefaultController extends Controller{
 	 * @Route("/stop/{symfony}", name="stop")
 	 */
 	public function stopAction(Symfony $symfony){
-		$this->get(SymfoniesService::class)->stopAndSave($symfony);
+		$this->get(SymfoniesService::class)->stop($symfony);
 		
 		$this->addFlash('success', 'Symfony stopped correctly');
 		
@@ -132,6 +132,17 @@ class DefaultController extends Controller{
 		$this->get(SymfoniesService::class)->delete($symfony);
 		
 		$this->addFlash('success', 'Symfony deleted correctly');
+		
+		return $this->redirectToRoute('app_default_index');
+	}
+	
+	/**
+	 * @Route("/delete-info/{symfony}", name="delete-info")
+	 */
+	public function deleteInfoAction(Symfony $symfony){
+		$this->get(SymfoniesService::class)->stopAndSave($symfony);
+		
+		$this->addFlash('success', 'Symfony info removed correctly');
 		
 		return $this->redirectToRoute('app_default_index');
 	}
