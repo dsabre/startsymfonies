@@ -79,7 +79,7 @@
 				<td>
 					{% if symfony.ok %}
 						<div class="btn-group" role="group" aria-label="Basic example">
-							{% if not faviconUrl %}
+							{% if symfony.status == 0 %}
 								<a href="#" class="btn btn-light fa fa-play text-success ajaxAction" aria-hidden="true" title="Start" data-toggle="modal" data-target="#modalSymfony{{ symfony.id }}"></a>
 							{% else %}
 								<a href="{{ path('restart', {'symfony': symfony.id}) }}" class="btn btn-light fa fa-repeat text-primary" aria-hidden="true" title="Restart"></a>
