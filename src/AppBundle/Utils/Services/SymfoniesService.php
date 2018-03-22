@@ -142,6 +142,12 @@ class SymfoniesService{
 		$process->disableOutput();
 		$process->mustRun();
 		
+		// set the symfony status active
+		$symfony->setStatus(Symfony::STATUS_ACTIVE);
+		$em = $this->container->get('doctrine')->getManager();
+		$em->persist($symfony);
+		$em->flush();
+		
 		return $this;
 	}
 	
@@ -200,6 +206,12 @@ class SymfoniesService{
 			sleep(1);
 		}
 		
+		// set the symfony status stopped
+		$symfony->setStatus(Symfony::STATUS_STOPPED);
+		$em = $this->container->get('doctrine')->getManager();
+		$em->persist($symfony);
+		$em->flush();
+		
 		return $this;
 	}
 	
@@ -225,6 +237,7 @@ class SymfoniesService{
 		$symfony->setIp(null);
 		$symfony->setPort(null);
 		$symfony->setEntryPoint(null);
+		$symfony->setStatus(Symfony::STATUS_STOPPED);
 		
 		$em = $this->container->get('doctrine')->getManager();
 		$em->persist($symfony);

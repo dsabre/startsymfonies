@@ -8,6 +8,7 @@
 			<th class="text-center">Favicon</th>
 			<th>Path</th>
 			<th class="text-center">Version</th>
+			<th class="text-center">Status</th>
 			<th>Links</th>
 			<th>Operations</th>
 		</tr>
@@ -35,6 +36,18 @@
 						{{ symfony.version }}
 					</span>
 				</td>
+				<td class="text-center colStatus">
+					{% if symfony.ok %}
+						<span class="badge badge-{{ symfony.status == 1 ? 'success' : 'secondary' }}">
+							{{ symfony.status == 1 ? 'Active' : 'Stopped' }}
+						</span>
+					{% else %}
+						<span class="badge badge-danger">
+							Error
+						</span>
+						<span class="d-none">Stopped</span>
+					{% endif %}
+				</td>
 				<td class="colLink">
 					{% if symfony.ok %}
 						{% if symfony.ip and symfony.port %}
@@ -51,16 +64,16 @@
 								{% endfor %}
 							</ul>
 
-							{% if not faviconUrl %}
-								<span class="d-none">Stopped</span>
-							{% endif %}
+							{#{% if not faviconUrl %}#}
+								{#<span class="d-none">Stopped</span>#}
+							{#{% endif %}#}
 						{% else %}
 							<span class="text-muted">--</span>
-							<span class="d-none">Stopped</span>
+							{#<span class="d-none">Stopped</span>#}
 						{% endif %}
 					{% else %}
 						<span class="text-danger">Error</span>
-						<span class="d-none">Stopped</span>
+						{#<span class="d-none">Stopped</span>#}
 					{% endif %}
 				</td>
 				<td>

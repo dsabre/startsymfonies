@@ -12,6 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Symfony{
 	
+	const STATUS_ACTIVE = 1;
+	const STATUS_STOPPED = 0;
+	
 	/**
 	 * @var int
 	 *
@@ -64,6 +67,13 @@ class Symfony{
 	private $entryPoint;
 	
 	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="status", type="integer", length=2, nullable=true)
+	 */
+	private $status;
+	
+	/**
 	 * Symfony constructor.
 	 */
 	public function __construct(){
@@ -87,7 +97,7 @@ class Symfony{
 	 * @return Symfony
 	 */
 	public function setPath($path){
-		$this->path = $path;
+		$this->path = rtrim($path, '/');
 		
 		return $this;
 	}
@@ -98,7 +108,7 @@ class Symfony{
 	 * @return string
 	 */
 	public function getPath(){
-		return $this->path;
+		return rtrim($this->path, '/');
 	}
 	
 	/**
@@ -183,9 +193,103 @@ class Symfony{
 	/**
 	 * Get entryPoint
 	 *
+	 * @param bool $jsonDecode
+	 *
+	 * @return array|string
+	 */
+	public function getEntryPoint($jsonDecode = false){
+		$ret = $this->entryPoint;
+		
+		if($ret && $jsonDecode){
+			$ret = json_decode($ret);
+		}
+		
+		return $ret;
+	}
+	
+	/**
+	 * Set version
+	 *
+	 * @param string $version
+	 *
+	 * @return Symfony
+	 */
+	public function setVersion($version){
+		$this->version = $version;
+		
+		return $this;
+	}
+	
+	/**
+	 * Get version
+	 *
 	 * @return string
 	 */
-	public function getEntryPoint(){
-		return $this->entryPoint;
+	public function getVersion($returnMain = false){
+		return !$returnMain ? $this->version : (int)$this->version[0];
 	}
+	
+	/**
+	 * Get the favicon url of the symfony, it check if the favicon is readable
+	 * from url, if not return null
+	 *
+	 * @return null|string
+	 */
+	public function getFaviconUrl(){
+		$ret = sprintf('http://%s:%s/favicon.ico', $this->getIp(), $this->getPort());
+		
+		try{
+			$this->checkFaviconUrl($ret);
+		}
+		catch(\Exception $exc){
+			$ret = null;
+		}
+		
+		return $ret;
+	}
+	
+	/**
+	 * @param string $url
+	 *
+	 * @return $this
+	 * @throws \Exception
+	 */
+	private function checkFaviconUrl($url){
+		$curl = curl_init();
+		
+		curl_setopt_array($curl, array(
+			CURLOPT_PORT           => $this->getPort(),
+			CURLOPT_URL            => $url,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING       => "",
+			CURLOPT_MAXREDIRS      => 10,
+			CURLOPT_TIMEOUT        => 30,
+			CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST  => "GET",
+			CURLOPT_HTTPHEADER     => [
+				"cache-control: no-cache"
+			],
+		));
+		
+		curl_exec($curl);
+		$err = curl_error($curl);
+		
+		curl_close($curl);
+		
+		if($err){
+			throw new \Exception();
+		}
+		
+		return $this;
+	}
+	
+	/**
+	 * Return if a symfony is in error or not
+	 *
+	 * @return bool
+	 */
+	public function isOk(){
+		return !(bool)strstr($this->getVersion(), 'x.x');
+	}
+	
 }

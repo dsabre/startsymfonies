@@ -12,6 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Symfony{
 	
+	const STATUS_ACTIVE = 1;
+	const STATUS_STOPPED = 0;
+	
 	/**
 	 * @var int
 	 *
@@ -62,6 +65,13 @@ class Symfony{
 	 * @ORM\Column(name="entry_point", type="string", length=255, nullable=true)
 	 */
 	private $entryPoint;
+	
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="status", type="integer", length=2, nullable=true)
+	 */
+	private $status;
 	
 	/**
 	 * Symfony constructor.
@@ -282,4 +292,25 @@ class Symfony{
 		return !(bool)strstr($this->getVersion(), 'x.x');
 	}
 	
+	/**
+	 * Set status
+	 *
+	 * @param integer $status
+	 *
+	 * @return Symfony
+	 */
+	public function setStatus($status){
+		$this->status = $status;
+		
+		return $this;
+	}
+	
+	/**
+	 * Get status
+	 *
+	 * @return integer
+	 */
+	public function getStatus(){
+		return $this->status !== null ? $this->status : 0;
+	}
 }

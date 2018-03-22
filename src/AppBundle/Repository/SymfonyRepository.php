@@ -29,8 +29,7 @@ class SymfonyRepository extends \Doctrine\ORM\EntityRepository{
 	public function getActives(){
 		$q = $this->createQueryBuilder('s');
 		$q
-			->where('s.ip IS NOT NULL')
-			->andWhere('s.port IS NOT NULL')
+			->where('s.status = 1')
 		;
 		
 		return $q->getQuery()->getResult();

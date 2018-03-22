@@ -27,7 +27,7 @@ $(function(){
 		
 		$('table tbody tr').show().filter(function(){
 			var text   = $(this).text().replace(/\s+/g, " ").toLowerCase();
-			var status = $(this).children("td.colLink").text().replace(/\s+/g, " ").toLowerCase();
+			var status = $(this).children("td.colStatus").text().replace(/\s+/g, " ").toLowerCase();
 			
 			var checkString  = string !== "" ? !~text.indexOf(string) : false;
 			var checkSkipped = hideSkipped ? ~status.indexOf("stopped") : false;
