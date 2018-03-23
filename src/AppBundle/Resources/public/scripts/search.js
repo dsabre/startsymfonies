@@ -2,7 +2,7 @@ $(function(){
 	const searchField    = $('#search');
 	const flgHideStopped = $("#flgHideStopped");
 	
-	manageRows();
+	//manageRows();
 	
 	$("#clearSearch").click(function(e){
 		e.preventDefault();

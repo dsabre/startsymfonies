@@ -142,6 +142,10 @@ class UtilService{
 			'gray'  => [
 				'brightness' => 'dark',
 				'color'      => 'secondary'
+			],
+			'symfony'  => [
+				'brightness' => 'light',
+				'color'      => 'symfony'
 			]
 		];
 		
