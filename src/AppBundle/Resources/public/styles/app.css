@@ -61,3 +61,7 @@
 	-ms-user-select: none; /* IE10+/Edge */
 	user-select: none; /* Standard */
 }
+
+.modal-backdrop.show{
+	display: none;
+}
