@@ -18,7 +18,7 @@
 
 	{% block stylesheets %}{% endblock %}
 </head>
-<body>
+<body{{ theme.body == 'dark' ? ' class="bg-dark"' }}>
 
 <nav class="navbar navbar-expand-lg navbar-{{ theme.brightness }} bg-{{ theme.color }}">
     <span class="navbar-brand">

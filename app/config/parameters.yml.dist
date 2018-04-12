@@ -23,5 +23,5 @@ parameters:
     git_executable: /usr/bin/git|null
     autoupdate: true
     hosts_file: /etc/hosts
-    theme: blue|white|black|red|yellow|cyan|green|gray|symfony|random
+    theme: blue|white|black|red|yellow|cyan|green|gray|symfony|dark|random
     check_version: true

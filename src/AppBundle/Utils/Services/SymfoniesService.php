@@ -2,6 +2,7 @@
 
 namespace AppBundle\Utils\Services;
 
+use AppBundle\AppBundle;
 use AppBundle\Entity\Symfony;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -33,8 +34,16 @@ class SymfoniesService{
 		$em = $doctrine->getManager();
 		$repo = $doctrine->getRepository('AppBundle:Symfony');
 		
+		// get all symfonies
+		$list = $this->getSymfonies();
+		
+		// remove startsymfonies2 from the list
+		$list = array_filter($list, function($v, $k){
+			return !strstr($v, AppBundle::START_SYMFONIES_NAME);
+		}, ARRAY_FILTER_USE_BOTH);
+		
 		// insert symfonies in db if not exist
-		foreach($this->getSymfonies() as $info){
+		foreach($list as $info){
 			$info = explode('|', $info);
 			$path = $info[0];
 			$version = $info[1];

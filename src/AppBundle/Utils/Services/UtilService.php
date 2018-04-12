@@ -111,41 +111,55 @@ class UtilService{
 	 */
 	public function getTheme(){
 		$themes = [
-			'blue'   => [
+			'blue'    => [
 				'brightness' => 'dark',
 				'color'      => 'primary',
+				'body'       => null
 			],
-			'red'    => [
+			'red'     => [
 				'brightness' => 'dark',
 				'color'      => 'danger',
+				'body'       => null
 			],
-			'yellow' => [
+			'yellow'  => [
 				'brightness' => 'light',
 				'color'      => 'warning',
+				'body'       => null
 			],
-			'cyan'   => [
+			'cyan'    => [
 				'brightness' => 'dark',
 				'color'      => 'info',
+				'body'       => null
 			],
-			'white'  => [
+			'white'   => [
 				'brightness' => 'light',
 				'color'      => 'default',
+				'body'       => null
 			],
-			'black'  => [
+			'black'   => [
 				'brightness' => 'dark',
-				'color'      => 'dark'
+				'color'      => 'dark',
+				'body'       => null
 			],
-			'green'  => [
+			'green'   => [
 				'brightness' => 'dark',
-				'color'      => 'success'
+				'color'      => 'success',
+				'body'       => null
 			],
-			'gray'  => [
+			'gray'    => [
 				'brightness' => 'dark',
-				'color'      => 'secondary'
+				'color'      => 'secondary',
+				'body'       => null
 			],
-			'symfony'  => [
+			'symfony' => [
 				'brightness' => 'light',
-				'color'      => 'symfony'
+				'color'      => 'symfony',
+				'body'       => null
+			],
+			'dark'    => [
+				'brightness' => 'dark',
+				'color'      => 'dark',
+				'body'       => 'dark'
 			]
 		];
 		
