@@ -1,0 +1,48 @@
+{% extends '::base.html.twig' %}
+
+{% block containerClass %}
+	container
+{% endblock %}
+
+{% block body %}
+	<div class="bg-light p-3 mt-3">
+		<h1 class="mb-3">Settings</h1>
+
+		<dl class="row">
+			<dt class="col-sm-3">Directories to scan</dt>
+			<dd class="col-sm-9">
+				<ol>
+					{% if directoriesToScan is not empty %}
+						{% for item in directoriesToScan|split(',') %}
+							<li>{{ item }}</li>
+						{% endfor %}
+					{% else %}
+						--
+					{% endif %}
+				</ol>
+			</dd>
+
+			<dt class="col-sm-3">Php executable</dt>
+			<dd class="col-sm-9">{{ phpExecutable ? phpExecutable : '--' }}</dd>
+
+			<dt class="col-sm-3">Git executable</dt>
+			<dd class="col-sm-9">{{ gitExecutable ? gitExecutable : '--' }}</dd>
+
+			<dt class="col-sm-3">Check version</dt>
+			<dd class="col-sm-9">
+				<i class="fa fa-{{ checkVersion ? 'check' : 'times' }}" aria-hidden="true"></i>
+			</dd>
+
+			<dt class="col-sm-3 text-truncate">Autoupdate</dt>
+			<dd class="col-sm-9">
+				<i class="fa fa-{{ autoupdate ? 'check' : 'times' }}" aria-hidden="true"></i>
+			</dd>
+
+			<dt class="col-sm-3">Host file</dt>
+			<dd class="col-sm-9">{{ hostsFile ? hostsFile : '--' }}</dd>
+
+			<dt class="col-sm-3">Theme</dt>
+			<dd class="col-sm-9">{{ themeSelected ? themeSelected : 'random' }}</dd>
+		</dl>
+	</div>
+{% endblock %}

@@ -174,6 +174,7 @@ class DefaultController extends Controller{
 		}
 		else{
 			$response = $this->get(SymfoniesService::class)->composerShow($symfony);
+			
 			return new JsonResponse($response);
 		}
 	}
@@ -242,6 +243,50 @@ class DefaultController extends Controller{
 		$response = $this->redirectToRoute('app_default_index');
 		
 		$this->get(UtilService::class)->updateStartsymfonies2($response);
+		
+		return $response;
+	}
+	
+	/**
+	 * @param bool $updateAvailable
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	private function getSettingsResponse($updateAvailable){
+		return $this->render('@App/Default/settings.html.twig', [
+			'updateAvailable'   => $updateAvailable,
+			'directoriesToScan' => $this->container->getParameter('directories_to_scan'),
+			'phpExecutable'     => $this->container->getParameter('php_executable'),
+			'gitExecutable'     => $this->container->getParameter('git_executable'),
+			'autoupdate'        => $this->container->getParameter('autoupdate'),
+			'hostsFile'         => $this->container->getParameter('hosts_file'),
+			'themeSelected'     => $this->container->getParameter('theme'),
+			'checkVersion'      => $this->container->getParameter('check_version'),
+		]);
+	}
+	
+	/**
+	 * @Route("/settings")
+	 */
+	public function settingsAction(){
+		$utilService = $this->get(UtilService::class);
+		
+		$response = $this->getSettingsResponse(false);
+		
+		$currentVer = $utilService->getCurrentVersionNumber($response);
+		$localVer = $utilService->getLocalVersionNumber();
+		
+		// if local version is different from the current remote version, show
+		// an info message
+		if(!is_null($currentVer) && $currentVer !== $localVer){
+			// if autoupdate is available, perform the operation now
+			if($this->getParameter('autoupdate')){
+				$response = $this->redirectToRoute('update_startsymfonies2');
+			}
+			else{
+				$response = $this->getSettingsResponse(true);
+			}
+		}
 		
 		return $response;
 	}

@@ -39,6 +39,12 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
+                <a class="nav-link" href="{{ path('app_default_index') }}">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('app_default_settings') }}">Settings</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link swalContinue" href="{{ path('scan') }}">Launch scan</a>
             </li>
             <li class="nav-item">
@@ -96,7 +102,7 @@
     </div>
 </nav>
 
-<div class="container-fluid">
+<div class="{% block containerClass %}container-fluid{% endblock %}">
 	{% block body %}{% endblock %}
 </div>
 
