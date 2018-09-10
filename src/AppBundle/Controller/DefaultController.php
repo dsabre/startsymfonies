@@ -256,7 +256,7 @@ class DefaultController extends Controller{
 		return $this->render('@App/Default/settings.html.twig', [
 			'updateAvailable'   => $updateAvailable,
 			'directoriesToScan' => $this->container->getParameter('directories_to_scan'),
-			'phpExecutable'     => $this->container->getParameter('php_executable'),
+			'phpExecutable'     => $this->container->get(SymfoniesService::class)->getPhpExecutable(),
 			'gitExecutable'     => $this->container->getParameter('git_executable'),
 			'autoupdate'        => $this->container->getParameter('autoupdate'),
 			'hostsFile'         => $this->container->getParameter('hosts_file'),
@@ -289,5 +289,29 @@ class DefaultController extends Controller{
 		}
 		
 		return $response;
+	}
+	
+	/**
+	 * @Route("/edit-php-executable/{symfony}")
+	 */
+	public function editPhpExecutableAction(Symfony $symfony, Request $request){
+		try{
+			$phPExecutable = $request->get('phPExecutable');
+			
+			$symfony->setPhpExecutable($phPExecutable);
+			
+			$em = $this->getDoctrine()->getManager();
+			$em->persist($symfony);
+			$em->flush();
+			
+			$this->get(SymfoniesService::class)->recheckSymfony($symfony);
+			
+			$this->addFlash('success', 'PHP edited correctly');
+		}
+		catch(\Exception $exc){
+			$this->addFlash('error', $exc->getMessage());
+		}
+		
+	    return $this->redirectToRoute('app_default_index');
 	}
 }

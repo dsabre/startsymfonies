@@ -217,10 +217,12 @@ class UtilService{
 		
 		$cwd = $this->container->get('kernel')->getRootDir() . '/..';
 		
+		$phpExecutable = $this->container->get(SymfoniesService::class)->getPhpExecutable();
+		
 		$commands = [
 			sprintf('%s pull', $gitExecutable),
-			sprintf('%s bin/console -q cache:clear &', $this->container->getParameter('php_executable')),
-			sprintf('%s bin/console -q assets:install --symlink &', $this->container->getParameter('php_executable'))
+			sprintf('%s bin/console -q cache:clear &', $phpExecutable),
+			sprintf('%s bin/console -q assets:install --symlink &', $phpExecutable)
 		];
 		
 		foreach($commands as $command){

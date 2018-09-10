@@ -41,6 +41,13 @@ class Symfony{
 	/**
 	 * @var string
 	 *
+	 * @ORM\Column(name="php_executable", type="string", length=255, nullable=true)
+	 */
+	private $phpExecutable;
+	
+	/**
+	 * @var string
+	 *
 	 * @ORM\Column(name="ip", type="string", length=255, nullable=true)
 	 */
 	private $ip;
@@ -227,6 +234,24 @@ class Symfony{
 	 */
 	public function getVersion($returnMain = false){
 		return !$returnMain ? $this->version : (int)$this->version[0];
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getPhpExecutable(){
+		return $this->phpExecutable;
+	}
+	
+	/**
+	 * @param string $phpExecutable
+	 *
+	 * @return Symfony
+	 */
+	public function setPhpExecutable($phpExecutable){
+		$this->phpExecutable = $phpExecutable;
+		
+		return $this;
 	}
 	
 	/**

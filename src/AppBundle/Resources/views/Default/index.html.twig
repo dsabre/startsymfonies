@@ -8,6 +8,7 @@
 			<th class="text-center">Favicon</th>
 			<th>Path</th>
 			<th class="text-center">Version</th>
+			<th class="text-center">PHP used</th>
 			<th class="text-center">Status</th>
 			<th>Links</th>
 			<th>Operations</th>
@@ -16,6 +17,7 @@
 		<tbody>
 		{% for symfony in symfonies %}
 			{% set faviconUrl = symfony.faviconUrl %}
+			{% set phpExecutable = symfonies_service.phpExecutable(symfony) %}
 
 			<tr{{ symfony.status == 0 ? ' style="display: none;"' : '' }}>
 				<td class="text-center">
@@ -29,12 +31,15 @@
 					{% endif %}
 				</td>
 				<td class="selectAll">
-					{{ symfony.path }}
+					<small>{{ symfony.path }}</small>
 				</td>
 				<td class="text-center">
 					<span class="badge badge-info badge-symfony-version-{{ symfony.ok ? symfony.version(true) : 'error' }}">
 						{{ symfony.version }}
 					</span>
+				</td>
+				<td class="text-center">
+					<small>{{ phpExecutable }}</small>
 				</td>
 				<td class="text-center colStatus">
 					{% if symfony.ok %}
@@ -100,6 +105,7 @@
 								Other actions
 							</button>
 							<div class="dropdown-menu" aria-labelledby="btnGroupOperations">
+								<a class="dropdown-item editPhpExecutable" href="#" data-symfonyid="{{ symfony.id }}" data-php="{{ phpExecutable }}" data-toggle="modal" data-target="#modalEditPhpExecutable">Edit php executable</a>
 								<a class="dropdown-item composerShow" href="#" data-symfonyid="{{ symfony.id }}" data-toggle="modal" data-target="#modalComposerShow{{ symfony.id }}">Composer show</a>
 								<a class="dropdown-item swalContinue" href="{{ path('composer', {'activity': 'install', 'symfony': symfony.id}) }}">Composer install</a>
 								<a class="dropdown-item swalContinue" href="{{ path('composer', {'activity': 'update', 'symfony': symfony.id}) }}">Composer update</a>
@@ -116,6 +122,8 @@
 				</td>
 			</tr>
 		{% endfor %}
+
+		{% include '@App/templates/edit-php-executable.html.twig' %}
 		</tbody>
 	</table>
 {% endblock %}
@@ -133,4 +141,5 @@
 	<script src="{{ asset('bundles/app/scripts/selectAll.js') }}"></script>
 	<script src="{{ asset('bundles/app/scripts/search.js') }}"></script>
 	<script src="{{ asset('bundles/app/scripts/composerShow.js') }}"></script>
+	<script src="{{ asset('bundles/app/scripts/editPhpExecutable.js') }}"></script>
 {% endblock %}

@@ -95,7 +95,7 @@ class SymfoniesService{
 	 * @return array
 	 */
 	private function getSymfoniesFromDir($directory){
-		$phpExecutable = $this->container->getParameter('php_executable');
+		$phpExecutable = $this->container->get(SymfoniesService::class)->getPhpExecutable();
 		
 		$command = sprintf('%s/../commands/get_symfonies.py %s %s', __DIR__, $directory, $phpExecutable);
 		
@@ -146,8 +146,9 @@ class SymfoniesService{
 	 */
 	public function start(Symfony $symfony){
 		$dirConsole = $symfony->getVersion(true) === 2 ? 'app' : 'bin';
+		$phpExecutable = $this->container->get(SymfoniesService::class)->getPhpExecutable($symfony);
 		
-		$command = sprintf('%s %s/console -q server:start %s:%d &', $this->container->getParameter('php_executable'), $dirConsole, $symfony->getIp(), $symfony->getPort());
+		$command = sprintf('%s %s/console -q server:start %s:%d &', $phpExecutable, $dirConsole, $symfony->getIp(), $symfony->getPort());
 		
 		$process = new Process($command, $symfony->getPath());
 		$process->disableOutput();
@@ -198,13 +199,14 @@ class SymfoniesService{
 	 */
 	public function stop(Symfony $symfony){
 		$dirConsole = $symfony->getVersion(true) === 2 ? 'app' : 'bin';
+		$phpExecutable = $this->container->get(SymfoniesService::class)->getPhpExecutable($symfony);
 		
 		$commands = [
 			// stop for symfony 2.*
-			sprintf('%s %s/console -q server:stop %s:%d &', $this->container->getParameter('php_executable'), $dirConsole, $symfony->getIp(), $symfony->getPort()),
+			sprintf('%s %s/console -q server:stop %s:%d &', $phpExecutable, $dirConsole, $symfony->getIp(), $symfony->getPort()),
 			
 			// stop for symfony > 3.3.*
-			sprintf('%s %s/console -q server:stop &', $this->container->getParameter('php_executable'), $dirConsole)
+			sprintf('%s %s/console -q server:stop &', $phpExecutable, $dirConsole)
 		];
 		
 		foreach($commands as $command){
@@ -339,8 +341,9 @@ class SymfoniesService{
 	 */
 	public function getVersion(Symfony $symfony){
 		$dirConsole = $symfony->getVersion(true) === 2 ? 'app' : 'bin';
+		$phpExecutable = $this->container->get(SymfoniesService::class)->getPhpExecutable($symfony);
 		
-		$command = sprintf('%s %s/console', $this->container->getParameter('php_executable'), $dirConsole);
+		$command = sprintf('%s %s/console', $phpExecutable, $dirConsole);
 		
 		$process = new Process($command, $symfony->getPath());
 		$process->mustRun();
@@ -370,10 +373,11 @@ class SymfoniesService{
 	 */
 	public function cacheAssetsReset(Symfony $symfony){
 		$dirConsole = $symfony->getVersion(true) === 2 ? 'app' : 'bin';
+		$phpExecutable = $this->container->get(SymfoniesService::class)->getPhpExecutable($symfony);
 		
 		$commands = [
-			sprintf('%s %s/console -q cache:clear &', $this->container->getParameter('php_executable'), $dirConsole),
-			sprintf('%s %s/console -q assets:install --symlink &', $this->container->getParameter('php_executable'), $dirConsole)
+			sprintf('%s %s/console -q cache:clear &', $phpExecutable, $dirConsole),
+			sprintf('%s %s/console -q assets:install --symlink &', $phpExecutable, $dirConsole)
 		];
 		
 		foreach($commands as $command){
@@ -553,5 +557,82 @@ class SymfoniesService{
 		}
 		
 		return $aliases;
+	}
+	
+	/**
+	 * Return the php path used
+	 *
+	 * @param Symfony|null $symfony
+	 *
+	 * @return string
+	 *
+	 * @author Daniele Sabre 10/set/2018
+	 */
+	public function getPhpExecutable(Symfony $symfony = null){
+		$phpExecutable = $this->container->getParameter('php_executable');
+		
+		if($symfony !== null && $symfony->getPhpExecutable() !== null){
+			return $symfony->getPhpExecutable();
+		}
+		
+		return $phpExecutable;
+	}
+	
+	/**
+	 * @param Symfony $symfony
+	 *
+	 * @return bool
+	 *
+	 * @author Daniele Sabre 10/set/2018
+	 */
+	public function recheckSymfony(Symfony $symfony){
+		try{
+			$phpExecutable = $this->getPhpExecutable($symfony);
+			
+			// set commands
+			$commands = [
+				sprintf('%s bin/console', $phpExecutable),
+				sprintf('%s app/console', $phpExecutable),
+			];
+			
+			// loop over commands to check the version
+			$output = null;
+			foreach($commands as $command){
+				$process = new Process($command, $symfony->getPath());
+				$process->run();
+				
+				if($process->getExitCode() == 0){
+					$output = $process->getOutput();
+					
+					break;
+				}
+			}
+			
+			// if output is null, all commands have failed
+			if($output === null){
+				throw new \Exception();
+			}
+			
+			$version = trim(explode(PHP_EOL, $output)[0]);
+			
+			$matches = [];
+			preg_match('/\d+.\d+.\d+/', $version, $matches);
+			
+			$version = trim($matches[0]);
+			
+			$symfony->setVersion($version)->setStatus(Symfony::STATUS_STOPPED);
+			
+			$em = $this->container->get('doctrine')->getManager();
+			$em->persist($symfony);
+			$em->flush();
+		}
+		catch(\Exception $exc){
+			$msg = $exc->getMessage();
+			$this->container->get('logger')->error($msg);
+			
+			return false;
+		}
+		
+		return true;
 	}
 }
