@@ -51,12 +51,12 @@
 					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						Useful links
 					</a>
-					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<div class="dropdown-menu bg-{{ theme.body == 'dark' ? 'dark' : 'light' }}" aria-labelledby="navbarDropdown">
 						{% for link in usefulLink %}
 							{% if link == 'DIVIDER' %}
 								<div class="dropdown-divider"></div>
 							{% else %}
-								<a class="dropdown-item" href="{{ link.url }}" target="_blank"><img src="{{ link.icon }}" alt="" width="16"> {{ link.label }}</a>
+								<a class="dropdown-item text-{{ theme.body == 'dark' ? 'light' : 'dark' }}" href="{{ link.url }}" target="_blank"><img src="{{ link.icon }}" alt="" width="16"> {{ link.label }}</a>
 							{% endif %}
 						{% endfor %}
 					</div>
