@@ -95,7 +95,7 @@ class SymfoniesService{
 	 * @return array
 	 */
 	private function getSymfoniesFromDir($directory){
-		$phpExecutable = $this->container->get(SymfoniesService::class)->getPhpExecutable();
+		$phpExecutable = $this->getPhpExecutable();
 		
 		$command = sprintf('%s/../commands/get_symfonies.py %s %s', __DIR__, $directory, $phpExecutable);
 		
@@ -146,7 +146,7 @@ class SymfoniesService{
 	 */
 	public function start(Symfony $symfony){
 		$dirConsole = $symfony->getVersion(true) === 2 ? 'app' : 'bin';
-		$phpExecutable = $this->container->get(SymfoniesService::class)->getPhpExecutable($symfony);
+		$phpExecutable = $this->getPhpExecutable($symfony);
 		
 		$command = sprintf('%s %s/console -q server:start %s:%d &', $phpExecutable, $dirConsole, $symfony->getIp(), $symfony->getPort());
 		
@@ -199,7 +199,7 @@ class SymfoniesService{
 	 */
 	public function stop(Symfony $symfony){
 		$dirConsole = $symfony->getVersion(true) === 2 ? 'app' : 'bin';
-		$phpExecutable = $this->container->get(SymfoniesService::class)->getPhpExecutable($symfony);
+		$phpExecutable = $this->getPhpExecutable($symfony);
 		
 		$commands = [
 			// stop for symfony 2.*
@@ -297,7 +297,10 @@ class SymfoniesService{
 	public function composer(Symfony $symfony, $activity){
 		set_time_limit(0);
 		
-		$command = sprintf('composer %s', $activity);
+		$phpExecutable = $this->getPhpExecutable($symfony);
+		$composer = $this->container->getParameter('composer_executable');
+		
+		$command = sprintf('%s %s %s', $phpExecutable, $composer, $activity);
 
 		$process = new Process($command, $symfony->getPath());
 		$process->disableOutput();
@@ -324,7 +327,12 @@ class SymfoniesService{
 	 * @return string
 	 */
 	public function composerShow(Symfony $symfony){
-		$process = new Process('composer show', $symfony->getPath());
+		$phpExecutable = $this->getPhpExecutable($symfony);
+		$composer = $this->container->getParameter('composer_executable');
+		
+		$command = sprintf('%s %s show', $phpExecutable, $composer);
+		
+		$process = new Process($command, $symfony->getPath());
 		$process->mustRun();
 		
 		$output = $process->getOutput();
@@ -341,7 +349,7 @@ class SymfoniesService{
 	 */
 	public function getVersion(Symfony $symfony){
 		$dirConsole = $symfony->getVersion(true) === 2 ? 'app' : 'bin';
-		$phpExecutable = $this->container->get(SymfoniesService::class)->getPhpExecutable($symfony);
+		$phpExecutable = $this->getPhpExecutable($symfony);
 		
 		$command = sprintf('%s %s/console', $phpExecutable, $dirConsole);
 		
@@ -373,7 +381,7 @@ class SymfoniesService{
 	 */
 	public function cacheAssetsReset(Symfony $symfony){
 		$dirConsole = $symfony->getVersion(true) === 2 ? 'app' : 'bin';
-		$phpExecutable = $this->container->get(SymfoniesService::class)->getPhpExecutable($symfony);
+		$phpExecutable = $this->getPhpExecutable($symfony);
 		
 		$commands = [
 			sprintf('%s %s/console -q cache:clear &', $phpExecutable, $dirConsole),
