@@ -70,3 +70,7 @@
 .modal-backdrop.show{
 	display: none;
 }
+
+.font-monospace{
+	font-family: monospace;
+}

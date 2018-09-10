@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-	<div class="bg-light p-3 mt-3 border border-secondary rounded">
+	<div class="bg-{{ theme.body == 'dark' ? 'dark' : 'light' }} text-{{ theme.body == 'dark' ? 'light' : 'dark' }} p-3 mt-3 border border-secondary rounded">
 		<h1 class="mb-3">Settings</h1>
 
 		<dl class="row">
@@ -14,7 +14,7 @@
 				<ol>
 					{% if directoriesToScan is not empty %}
 						{% for item in directoriesToScan|split(',') %}
-							<li>{{ item }}</li>
+							<li class="font-monospace">{{ item }}</li>
 						{% endfor %}
 					{% else %}
 						--
@@ -23,10 +23,13 @@
 			</dd>
 
 			<dt class="col-sm-3">Php executable</dt>
-			<dd class="col-sm-9">{{ phpExecutable ? phpExecutable : '--' }}</dd>
+			<dd class="col-sm-9 font-monospace">{{ phpExecutable ? phpExecutable : '--' }}</dd>
 
 			<dt class="col-sm-3">Git executable</dt>
-			<dd class="col-sm-9">{{ gitExecutable ? gitExecutable : '--' }}</dd>
+			<dd class="col-sm-9 font-monospace">{{ gitExecutable ? gitExecutable : '--' }}</dd>
+
+			<dt class="col-sm-3">Composer executable</dt>
+			<dd class="col-sm-9 font-monospace">{{ composerExecutable ? composerExecutable : '--' }}</dd>
 
 			<dt class="col-sm-3">Check version</dt>
 			<dd class="col-sm-9">
@@ -39,10 +42,10 @@
 			</dd>
 
 			<dt class="col-sm-3">Host file</dt>
-			<dd class="col-sm-9">{{ hostsFile ? hostsFile : '--' }}</dd>
+			<dd class="col-sm-9 font-monospace">{{ hostsFile ? hostsFile : '--' }}</dd>
 
 			<dt class="col-sm-3">Theme</dt>
-			<dd class="col-sm-9">{{ themeSelected ? themeSelected : 'random' }}</dd>
+			<dd class="col-sm-9 font-monospace">{{ themeSelected ? themeSelected : 'random' }}</dd>
 		</dl>
 	</div>
 {% endblock %}

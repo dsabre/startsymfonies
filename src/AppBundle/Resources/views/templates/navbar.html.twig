@@ -1,0 +1,85 @@
+<nav class="navbar navbar-expand-lg navbar-{{ theme.brightness }} bg-{{ theme.color }}">
+    <span class="navbar-brand">
+        Startsymfonies
+        <small class="text-warning">
+            <a href="{{ util_service.urlGitHub }}" target="_blank" class="badge badge-secondary">{{ util_service.localVersionNumber }}</a>
+
+			{% if updateAvailable %}
+				<a href="{{ util_service.urlGitHub }}" target="_blank" class="badge badge-orange badgeUpdate">Update available</a>
+			{% endif %}
+        </small>
+    </span>
+
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+
+	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item">
+				<a class="nav-link" href="{{ path('app_default_index') }}">Home</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="{{ path('app_default_settings') }}">Settings</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link swalContinue" href="{{ path('scan') }}">Launch scan</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link swalContinue" href="{{ path('start_all') }}">Start all stopped</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link swalContinue" href="{{ path('stop_all') }}">Stop all</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link swalContinue" href="{{ path('delete_all') }}">Delete all</a>
+			</li>
+
+			{% if updateAvailable and util_service.gitExecutable is not null %}
+				<li class="nav-item">
+					<a class="nav-link text-danger badgeUpdate" href="{{ path('update_startsymfonies2') }}"><b>Update now</b></a>
+				</li>
+			{% else %}
+				<li class="nav-item">
+					<a class="nav-link" href="{{ path('recheck_version') }}">Check updates</a>
+				</li>
+			{% endif %}
+
+			{% set usefulLink = util_service.usefulLinks %}
+			{% if usefulLink is not empty %}
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Useful links
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						{% for link in usefulLink %}
+							{% if link == 'DIVIDER' %}
+								<div class="dropdown-divider"></div>
+							{% else %}
+								<a class="dropdown-item" href="{{ link.url }}" target="_blank"><img src="{{ link.icon }}" alt="" width="16"> {{ link.label }}</a>
+							{% endif %}
+						{% endfor %}
+					</div>
+				</li>
+			{% endif %}
+		</ul>
+
+		<form class="form-inline my-2 my-lg-0">
+			<div class="input-group">
+				<input type="search" class="form-control" id="search" placeholder="Search" aria-label="Search">
+				<div class="input-group-append">
+					<div class="input-group-text">
+						<a href="#" class="input-group-addon fa fa-times text-muted" id="clearSearch"></a>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-check" style="margin-left: 10px;">
+				<label class="form-check-label navbar-text" id="chkHideStopped">
+					<input id="flgHideStopped" type="checkbox" class="form-check-input" {{ symfonies_service.actives|length > 0 ? ' checked' : '' }}>
+					Hide stopped
+				</label>
+			</div>
+		</form>
+	</div>
+</nav>
