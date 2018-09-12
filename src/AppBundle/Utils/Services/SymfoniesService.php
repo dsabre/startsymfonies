@@ -537,22 +537,33 @@ class SymfoniesService{
 	 *
 	 * @param Symfony $symfony
 	 *
-	 * @return null|string
+	 * @return null|array
 	 */
 	private function getAliases(Symfony $symfony){
+		$aliases = [];
+		
+		$entryPoints = $symfony->getEntryPoint(true);
+		
 		if($symfony->getIp() == '127.0.0.1'){
-			return null;
+			$host = 'localhost';
+			
+			if($entryPoints){
+				foreach($entryPoints as $entryPoint){
+					$aliases[] = 'http://' . $host . ':' . $symfony->getPort() . $entryPoint;
+				}
+			}
+			else{
+				$aliases[] = 'http://' . $host . ':' . $symfony->getPort();
+			}
 		}
 		
 		$hosts = $this->container->get(UtilService::class)->getHosts();
 		
-		$aliases = [];
 		foreach($hosts as $host){
+			$host = str_replace($symfony->getIp(), '', $host);
+			$host = trim($host);
+			
 			if(preg_match('/^' . $symfony->getIp() . '/', $host)){
-				$host = str_replace($symfony->getIp(), '', $host);
-				$host = trim($host);
-				
-				$entryPoints = $symfony->getEntryPoint(true);
 				if($entryPoints){
 					foreach($entryPoints as $entryPoint){
 						$aliases[] = 'http://' . $host . ':' . $symfony->getPort() . $entryPoint;
