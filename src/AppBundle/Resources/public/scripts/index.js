@@ -29,7 +29,7 @@ $(function(){
 		$.ajax({
 			url     : '/star-control/' + symId,
 			success : function(){
-				item.toggleClass('text-warning').toggleClass('fa-star').toggleClass('fa-star-o').blur();
+				item.toggleClass('text-warning').toggleClass('text-secondary').toggleClass('fas').toggleClass('far').blur();
 			}
 		});
 		
