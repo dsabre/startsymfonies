@@ -255,15 +255,16 @@ class DefaultController extends Controller{
 	 */
 	private function getSettingsResponse($updateAvailable){
 		return $this->render('@App/Default/settings.html.twig', [
-			'updateAvailable'    => $updateAvailable,
-			'directoriesToScan'  => $this->container->getParameter('directories_to_scan'),
-			'phpExecutable'      => $this->container->get(SymfoniesService::class)->getPhpExecutable(),
-			'gitExecutable'      => $this->container->getParameter('git_executable'),
-			'composerExecutable' => $this->container->getParameter('composer_executable'),
-			'autoupdate'         => $this->container->getParameter('autoupdate'),
-			'hostsFile'          => $this->container->getParameter('hosts_file'),
-			'themeSelected'      => $this->container->getParameter('theme'),
-			'checkVersion'       => $this->container->getParameter('check_version'),
+			'updateAvailable'     => $updateAvailable,
+			'directoriesToScan'   => $this->container->getParameter('directories_to_scan'),
+			'phpExecutable'       => $this->container->get(SymfoniesService::class)->getPhpExecutable(),
+			'otherPhpExecutables' => $this->container->getParameter('other_php_executables'),
+			'gitExecutable'       => $this->container->getParameter('git_executable'),
+			'composerExecutable'  => $this->container->getParameter('composer_executable'),
+			'autoupdate'          => $this->container->getParameter('autoupdate'),
+			'hostsFile'           => $this->container->getParameter('hosts_file'),
+			'themeSelected'       => $this->container->getParameter('theme'),
+			'checkVersion'        => $this->container->getParameter('check_version'),
 		]);
 	}
 	

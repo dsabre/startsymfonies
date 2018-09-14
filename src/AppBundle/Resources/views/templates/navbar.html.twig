@@ -64,22 +64,24 @@
 			{% endif %}
 		</ul>
 
-		<form class="form-inline my-2 my-lg-0">
-			<div class="input-group">
-				<input type="search" class="form-control" id="search" placeholder="Search" aria-label="Search">
-				<div class="input-group-append">
-					<div class="input-group-text">
-						<a href="#" class="input-group-addon fa fa-times text-muted" id="clearSearch"></a>
+		{% if app.request.get('_route') == 'app_default_index' %}
+			<form class="form-inline my-2 my-lg-0">
+				<div class="input-group">
+					<input type="search" class="form-control" id="search" placeholder="Search" aria-label="Search">
+					<div class="input-group-append">
+						<div class="input-group-text">
+							<a href="#" class="input-group-addon fa fa-times text-muted" id="clearSearch"></a>
+						</div>
 					</div>
 				</div>
-			</div>
 
-			<div class="form-check" style="margin-left: 10px;">
-				<label class="form-check-label navbar-text" id="chkHideStopped">
-					<input id="flgHideStopped" type="checkbox" class="form-check-input" {{ symfonies_service.actives|length > 0 ? ' checked' : '' }}>
-					Hide stopped
-				</label>
-			</div>
-		</form>
+				<div class="form-check" style="margin-left: 10px;">
+					<label class="form-check-label navbar-text" id="chkHideStopped">
+						<input id="flgHideStopped" type="checkbox" class="form-check-input" {{ symfonies_service.actives|length > 0 ? ' checked' : '' }}>
+						Hide stopped
+					</label>
+				</div>
+			</form>
+		{% endif %}
 	</div>
 </nav>

@@ -25,6 +25,19 @@
 			<dt class="col-sm-3">Php executable</dt>
 			<dd class="col-sm-9 font-monospace">{{ phpExecutable ? phpExecutable : '--' }}</dd>
 
+			<dt class="col-sm-3">Other php executables</dt>
+			{% if otherPhpExecutables is not empty and otherPhpExecutables|split(',')|length > 1 %}
+				<dd class="col-sm-9">
+					<ol>
+						{% for item in otherPhpExecutables|split(',') %}
+							<li class="font-monospace">{{ item }}</li>
+						{% endfor %}
+					</ol>
+				</dd>
+			{% else %}
+				<dd class="col-sm-9 font-monospace">{{ otherPhpExecutables ? otherPhpExecutables : '--' }}</dd>
+			{% endif %}
+
 			<dt class="col-sm-3">Git executable</dt>
 			<dd class="col-sm-9 font-monospace">{{ gitExecutable ? gitExecutable : '--' }}</dd>
 

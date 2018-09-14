@@ -21,7 +21,7 @@
 
 			<tr{{ symfony.status == 0 ? ' style="display: none;"' : '' }}>
 				<td class="text-center">
-					<a href="#" data-id="{{ symfony.id }}" class="fa fa-star{{ symfony.starred ? ' text-warning' : '-o text-secondary' }} starControl" aria-hidden="true"></a>
+					<a href="#" data-id="{{ symfony.id }}" class="fa-star {{ symfony.starred ? 'fas text-warning' : 'far text-secondary' }} starControl" aria-hidden="true"></a>
 				</td>
 				<td class="text-center">
 					{% if symfony.ip and symfony.port and faviconUrl %}
@@ -147,4 +147,5 @@
 	<script src="{{ asset('bundles/app/scripts/search.js') }}"></script>
 	<script src="{{ asset('bundles/app/scripts/composerShow.js') }}"></script>
 	<script src="{{ asset('bundles/app/scripts/editPhpExecutable.js') }}"></script>
+	<script src="{{ asset('bundles/app/scripts/datatable.js') }}"></script>
 {% endblock %}
