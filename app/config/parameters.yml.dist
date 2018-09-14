@@ -25,5 +25,5 @@ parameters:
     composer_executable: /usr/bin/composer
     autoupdate: true
     hosts_file: /etc/hosts
-    theme: blue|white|black|red|yellow|cyan|green|gray|symfony|dark|random
+    theme: blue
     check_version: true
