@@ -89,16 +89,16 @@
 					<div class="btn-group" role="group" aria-label="Basic example">
 						{% if symfony.ok %}
 							{% if symfony.status == 0 %}
-								<a href="#" class="btn btn-{{ theme.body == 'dark' ? 'dark' : 'light' }} fa fa-play text-success ajaxAction" aria-hidden="true" title="Start" data-toggle="modal" data-target="#modalSymfony{{ symfony.id }}"></a>
+								<a href="#" class="btn btn-{{ theme.body == 'dark' ? 'dark' : 'light' }} fas fa-play text-success ajaxAction" aria-hidden="true" title="Start" data-toggle="modal" data-target="#modalSymfony{{ symfony.id }}"></a>
 							{% else %}
-								<a href="{{ path('restart', {'symfony': symfony.id}) }}" class="btn btn-{{ theme.body == 'dark' ? 'dark' : 'light' }} fa fa-repeat text-primary" aria-hidden="true" title="Restart"></a>
-								<a href="{{ path('stop', {'symfony': symfony.id}) }}" class="btn btn-{{ theme.body == 'dark' ? 'dark' : 'light' }} fa fa-stop text-{{ theme.body == 'dark' ? 'light' : 'dark' }} swalContinue" aria-hidden="true" title="Stop"></a>
-								<a href="#" class="btn btn-{{ theme.body == 'dark' ? 'dark' : 'light' }} fa fa-pencil text-info ajaxAction" aria-hidden="true" title="Edit" data-toggle="modal" data-target="#modalSymfony{{ symfony.id }}"></a>
+								<a href="{{ path('restart', {'symfony': symfony.id}) }}" class="btn btn-{{ theme.body == 'dark' ? 'dark' : 'light' }} fas fa-redo-alt text-primary" aria-hidden="true" title="Restart"></a>
+								<a href="{{ path('stop', {'symfony': symfony.id}) }}" class="btn btn-{{ theme.body == 'dark' ? 'dark' : 'light' }} fas fa-stop text-{{ theme.body == 'dark' ? 'light' : 'dark' }} swalContinue" aria-hidden="true" title="Stop"></a>
+								<a href="#" class="btn btn-{{ theme.body == 'dark' ? 'dark' : 'light' }} fas fa-pencil-alt text-info ajaxAction" aria-hidden="true" title="Edit" data-toggle="modal" data-target="#modalSymfony{{ symfony.id }}"></a>
 							{% endif %}
 						{% endif %}
 
-						<a href="{{ path('cache_assets_reset', {'symfony': symfony.id}) }}" class="btn btn-{{ theme.body == 'dark' ? 'dark' : 'light' }} fa fa-refresh text-secondary swalContinue" aria-hidden="true" title="Cache & assets reset"></a>
-						<a href="{{ path('delete-info', {'symfony': symfony.id}) }}" class="btn btn-{{ theme.body == 'dark' ? 'dark' : 'light' }} fa fa-times text-danger swalContinue" aria-hidden="true" title="Delete info"></a>
+						<a href="{{ path('cache_assets_reset', {'symfony': symfony.id}) }}" class="btn btn-{{ theme.body == 'dark' ? 'dark' : 'light' }} fas fa-sync-alt text-secondary swalContinue" aria-hidden="true" title="Cache & assets reset"></a>
+						<a href="{{ path('delete-info', {'symfony': symfony.id}) }}" class="btn btn-{{ theme.body == 'dark' ? 'dark' : 'light' }} fas fa-times text-danger swalContinue" aria-hidden="true" title="Delete info"></a>
 
 						<div class="btn-group" role="group">
 							<button id="btnGroupOperations" type="button" class="btn btn-{{ theme.body == 'dark' ? 'dark' : 'light' }} dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
