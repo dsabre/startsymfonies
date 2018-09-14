@@ -95,9 +95,10 @@ class SymfoniesService{
 	 * @return array
 	 */
 	private function getSymfoniesFromDir($directory){
-		$phpExecutable = $this->getPhpExecutable();
+		$phpExecutables = $this->container->get(UtilService::class)->getPhpExecutables();
+		$phpExecutables = implode(',,', $phpExecutables);
 		
-		$command = sprintf('%s/../commands/get_symfonies.py %s %s', __DIR__, $directory, $phpExecutable);
+		$command = sprintf('%s/../commands/get_symfonies.py %s %s', __DIR__, $directory, $phpExecutables);
 		
 		$process = new Process($command, null, null, null, self::SCAN_PROCESS_TIMEOUT);
 		$process->run();

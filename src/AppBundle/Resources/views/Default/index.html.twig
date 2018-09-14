@@ -105,7 +105,10 @@
 								Other actions
 							</button>
 							<div class="dropdown-menu bg-{{ theme.body == 'dark' ? 'dark' : 'light' }}" aria-labelledby="btnGroupOperations">
-								<a class="dropdown-item text-{{ theme.body == 'dark' ? 'light' : 'dark' }} editPhpExecutable" href="#" data-symfonyid="{{ symfony.id }}" data-php="{{ phpExecutable }}" data-toggle="modal" data-target="#modalEditPhpExecutable">Edit php executable</a>
+								{% if phpExecutables|length > 1 %}
+									<a class="dropdown-item text-{{ theme.body == 'dark' ? 'light' : 'dark' }} editPhpExecutable" href="#" data-symfonyid="{{ symfony.id }}" data-php="{{ phpExecutable }}" data-toggle="modal" data-target="#modalEditPhpExecutable">Edit php executable</a>
+								{% endif %}
+
 								<a class="dropdown-item text-{{ theme.body == 'dark' ? 'light' : 'dark' }} composerShow" href="#" data-symfonyid="{{ symfony.id }}" data-path="{{ symfony.path }}" data-toggle="modal" data-target="#modalComposerShow">Composer show</a>
 								<a class="dropdown-item text-{{ theme.body == 'dark' ? 'light' : 'dark' }} swalContinue" href="{{ path('composer', {'activity': 'install', 'symfony': symfony.id}) }}">Composer install</a>
 								<a class="dropdown-item text-{{ theme.body == 'dark' ? 'light' : 'dark' }} swalContinue" href="{{ path('composer', {'activity': 'update', 'symfony': symfony.id}) }}">Composer update</a>
@@ -121,7 +124,10 @@
 			</tr>
 		{% endfor %}
 
-		{% include '@App/templates/edit-php-executable.html.twig' %}
+		{% if phpExecutables|length > 1 %}
+			{% include '@App/templates/edit-php-executable.html.twig' %}
+		{% endif %}
+
 		{% include '@App/templates/composer-show.html.twig' %}
 		</tbody>
 	</table>

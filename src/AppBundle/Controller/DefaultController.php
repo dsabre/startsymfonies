@@ -27,7 +27,8 @@ class DefaultController extends Controller{
 			'symfonies'       => $symfonies,
 			'nextLocalIp'     => $nextLocalIp,
 			'nextLocalPort'   => $nextLocalPort,
-			'updateAvailable' => $updateAvailable
+			'updateAvailable' => $updateAvailable,
+			'phpExecutables'  => $this->get(UtilService::class)->getPhpExecutables()
 		]);
 	}
 	

@@ -105,6 +105,23 @@ class UtilService{
 	}
 	
 	/**
+	 * Return all php executables setted
+	 *
+	 * @return array
+	 *
+	 * @author Daniele Sabre 14/set/2018
+	 */
+	public function getPhpExecutables(){
+		$phpExecutable = $this->container->get(SymfoniesService::class)->getPhpExecutable();
+		
+		// get other php executables
+		$otherPhpExecutables = $this->container->getParameter('other_php_executables');
+		$otherPhpExecutables = !empty($otherPhpExecutables) ? explode(',', $otherPhpExecutables) : [];
+		
+		return array_merge([$phpExecutable], $otherPhpExecutables);
+	}
+	
+	/**
 	 * Return the theme to use for the navbar
 	 *
 	 * @return array

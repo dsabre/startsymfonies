@@ -11,7 +11,11 @@
 				<div class="modal-body">
 					<div class="form-group">
 						<label for="phPExecutable">PHP executable</label>
-						<input type="text" id="phPExecutable" name="phPExecutable" class="form-control" placeholder="PHP executable">
+						<select class="form-control" id="phPExecutable" name="phPExecutable" required>
+							{% for phpExecutable in phpExecutables %}
+								<option value="{{ phpExecutable }}">{{ phpExecutable }}</option>
+							{% endfor %}
+						</select>
 					</div>
 				</div>
 				<div class="modal-footer">
