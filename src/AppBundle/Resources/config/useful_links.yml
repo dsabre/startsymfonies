@@ -18,33 +18,33 @@
 -
     url: 'http://www.yopmail.com/it/email-generator.php'
     label: 'YOPmail'
-    icon: 'http://www.yopmail.com/favicon.gif'
+    icon: 'bundles/app/images/yopmail.gif'
 
 -
     url: 'https://regex101.com/'
     label: 'Regex101'
-    icon: 'https://regex101.com/favicon.ico'
+    icon: 'bundles/app/images/regex.ico'
 
 -
     url: 'https://jsoncompare.com/#!/simple/'
     label: 'JSONCompare (ex JSONLint)'
-    icon: 'https://jsonlint.com/icons/icon-hires.png'
+    icon: 'bundles/app/images/jsonlint.png'
 
 -
     url: 'https://codebeautify.org/'
     label: 'Code beautify (a Swiss Army knife :D)'
-    icon: 'https://codebeautify.org/img/cb.png'
+    icon: 'bundles/app/images/cb.png'
 
 -
     url: 'https://getbootstrap.com/docs/4.0/getting-started/introduction/'
     label: 'Bootstrap documentation'
-    icon: 'https://getbootstrap.com/favicon.ico'
+    icon: 'bundles/app/images/bootstrap.ico'
 
 -
     url: 'https://passwordsgenerator.net/'
     label: 'Secure Password Generator'
-    icon: 'https://passwordsgenerator.net/fav/fav322.ico'
+    icon: 'bundles/app/images/passgenerator.ico'
 -
     url: 'https://www.browserstack.com/'
     label: 'BrowserStack'
-    icon: 'https://www.browserstack.com/favicon.ico'
+    icon: 'bundles/app/images/browserstack.ico'
