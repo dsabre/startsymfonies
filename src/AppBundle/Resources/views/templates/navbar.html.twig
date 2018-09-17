@@ -23,25 +23,52 @@
 				<a class="nav-link" href="{{ path('app_default_settings') }}">Settings</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link swalContinue" href="{{ path('scan') }}">Launch scan</a>
+				<a class="nav-link swalContinue bg-info text-light" href="{{ path('scan') }}">
+					<i class="fas fa-search-plus"></i>
+					Launch scan
+				</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link swalContinue" href="{{ path('start_all') }}">Start actives</a>
+				<a class="nav-link swalContinue bg-success text-light" href="{{ path('start_all') }}">
+					<i class="fas fa-play"></i>
+					Start actives
+				</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link swalContinue" href="{{ path('stop_all') }}">Stop all</a>
+				<a class="nav-link swalContinue bg-warning text-dark" href="{{ path('stop_all') }}">
+					<i class="fas fa-stop"></i>
+					Stop all
+				</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link swalContinue" href="{{ path('delete_all') }}">Delete all</a>
+				<a class="nav-link swalContinue bg-danger text-light" href="{{ path('delete_all') }}">
+					<i class="far fa-trash-alt"></i>
+					Delete all
+				</a>
 			</li>
+
+			{% if symfony_executable is not empty %}
+				<li class="nav-item">
+					<a class="nav-link bg-primary text-light" href="#" data-toggle="modal" data-target="#newSymfonyModal">
+						<i class="fas fa-plus"></i>
+						New Symfony
+					</a>
+				</li>
+			{% endif %}
 
 			{% if updateAvailable and util_service.gitExecutable is not null %}
 				<li class="nav-item">
-					<a class="nav-link text-danger badgeUpdate" href="{{ path('update_startsymfonies2') }}"><b>Update now</b></a>
+					<a class="nav-link bg-warning badgeUpdate text-danger" href="{{ path('update_startsymfonies2') }}">
+						<i class="fas fa-cloud-download-alt"></i>
+						<b>Update now</b>
+					</a>
 				</li>
 			{% else %}
 				<li class="nav-item">
-					<a class="nav-link" href="{{ path('recheck_version') }}">Check updates</a>
+					<a class="nav-link bg-secondary text-light" href="{{ path('recheck_version') }}">
+						<i class="fas fa-cloud-download-alt"></i>
+						Check updates
+					</a>
 				</li>
 			{% endif %}
 

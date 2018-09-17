@@ -23,6 +23,7 @@ parameters:
     other_php_executables: null
     git_executable: /usr/bin/git
     composer_executable: /usr/bin/composer
+    symfony_executable: /usr/local/bin/symfony
     autoupdate: true
     hosts_file: /etc/hosts
     theme: blue

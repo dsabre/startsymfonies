@@ -317,4 +317,32 @@ class DefaultController extends Controller{
 		
 		return $this->redirectToRoute('app_default_index');
 	}
+	
+	/**
+	 * @Route("/new-symfony")
+	 * @Method({"POST"})
+	 */
+	public function newSymfonyAction(Request $request){
+		$symfonyService = $this->get(SymfoniesService::class);
+		
+		$form = $symfonyService->getNewSymfonyForm(false);
+		$form->handleRequest($request);
+		if($form->isValid() && $form->isSubmitted()){
+			$data = $form->getData();
+			
+			try{
+				$symfonyService->newSymfony($data['path'], $data['name'], $data['version'], $data['phpExecutable']);
+				
+				$this->addFlash('success', 'Symfony aggiunto correttamente');
+			}
+			catch(\Exception $exc){
+				$msg = $exc->getMessage();
+				$this->container->get('logger')->error($msg);
+				
+				$this->addFlash('danger', $msg);
+			}
+		}
+		
+		return $this->redirectToRoute('app_default_index');
+	}
 }

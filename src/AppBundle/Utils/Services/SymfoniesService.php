@@ -4,6 +4,7 @@ namespace AppBundle\Utils\Services;
 
 use AppBundle\AppBundle;
 use AppBundle\Entity\Symfony;
+use AppBundle\Form\NewSymfonyType;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -661,5 +662,57 @@ class SymfoniesService{
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * @param bool $createView
+	 *
+	 * @return \Symfony\Component\Form\FormInterface|\Symfony\Component\Form\FormView
+	 *
+	 * @author Daniele Sabre 17/set/2018
+	 */
+	public function getNewSymfonyForm($createView = true){
+		$form = $this->container->get('form.factory')->create(NewSymfonyType::class, null, [
+			'action' => $this->container->get('router')->generate('app_default_newsymfony'),
+			'phpExecutables' => $this->container->get(UtilService::class)->getPhpExecutables()
+		]);
+		
+		return $createView ? $form->createView() : $form;
+	}
+	
+	/**
+	 * @param string $path
+	 * @param string $name
+	 * @param string $version
+	 * @param string $phpExecutable
+	 *
+	 * @throws \Exception
+	 *
+	 * @author Daniele Sabre 17/set/2018
+	 */
+	public function newSymfony($path, $name, $version, $phpExecutable){
+		$symfonyExecutable = $this->container->getParameter('symfony_executable');
+		$path = rtrim($path, '/');
+		
+		// launch symfony creation
+		$command = sprintf('%s -q new %s %s &', $symfonyExecutable, $name, $version);
+		$process = new Process($command, $path);
+		$process->disableOutput();
+		$process->mustRun();
+		
+		// create the symfony object
+		$symfony = new Symfony();
+		$symfony->setPath($path . '/' . $name);
+		$symfony->setVersion($version);
+		$symfony->setPhpExecutable($phpExecutable);
+		
+		// create a row in the database
+		$em = $this->container->get('doctrine')->getManager();
+		$em->persist($symfony);
+		$em->flush();
+		
+		if(!$this->recheckSymfony($symfony)){
+			throw new \Exception();
+		}
 	}
 }

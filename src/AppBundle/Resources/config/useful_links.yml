@@ -16,6 +16,16 @@
 - DIVIDER
 
 -
+    url: 'http://getbootstrap.com/docs/4.1/getting-started/introduction/'
+    label: 'Bootstrap documentation'
+    icon: 'bundles/app/images/bootstrap.ico'
+
+-
+    url: 'https://fontawesome.com/icons?d=gallery&m=free'
+    label: 'Fontawesome'
+    icon: 'bundles/app/images/fontawesome.ico'
+
+-
     url: 'http://www.yopmail.com/it/email-generator.php'
     label: 'YOPmail'
     icon: 'bundles/app/images/yopmail.gif'
@@ -34,11 +44,6 @@
     url: 'https://codebeautify.org/'
     label: 'Code beautify (a Swiss Army knife :D)'
     icon: 'bundles/app/images/cb.png'
-
--
-    url: 'https://getbootstrap.com/docs/4.0/getting-started/introduction/'
-    label: 'Bootstrap documentation'
-    icon: 'bundles/app/images/bootstrap.ico'
 
 -
     url: 'https://passwordsgenerator.net/'

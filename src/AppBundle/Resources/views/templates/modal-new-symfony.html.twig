@@ -1,0 +1,40 @@
+{% set newSymfonyForm = symfonies_service.newSymfonyForm %}
+
+<div class="modal fade" id="newSymfonyModal" tabindex="-1" role="dialog" aria-labelledby="newSymfonyModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="newSymfonyModalLabel">New Symfony</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			{{ form_start(newSymfonyForm) }}
+				<div class="modal-body">
+					<div class="row">
+						<div class="form-group col-md-12">
+							{{ form_label(newSymfonyForm.path) }}
+							{{ form_widget(newSymfonyForm.path, {'attr': {'class': 'form-control', 'placeholder': form_label(newSymfonyForm.path)|striptags}}) }}
+						</div>
+						<div class="form-group col-md-6">
+							{{ form_label(newSymfonyForm.name) }}
+							{{ form_widget(newSymfonyForm.name, {'attr': {'class': 'form-control', 'placeholder': form_label(newSymfonyForm.name)|striptags}}) }}
+						</div>
+						<div class="form-group col-md-6">
+							{{ form_label(newSymfonyForm.version) }}
+							{{ form_widget(newSymfonyForm.version, {'attr': {'class': 'form-control', 'placeholder': form_label(newSymfonyForm.version)|striptags}}) }}
+						</div>
+						<div class="form-group col-md-12">
+							{{ form_label(newSymfonyForm.phpExecutable) }}
+							{{ form_widget(newSymfonyForm.phpExecutable, {'attr': {'class': 'form-control'}}) }}
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a href="#" class="btn btn-secondary" data-dismiss="modal">Close</a>
+					<button type="submit" class="btn btn-primary">Create</button>
+				</div>
+			{{ form_end(newSymfonyForm) }}
+		</div>
+	</div>
+</div>

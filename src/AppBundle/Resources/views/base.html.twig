@@ -23,6 +23,10 @@
 {% include '@App/templates/navbar.html.twig' %}
 
 <div class="{% block containerClass %}container-fluid{% endblock %}">
+	{% if symfony_executable is not empty %}
+		{% include '@App/templates/modal-new-symfony.html.twig' %}
+	{% endif %}
+
 	{% block body %}{% endblock %}
 
 	{% include '@App/templates/footer.html.twig' %}
