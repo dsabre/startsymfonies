@@ -404,13 +404,14 @@ class SymfoniesService{
 	 * @return $this
 	 */
 	public function startAll(){
-		$symfonies = $this->container->get('doctrine')->getRepository(Symfony::class)->findAll();
-		/** @var Symfony $symfony */
-		foreach($symfonies as $k => $symfony){
-			if($symfony->getIp() === null || $symfony->getStatus() === Symfony::STATUS_ACTIVE){
-				unset($symfonies[$k]);
-			}
-		}
+		$symfonies = $this->container->get('doctrine')->getRepository(Symfony::class)->getActives();
+//		$symfonies = $this->container->get('doctrine')->getRepository(Symfony::class)->findAll();
+//		/** @var Symfony $symfony */
+//		foreach($symfonies as $k => $symfony){
+//			if($symfony->getIp() === null || $symfony->getStatus() === Symfony::STATUS_ACTIVE){
+//				unset($symfonies[$k]);
+//			}
+//		}
 		
 		/** @var Symfony $symfony */
 		foreach($symfonies as $symfony){
