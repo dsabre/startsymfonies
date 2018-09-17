@@ -15,6 +15,7 @@ class SymfoniesService{
 	use ContainerAwareTrait;
 	
 	const SCAN_PROCESS_TIMEOUT = 300;
+	const VERSION_LATEST = 'latest';
 	
 	/**
 	 * SymfoniesService constructor.
@@ -101,8 +102,7 @@ class SymfoniesService{
 		
 		$command = sprintf('%s/../commands/get_symfonies.py %s %s', __DIR__, $directory, $phpExecutables);
 		
-		$process = new Process($command, null, null, null, self::SCAN_PROCESS_TIMEOUT);
-		$process->run();
+		$process = $this->container->get(UtilService::class)->processRun(false, false, $command, null, null, null, self::SCAN_PROCESS_TIMEOUT);
 		
 		if(!$process->isSuccessful()){
 			throw new ProcessFailedException($process);
@@ -152,9 +152,7 @@ class SymfoniesService{
 		
 		$command = sprintf('%s %s/console -q server:start %s:%d &', $phpExecutable, $dirConsole, $symfony->getIp(), $symfony->getPort());
 		
-		$process = new Process($command, $symfony->getPath());
-		$process->disableOutput();
-		$process->mustRun();
+		$this->container->get(UtilService::class)->processRun(true, true, $command, $symfony->getPath());
 		
 		// set the symfony status active
 		$symfony->setStatus(Symfony::STATUS_ACTIVE);
@@ -179,9 +177,9 @@ class SymfoniesService{
 		$symfony->setEntryPoint($entry);
 		
 		// check for a symfony already working on the same location
-//		if($this->container->get('doctrine')->getRepository(Symfony::class)->findOneBy(['ip' => $symfony->getIp(), 'port' => $symfony->getPort()])){
-//			throw new \Exception('There is already a symfony in the same location');
-//		}
+		//		if($this->container->get('doctrine')->getRepository(Symfony::class)->findOneBy(['ip' => $symfony->getIp(), 'port' => $symfony->getPort()])){
+		//			throw new \Exception('There is already a symfony in the same location');
+		//		}
 		
 		$this->start($symfony);
 		
@@ -212,9 +210,7 @@ class SymfoniesService{
 		];
 		
 		foreach($commands as $command){
-			$process = new Process($command, $symfony->getPath());
-			$process->disableOutput();
-			$process->run();
+			$this->container->get(UtilService::class)->processRun(false, true, $command, $symfony->getPath());
 			
 			// this because is too fast and when the page is reloaded the
 			// symfony is not completely stopped
@@ -303,10 +299,8 @@ class SymfoniesService{
 		$composer = $this->container->getParameter('composer_executable');
 		
 		$command = sprintf('%s %s %s', $phpExecutable, $composer, $activity);
-
-		$process = new Process($command, $symfony->getPath());
-		$process->disableOutput();
-		$process->mustRun();
+		
+		$this->container->get(UtilService::class)->processRun(true, true, $command, $symfony->getPath());
 		
 		// if is an update we need to update the symfony version
 		if($activity === 'update'){
@@ -334,8 +328,7 @@ class SymfoniesService{
 		
 		$command = sprintf('%s %s show', $phpExecutable, $composer);
 		
-		$process = new Process($command, $symfony->getPath());
-		$process->mustRun();
+		$process = $this->container->get(UtilService::class)->processRun(true, false, $command, $symfony->getPath());
 		
 		$output = $process->getOutput();
 		
@@ -355,8 +348,7 @@ class SymfoniesService{
 		
 		$command = sprintf('%s %s/console', $phpExecutable, $dirConsole);
 		
-		$process = new Process($command, $symfony->getPath());
-		$process->mustRun();
+		$process = $this->container->get(UtilService::class)->processRun(true, false, $command, $symfony->getPath());
 		
 		$output = $process->getOutput();
 		
@@ -391,9 +383,7 @@ class SymfoniesService{
 		];
 		
 		foreach($commands as $command){
-			$process = new Process($command, $symfony->getPath());
-			$process->disableOutput();
-			$process->mustRun();
+			$this->container->get(UtilService::class)->processRun(true, true, $command, $symfony->getPath());
 		}
 		
 		return $this;
@@ -406,13 +396,13 @@ class SymfoniesService{
 	 */
 	public function startAll(){
 		$symfonies = $this->container->get('doctrine')->getRepository(Symfony::class)->getActives();
-//		$symfonies = $this->container->get('doctrine')->getRepository(Symfony::class)->findAll();
-//		/** @var Symfony $symfony */
-//		foreach($symfonies as $k => $symfony){
-//			if($symfony->getIp() === null || $symfony->getStatus() === Symfony::STATUS_ACTIVE){
-//				unset($symfonies[$k]);
-//			}
-//		}
+		//		$symfonies = $this->container->get('doctrine')->getRepository(Symfony::class)->findAll();
+		//		/** @var Symfony $symfony */
+		//		foreach($symfonies as $k => $symfony){
+		//			if($symfony->getIp() === null || $symfony->getStatus() === Symfony::STATUS_ACTIVE){
+		//				unset($symfonies[$k]);
+		//			}
+		//		}
 		
 		/** @var Symfony $symfony */
 		foreach($symfonies as $symfony){
@@ -626,8 +616,7 @@ class SymfoniesService{
 			// loop over commands to check the version
 			$output = null;
 			foreach($commands as $command){
-				$process = new Process($command, $symfony->getPath());
-				$process->run();
+				$process = $this->container->get(UtilService::class)->processRun(false, false, $command, $symfony->getPath());
 				
 				if($process->getExitCode() == 0){
 					$output = $process->getOutput();
@@ -673,7 +662,7 @@ class SymfoniesService{
 	 */
 	public function getNewSymfonyForm($createView = true){
 		$form = $this->container->get('form.factory')->create(NewSymfonyType::class, null, [
-			'action' => $this->container->get('router')->generate('app_default_newsymfony'),
+			'action'         => $this->container->get('router')->generate('app_default_newsymfony'),
 			'phpExecutables' => $this->container->get(UtilService::class)->getPhpExecutables()
 		]);
 		
@@ -686,19 +675,52 @@ class SymfoniesService{
 	 * @param string $version
 	 * @param string $phpExecutable
 	 *
+	 * @return SymfoniesService
+	 *
 	 * @throws \Exception
 	 *
 	 * @author Daniele Sabre 17/set/2018
 	 */
 	public function newSymfony($path, $name, $version, $phpExecutable){
+		set_time_limit(0);
+		
 		$symfonyExecutable = $this->container->getParameter('symfony_executable');
+		$composerExecutable = $this->container->getParameter('composer_executable');
+		$utilService = $this->container->get(UtilService::class);
+		
 		$path = rtrim($path, '/');
 		
+		// set command
+		if($version === self::VERSION_LATEST || (bool)preg_match('/^4\./', $version)){
+			$commands = [
+				[
+					'command' => sprintf('%s %s -q create-project symfony/skeleton %s', $phpExecutable, $composerExecutable, $name),
+					'path'    => $path
+				],
+				[
+					'command' => sprintf('%s %s -q require server --dev', $phpExecutable, $composerExecutable),
+					'path'    => $path . '/' . $name
+				]
+			];
+			
+			$version = '4.0.0';
+		}
+		else{
+			$commands = [
+				[
+					'command' => sprintf('%s -q new %s %s', $symfonyExecutable, $name, $version),
+					'path'    => $path
+				]
+			];
+		}
+		
 		// launch symfony creation
-		$command = sprintf('%s -q new %s %s &', $symfonyExecutable, $name, $version);
-		$process = new Process($command, $path);
-		$process->disableOutput();
-		$process->mustRun();
+		foreach($commands as $infoCommand){
+			$command = trim($infoCommand['command']);
+			$cwd = trim($infoCommand['path']);
+			
+			$utilService->processRun(true, true, $command, $cwd);
+		}
 		
 		// create the symfony object
 		$symfony = new Symfony();
@@ -714,5 +736,8 @@ class SymfoniesService{
 		if(!$this->recheckSymfony($symfony)){
 			throw new \Exception();
 		}
+		
+		return $this;
 	}
+	
 }

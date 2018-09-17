@@ -2,6 +2,7 @@
 
 namespace AppBundle\Form;
 
+use AppBundle\Utils\Services\SymfoniesService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -17,7 +18,7 @@ class NewSymfonyType extends AbstractType{
 			->add('name', TextType::class)
 			->add('version', TextType::class, [
 				'required' => false,
-				'data'     => 'latest'
+				'data'     => SymfoniesService::VERSION_LATEST
 			])
 		;
 		

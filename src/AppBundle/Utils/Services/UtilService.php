@@ -243,9 +243,7 @@ class UtilService{
 		];
 		
 		foreach($commands as $command){
-			$process = new Process($command, $cwd);
-			$process->disableOutput();
-			$process->mustRun();
+			$this->processRun(true, true, $command, $cwd);
 		}
 		
 		$this->getCurrentVersionNumber($response, true);
@@ -269,6 +267,46 @@ class UtilService{
 		$fileContent = $file->openFile()->fread($file->getSize());
 		
 		return Yaml::parse($fileContent);
+	}
+	
+	/**
+	 * @param bool       $mustRun
+	 * @param bool       $disableOutput
+	 * @param string     $commandline
+	 * @param null       $cwd
+	 * @param array|null $env
+	 * @param null       $input
+	 * @param int        $timeout
+	 * @param array|null $options
+	 *
+	 * @return Process
+	 *
+	 * @author Daniele Sabre 17/set/2018
+	 */
+	public function processRun($mustRun = false, $disableOutput = true, $commandline, $cwd = null, array $env = null, $input = null, $timeout = 60, array $options = null){
+		$logger = $this->container->get('logger');
+		
+		$process = new Process($commandline, $cwd, $env, $input, $timeout, $options);
+		
+		// log command info
+		$msg = sprintf('Executed command %s in %s', $commandline, $cwd);
+		$logger->debug($msg);
+		
+		if($disableOutput){
+			$process->disableOutput();
+		}
+		
+		if($mustRun){
+			$process->mustRun();
+		}
+		else{
+			$process->run();
+		}
+		
+		$msg = sprintf('Command exit code: %d', $process->getExitCode());
+		$logger->debug($msg);
+		
+		return $process;
 	}
 	
 }
