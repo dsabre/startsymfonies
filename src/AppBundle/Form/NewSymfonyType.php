@@ -4,6 +4,7 @@ namespace AppBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,13 +19,21 @@ class NewSymfonyType extends AbstractType{
 				'required' => false,
 				'data'     => 'latest'
 			])
-			->add('phpExecutable', ChoiceType::class, [
+		;
+		
+		if(count($options['phpExecutables']) > 1){
+			$builder->add('phpExecutable', ChoiceType::class, [
 				'choices'      => $options['phpExecutables'],
 				'choice_label' => function($choiceValue, $key, $value){
 					return $choiceValue;
 				},
-			])
-		;
+			]);
+		}
+		else{
+			$builder->add('phpExecutable', HiddenType::class, [
+				'data' => reset($options['phpExecutables']),
+			]);
+		}
 	}
 	
 	public function configureOptions(OptionsResolver $resolver){
