@@ -75,3 +75,9 @@
 .font-monospace{
 	font-family: monospace;
 }
+
+@media (min-width: 1735px){
+	.d-xll-inline {
+		display: inline !important;
+	}
+}
