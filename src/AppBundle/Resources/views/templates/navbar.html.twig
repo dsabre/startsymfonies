@@ -130,9 +130,9 @@
 					</div>
 				</div>
 
-				<div class="custom-control custom-checkbox navbar-text ml-2 bg-transparent rounded border border-secondary">
+				<div class="custom-control custom-checkbox navbar-text ml-2 bg-light text-dark rounded border border-secondary">
 					<input id="flgHideStopped" type="checkbox" class="custom-control-input" {{ symfonies_service.actives|length > 0 ? ' checked' : '' }}>
-					<label class="custom-control-label mx-2" for="flgHideStopped">Hide stopped</label>
+					<label style="cursor: pointer;" class="custom-control-label mx-2" for="flgHideStopped">Hide stopped</label>
 				</div>
 			</form>
 		{% endif %}
