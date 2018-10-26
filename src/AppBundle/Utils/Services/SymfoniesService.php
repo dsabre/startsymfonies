@@ -413,6 +413,24 @@ class SymfoniesService{
 	}
 	
 	/**
+	 * System prune
+	 *
+	 * @return $this
+	 *
+	 * @author Daniele Sabre 26/ott/2018
+	 */
+	public function prune(){
+		$symfonies = $this->container->get('doctrine')->getRepository(Symfony::class)->findBy(['ip' => null]);
+		
+		/** @var Symfony $symfony */
+		foreach($symfonies as $symfony){
+			$this->delete($symfony);
+		}
+		
+		return $this;
+	}
+	
+	/**
 	 * Stop all symfonies with an ip and a port
 	 *
 	 * @return $this

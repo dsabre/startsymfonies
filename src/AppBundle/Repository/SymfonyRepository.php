@@ -36,6 +36,20 @@ class SymfonyRepository extends \Doctrine\ORM\EntityRepository{
 	}
 	
 	/**
+	 * Return all active symfonies
+	 *
+	 * @return array
+	 */
+	public function getInactives(){
+		$q = $this->createQueryBuilder('s');
+		$q
+			->where('s.status = 0')
+		;
+		
+		return $q->getQuery()->getResult();
+	}
+	
+	/**
 	 * Return the symfony with the max local ip
 	 *
 	 * @return Symfony

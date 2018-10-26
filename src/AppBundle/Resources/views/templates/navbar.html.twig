@@ -49,6 +49,10 @@
 						<i class="fas fa-search-plus text-info mr-2"></i>
 						Launch scan
 					</a>
+					<a class="swalContinue dropdown-item text-{{ theme.body == 'dark' ? 'light' : 'dark' }}" href="{{ path('prune') }}">
+						<i class="fas fa-search-minus text-danger mr-2"></i>
+						System prune
+					</a>
 					<a class="swalContinue dropdown-item text-{{ theme.body == 'dark' ? 'light' : 'dark' }}" href="{{ path('start_all') }}">
 						<i class="fas fa-play text-success mr-2"></i>
 						Start all symfonies with ip and port

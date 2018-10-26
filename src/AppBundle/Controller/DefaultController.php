@@ -345,4 +345,15 @@ class DefaultController extends Controller{
 		
 		return $this->redirectToRoute('app_default_index');
 	}
+	
+	/**
+	 * @Route("/prune", name="prune")
+	 */
+	public function pruneAction(){
+		$this->get(SymfoniesService::class)->prune();
+		
+		$this->addFlash('success', 'System pruned correctly');
+		
+		return $this->redirectToRoute('app_default_index');
+	}
 }
