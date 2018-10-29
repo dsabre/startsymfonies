@@ -258,6 +258,7 @@ class DefaultController extends Controller{
 			'updateAvailable'     => $updateAvailable,
 			'directoriesToScan'   => $this->container->getParameter('directories_to_scan'),
 			'phpExecutable'       => $this->container->get(SymfoniesService::class)->getPhpExecutable(),
+			'userRunning'         => $this->container->get(UtilService::class)->getUserRunning(),
 			'otherPhpExecutables' => $this->container->getParameter('other_php_executables'),
 			'gitExecutable'       => $this->container->getParameter('git_executable'),
 			'composerExecutable'  => $this->container->getParameter('composer_executable'),

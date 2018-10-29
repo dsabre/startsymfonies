@@ -309,4 +309,26 @@ class UtilService{
 		return $process;
 	}
 	
+	/**
+	 * @return string
+	 *
+	 * @author Daniele Sabre 29/ott/2018
+	 */
+	public function getUserRunning(){
+		$ret = '';
+		$process = new Process('whoami');
+		
+		try{
+			$process->run();
+			
+			$ret = $process->getOutput();
+			$ret = trim($ret);
+		}
+		catch(\Exception $exc){
+			$this->container->get('logger')->error($exc);
+		}
+		
+		return $ret;
+	}
+	
 }
