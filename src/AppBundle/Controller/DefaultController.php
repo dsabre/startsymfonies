@@ -253,7 +253,7 @@ class DefaultController extends Controller{
 	 *
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
-	private function getSettingsResponse($updateAvailable){
+	private function getSystemInfoResponse($updateAvailable){
 		return $this->render('@App/Default/settings.html.twig', [
 			'updateAvailable'     => $updateAvailable,
 			'directoriesToScan'   => $this->container->getParameter('directories_to_scan'),
@@ -270,12 +270,12 @@ class DefaultController extends Controller{
 	}
 	
 	/**
-	 * @Route("/settings")
+	 * @Route("/system-info")
 	 */
-	public function settingsAction(){
+	public function systemInfoAction(){
 		$utilService = $this->get(UtilService::class);
 		
-		$response = $this->getSettingsResponse(false);
+		$response = $this->getSystemInfoResponse(false);
 		
 		$currentVer = $utilService->getCurrentVersionNumber($response);
 		$localVer = $utilService->getLocalVersionNumber();
@@ -288,7 +288,7 @@ class DefaultController extends Controller{
 				$response = $this->redirectToRoute('update_startsymfonies2');
 			}
 			else{
-				$response = $this->getSettingsResponse(true);
+				$response = $this->getSystemInfoResponse(true);
 			}
 		}
 		
