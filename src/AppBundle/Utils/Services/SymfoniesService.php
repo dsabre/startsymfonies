@@ -298,7 +298,7 @@ class SymfoniesService{
 		$phpExecutable = $this->getPhpExecutable($symfony);
 		$composer = $this->container->getParameter('composer_executable');
 		
-		$command = sprintf('%s %s %s', $phpExecutable, $composer, $activity);
+		$command = sprintf('%s %s -nq %s', $phpExecutable, $composer, $activity);
 		
 		$this->container->get(UtilService::class)->processRun(true, true, $command, $symfony->getPath());
 		
