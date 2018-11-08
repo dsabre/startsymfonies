@@ -15,7 +15,7 @@ class SymfonyRepository extends \Doctrine\ORM\EntityRepository{
 	/**
 	 * Return all symfonies ordinated
 	 *
-	 * @return array
+	 * @return Symfony[]
 	 */
 	public function getAll(){
 		return $this->findBy([], ['starred' => 'DESC', 'path' => 'ASC', 'ip' => 'DESC']);

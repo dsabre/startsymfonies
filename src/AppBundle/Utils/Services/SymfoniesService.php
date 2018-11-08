@@ -725,9 +725,17 @@ class SymfoniesService{
 		}
 		else{
 			$commands = [
+//				[
+//					'command' => sprintf('%s -q new %s %s', $symfonyExecutable, $name, $version),
+//					'path'    => $path
+//				]
 				[
-					'command' => sprintf('%s -q new %s %s', $symfonyExecutable, $name, $version),
+					'command' => sprintf('%s -nq create-project symfony/framework-standard-edition %s %s', $composerExecutable, $name, $version),
 					'path'    => $path
+				],
+				[
+					'command' => sprintf('%s -nq update', $composerExecutable),
+					'path'    => $path . '/' . $name
 				]
 			];
 		}

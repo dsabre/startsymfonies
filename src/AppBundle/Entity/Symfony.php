@@ -338,4 +338,11 @@ class Symfony{
 	public function getStatus(){
 		return $this->status !== null ? $this->status : 0;
 	}
+	
+	/**
+	 * @return array
+	 */
+	public function toArray(){
+	    return get_object_vars($this);
+	}
 }
