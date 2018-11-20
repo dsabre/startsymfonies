@@ -134,9 +134,7 @@ class SymfoniesService{
 	 * @return array
 	 */
 	public function getDirectories(){
-		$dirs = $this->container->get(UtilService::class)->getConfig('directoriesToScan');
-		
-		return explode(',', $dirs);
+		return $this->container->get(UtilService::class)->getConfig('directoriesToScan');
 	}
 	
 	/**

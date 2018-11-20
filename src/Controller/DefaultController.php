@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Utils\Services\UtilService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 
