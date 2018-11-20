@@ -17,3 +17,5 @@
 .idea
 vendor/
 web/bundles/
+/node_modules/
+/public/build/

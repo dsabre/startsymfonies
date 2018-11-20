@@ -1,0 +1,12 @@
+{
+	"directoriesToScan"   : "/home/dsabre/Lavoro/2016,/home/dsabre/Lavoro/2017,/home/dsabre/Lavoro/git/2016,/home/dsabre/Lavoro/git/2017,/home/dsabre/Lavoro/git/2018,/home/dsabre/Lavoro/git/symfony4",
+	"phpExecutable"       : "/opt/remi/php56/root/usr/bin/php",
+	"otherPhpExecutables" : "/usr/bin/php",
+	"gitExecutable"       : "/usr/bin/git",
+	"composerExecutable"  : "/usr/bin/composer",
+	"symfonyExecutable"   : "/usr/local/bin/symfony",
+	"autoupdate"          : false,
+	"hostsFile"           : "/etc/hosts",
+	"theme"               : "dark",
+	"checkVersion"        : true
+}
