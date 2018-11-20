@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
 import toastr from "toastr";
 import {getTheme, getThemeSettings, setTheme, THEMES} from "../Utils/theme";
-import {setDocumentTitle} from "../Utils/utils";
-
-const INFO_STORAGE = 'system-info';
+import {INFO_STORAGE, setDocumentTitle} from "../Utils/utils";
 
 class SystemInfo extends Component {
 	constructor(props){

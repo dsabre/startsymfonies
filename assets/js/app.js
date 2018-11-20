@@ -10,6 +10,7 @@ import '../../node_modules/toastr/build/toastr.min.css';
 import '../css/app.css';
 import {getThemeSettings} from "./Utils/theme";
 import {deepCopy} from "./Utils/deepCopy";
+import {INFO_STORAGE} from "./Utils/utils";
 
 const $             = require('jquery');
 const themeSettings = getThemeSettings();
@@ -25,8 +26,8 @@ class App extends Component {
 		this.state = {
 			search        : '',
 			searchActives : true,
-			hidden        : true,
-			configured    : false,
+			hidden        : !localStorage.getItem(INFO_STORAGE),
+			configured    : !!localStorage.getItem(INFO_STORAGE),
 			configuration : {
 				numDirs      : 1,
 				numOthersPhp : 1
@@ -35,16 +36,18 @@ class App extends Component {
 	}
 	
 	componentDidMount(){
-		const $this = this;
-		
-		fetch('/api/get-system-info')
-		.then(response => response.json())
-		.then(response =>{
-			$this.setState({
-				hidden     : false,
-				configured : response.configured
+		if(!localStorage.getItem(INFO_STORAGE)){
+			const $this = this;
+			
+			fetch('/api/get-system-info')
+			.then(response => response.json())
+			.then(response =>{
+				$this.setState({
+					hidden     : false,
+					configured : response.configured
+				});
 			});
-		});
+		}
 	}
 	
 	render(){
