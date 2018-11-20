@@ -26,6 +26,8 @@ phpExecutable=${phpExecutable:-$(whereis php |sed 's/php: //g' |sed 's/ /\n/g' |
 
 # installing symfony
 $(echo $phpExecutable) $(whereis composer |sed 's/composer: //g' |sed 's/ /\n/g' |head -n1) install
+yarn install
+yarn dev
 
 serverRunning=$($(echo $phpExecutable) bin/console server:status -q;echo $?)
 pathLaunchDaemons="/System/Library/LaunchDaemons"

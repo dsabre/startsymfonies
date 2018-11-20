@@ -26,6 +26,8 @@ phpExecutable=${phpExecutable:-$(whereis php |sed 's/php: //g' |sed 's/ /\n/g' |
 
 # installing symfony
 $(echo $phpExecutable) $(whereis composer |sed 's/composer: //g' |sed 's/ /\n/g' |head -n1) install
+yarn install
+yarn dev
 
 lineAutoStart="@reboot sleep 12 && $phpExecutable $currentDir/bin/console server:start $baseIp:$basePort"
 lineAutoStartSymfonies="@reboot sleep 15 && $phpExecutable $currentDir/bin/console app:symfonies:start-all"
