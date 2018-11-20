@@ -8,15 +8,25 @@ if [ "$(uname)" == "Darwin" ]; then
     exit 1
 fi
 
-# installing symfony
-composer install
+if [ -z ./.env ]; then
+    cp ./.env.dist ./.env
+fi
 
 # variable definition
 baseIp="127.0.0.1"
 basePort="8000"
-databasePath=$(cat app/config/parameters.yml |grep database_path | awk -F':' '{print $2}' |sed "s/'//g" |sed "s/%kernel.project_dir%\///g" |sed 's/^ //g' |sed 's/ $//g')
-phpExecutable=$(cat app/config/parameters.yml |grep php_executable | awk -F':' '{print $2}' |sed "s/'//g" |sed 's/^ //g' |sed 's/ $//g')
+databasePath=$(cat ./.env |grep DATABASE_URL |sed 's/sqlite:\/\/\/%kernel\.project_dir%\///g' | awk -F'=' '{print $2}' |sed 's/^ //g' |sed 's/ $//g')
 currentDir=$(pwd)
+
+echo "SELECT PHP EXECUTABLE"
+whereis php |sed 's/php: //g' |sed 's/ /\n/g'
+echo
+read -p "PHP executable ["$(whereis php |sed 's/php: //g' |sed 's/ /\n/g' |head -n1)"]: " phpExecutable
+phpExecutable=${phpExecutable:-$(whereis php |sed 's/php: //g' |sed 's/ /\n/g' |head -n1)}
+
+# installing symfony
+$(echo $phpExecutable) $(whereis composer |sed 's/composer: //g' |sed 's/ /\n/g' |head -n1) install
+
 lineAutoStart="@reboot sleep 12 && $phpExecutable $currentDir/bin/console server:start $baseIp:$basePort"
 lineAutoStartSymfonies="@reboot sleep 15 && $phpExecutable $currentDir/bin/console app:symfonies:start-all"
 lineAutoStartExist=$(crontab -l |grep "$lineAutoStart" |wc -l)
@@ -33,14 +43,14 @@ $(echo $phpExecutable) bin/console cache:clear
 $(echo $phpExecutable) bin/console assets:install --symlink
 
 # check if user want to perform a scan now
-echo
-read -p "Do you want to perform a scan for symfonies now [y/N]? " -n 1 -r
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    echo
-    echo 'SCANNING DIRECTORIES...'
-    $(echo $phpExecutable) bin/console app:symfonies:scan
-    echo 'SCAN COMPLETED'
-fi
+#echo
+#read -p "Do you want to perform a scan for symfonies now [y/N]? " -n 1 -r
+#if [[ $REPLY =~ ^[Yy]$ ]]; then
+#    echo
+#    echo 'SCANNING DIRECTORIES...'
+#    $(echo $phpExecutable) bin/console app:symfonies:scan
+#    echo 'SCAN COMPLETED'
+#fi
 
 # check if user want to autostart startsymfonies2 on pc boot
 if [ "$lineAutoStartExist" -eq "0" ]; then
@@ -66,7 +76,7 @@ if [ "$serverRunning" -eq "1" ]; then
 fi
 
 echo
-echo 'Startsymfonies2 successfully installed :)'
+echo 'Startsymfonies successfully installed :)'
 echo
 
 exit 0
