@@ -60,13 +60,13 @@ class App extends Component {
 						<li className="list-inline-item border-right border-secondary pr-3">
 							<small className="text-muted">
 								<i className="fas fa-external-link-alt"/>
-								<a href="https://github.com/raniel86/startsymfonies2/issues" target="_blank" className="text-muted">Issues</a>
+								<a href="https://github.com/raniel86/startsymfonies/issues" target="_blank" className="text-muted">Issues</a>
 							</small>
 						</li>
 						<li className="list-inline-item border-right border-secondary pr-3">
 							<small className="text-muted">
 								<i className="fas fa-external-link-alt"/>
-								<a href="https://raw.githubusercontent.com/raniel86/startsymfonies2/master/LICENSE" target="_blank" className="text-muted">View license</a>
+								<a href="https://raw.githubusercontent.com/raniel86/startsymfonies/master/LICENSE" target="_blank" className="text-muted">View license</a>
 							</small>
 						</li>
 						<li className="list-inline-item">
