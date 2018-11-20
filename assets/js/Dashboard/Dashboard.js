@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import toastr from "toastr";
 import {deepCopy} from "../Utils/deepCopy";
 import {getThemeSettings} from "../Utils/theme";
-import {FAKE_TIMER, PHP_EXECUTABLES_STORAGE, setDocumentTitle, sleep, SYMFONIES_STORAGE} from "../Utils/utils";
+import {FAKE_TIMER, getPhpExecutables, PHP_EXECUTABLES_STORAGE, setDocumentTitle, sleep, SYMFONIES_STORAGE} from "../Utils/utils";
 import {withRouter} from "react-router-dom";
 
 const $           = require('jquery');
@@ -56,7 +56,9 @@ class Dashboard extends Component {
 			}
 		});
 		
-		this.loadPhpExecutables();
+		getPhpExecutables().then(phpExecutables => {
+			this.setState({phpExecutables : phpExecutables});
+		});
 		
 		document.addEventListener('keydown', this.handleReload);
 		
@@ -72,33 +74,6 @@ class Dashboard extends Component {
 			e.preventDefault();
 			
 			this.loadSymfonies(true);
-		}
-	}
-	
-	loadPhpExecutables(forceReload, callback){
-		forceReload = !!forceReload;
-		
-		const phpExecutables = localStorage.getItem(PHP_EXECUTABLES_STORAGE);
-		
-		if(phpExecutables && !forceReload){
-			this.setState({phpExecutables : JSON.parse(phpExecutables)}, () =>{
-				if(callback){
-					callback();
-				}
-			});
-		}
-		else{
-			fetch('/api/get-php-executables')
-			.then(response => response.json())
-			.then(phpExecutables =>{
-				this.setState({phpExecutables : phpExecutables}, () =>{
-					localStorage.setItem(PHP_EXECUTABLES_STORAGE, JSON.stringify(phpExecutables));
-					
-					if(callback){
-						callback();
-					}
-				});
-			});
 		}
 	}
 	

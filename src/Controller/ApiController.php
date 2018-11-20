@@ -85,19 +85,14 @@ class ApiController extends Controller{
 	 * @return JsonResponse
 	 */
 	public function getSystemInfo(){
-		$config = $this->get(UtilService::class)->getConfig();
+		$utilService = $this->get(UtilService::class);
 		
-		return new JsonResponse([
-			'directoriesToScan'   => $this->get(SymfoniesService::class)->getDirectories(),
-			'otherPhpExecutables' => $this->get(SymfoniesService::class)->getOtherPhps(),
-			'phpExecutable'       => $this->get(SymfoniesService::class)->getPhpExecutable(),
-			'userRunning'         => $this->get(UtilService::class)->getUserRunning(),
-			'gitExecutable'       => $config['gitExecutable'],
-			'composerExecutable'  => $config['composerExecutable'],
-			'hostsFile'           => $config['hostsFile'],
-			'autoupdate'          => $config['autoupdate'],
-			'checkVersion'        => $config['checkVersion'],
-		]);
+		$config = $utilService->getConfig();
+		
+		$config['configured'] = !empty($config);
+		$config['userRunning'] = $utilService->getUserRunning();
+		
+		return new JsonResponse($config);
 	}
 	
 	/**

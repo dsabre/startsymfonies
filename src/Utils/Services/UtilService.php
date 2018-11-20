@@ -127,7 +127,6 @@ class UtilService{
 		
 		// get other php executables
 		$otherPhpExecutables = $this->getConfig('otherPhpExecutables');
-		$otherPhpExecutables = !empty($otherPhpExecutables) ? explode(',', $otherPhpExecutables) : [];
 		
 		return array_merge([$phpExecutable], $otherPhpExecutables);
 	}
@@ -362,6 +361,15 @@ class UtilService{
 	}
 	
 	/**
+	 * @return string
+	 *
+	 * @author Daniele Sabre 20/nov/2018
+	 */
+	public function getConfigPath(){
+		return $this->container->get('kernel')->getRootDir() . '/../startsymfonies.config.json';
+	}
+	
+	/**
 	 * @param null|string $property
 	 *
 	 * @return mixed
@@ -369,7 +377,7 @@ class UtilService{
 	 * @author Daniele Sabre 19/nov/2018
 	 */
 	public function getConfig($property = null){
-		$configPath = $this->container->get('kernel')->getRootDir() . '/../startsymfonies.config.json';
+		$configPath = $this->getConfigPath();
 		
 		if(!file_exists($configPath)){
 			return [];

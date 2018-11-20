@@ -11,7 +11,7 @@ import * as faviconRegex from '../../images/regex.ico';
 import * as faviconCb from '../../images/cb.png';
 import * as faviconJsonlint from '../../images/jsonlint.png';
 import * as faviconYopmail from '../../images/yopmail.gif';
-import {longOperation, PHP_EXECUTABLES_STORAGE, SYMFONIES_STORAGE, URL_GITHUB, VERSION} from "../Utils/utils";
+import {getPhpExecutables, longOperation, PHP_EXECUTABLES_STORAGE, SYMFONIES_STORAGE, URL_GITHUB, VERSION} from "../Utils/utils";
 import {deepCopy} from "../Utils/deepCopy";
 
 class Navbar extends Component {
@@ -22,11 +22,18 @@ class Navbar extends Component {
 		
 		this.state = {
 			updateAvailable : false,
+			phpExecutables  : [],
 			addSymfony      : {
 				path          : '',
-				phpExecutable : JSON.parse(localStorage.getItem(PHP_EXECUTABLES_STORAGE))[0],
+				phpExecutable : '',
 			}
 		};
+	}
+	
+	componentDidMount(){
+		getPhpExecutables().then(phpExecutables =>{
+			this.setState({phpExecutables : phpExecutables});
+		});
 	}
 	
 	render(){
@@ -157,7 +164,7 @@ class Navbar extends Component {
 								<div className="form-group">
 									<label htmlFor="addSymfonyPhp">PHP executable</label>
 									<select onChange={this.handleChangeAddSymfony.bind(this, 'phpExecutable')} className="form-control" id="addSymfonyPhp">
-										{JSON.parse(localStorage.getItem(PHP_EXECUTABLES_STORAGE)).map(row => {
+										{this.state.phpExecutables.map(row =>{
 											return (<option key={row} value={row}>{row}</option>);
 										})}
 									</select>

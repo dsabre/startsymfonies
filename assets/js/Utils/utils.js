@@ -11,6 +11,26 @@ export function setDocumentTitle(title){
 	document.title = title + " | " + SITE_NAME;
 }
 
+export function getPhpExecutables(forceReload){
+	forceReload = !!forceReload;
+	
+	const phpExecutables = localStorage.getItem(PHP_EXECUTABLES_STORAGE);
+	
+	if(phpExecutables && !forceReload){
+		return new Promise((resolve) => {
+			resolve(JSON.parse(phpExecutables));
+		});
+	}
+	else{
+		return fetch('/api/get-php-executables')
+		.then(response => response.json())
+		.then(phpExecutables => {
+			localStorage.setItem(PHP_EXECUTABLES_STORAGE, JSON.stringify(phpExecutables));
+			return phpExecutables;
+		});
+	}
+}
+
 export function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
