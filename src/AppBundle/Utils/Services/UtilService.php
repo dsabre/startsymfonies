@@ -46,15 +46,26 @@ class UtilService{
 	}
 	
 	/**
+	 * @return bool
+	 *
+	 * @author Daniele Sabre 20/nov/2018
+	 */
+	public function isCheckVersion(){
+		return false; // disabling check
+		return (bool)$this->container->getParameter('check_version');
+	}
+	
+	/**
 	 * Return the current version number of the app
 	 *
 	 * @param Response $response
+	 * @param bool     $forceGet
 	 *
 	 * @return string|null
 	 */
 	public function getCurrentVersionNumber(Response $response, $forceGet = false){
 		// check if the version checker is active
-		if(!$this->container->getParameter('check_version')){
+		if(!$this->isCheckVersion()){
 			return null;
 		}
 		

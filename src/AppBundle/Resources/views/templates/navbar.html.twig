@@ -73,17 +73,17 @@
 						</a>
 					{% endif %}
 
-					{% if updateAvailable and util_service.gitExecutable is not null %}
-						<a class="dropdown-item text-{{ theme.body == 'dark' ? 'light' : 'dark' }}" href="{{ path('update_startsymfonies2') }}">
-							<i class="fas fa-cloud-download-alt text-secondary mr-2"></i>
-							Update now
-						</a>
-					{% else %}
-						<a class="dropdown-item text-{{ theme.body == 'dark' ? 'light' : 'dark' }}" href="{{ path('recheck_version') }}">
-							<i class="fas fa-cloud-download-alt text-secondary mr-2"></i>
-							Check updates
-						</a>
-					{% endif %}
+					{#{% if updateAvailable and util_service.gitExecutable is not null %}#}
+						{#<a class="dropdown-item text-{{ theme.body == 'dark' ? 'light' : 'dark' }}" href="{{ path('update_startsymfonies2') }}">#}
+							{#<i class="fas fa-cloud-download-alt text-secondary mr-2"></i>#}
+							{#Update now#}
+						{#</a>#}
+					{#{% else %}#}
+						{#<a class="dropdown-item text-{{ theme.body == 'dark' ? 'light' : 'dark' }}" href="{{ path('recheck_version') }}">#}
+							{#<i class="fas fa-cloud-download-alt text-secondary mr-2"></i>#}
+							{#Check updates#}
+						{#</a>#}
+					{#{% endif %}#}
 				</div>
 			</li>
 

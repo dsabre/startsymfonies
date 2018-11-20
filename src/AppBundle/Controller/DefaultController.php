@@ -265,7 +265,7 @@ class DefaultController extends Controller{
 			'autoupdate'          => $this->container->getParameter('autoupdate'),
 			'hostsFile'           => $this->container->getParameter('hosts_file'),
 			'themeSelected'       => $this->container->getParameter('theme'),
-			'checkVersion'        => $this->container->getParameter('check_version'),
+			'checkVersion'        => $this->get(UtilService::class)->isCheckVersion(),
 		]);
 	}
 	
