@@ -143,9 +143,7 @@ class SymfoniesService{
 	 * @return array
 	 */
 	public function getOtherPhps(){
-		$phpExecutables = $this->container->get(UtilService::class)->getConfig('otherPhpExecutables');
-		
-		return explode(',', $phpExecutables);
+		return $this->container->get(UtilService::class)->getConfig('otherPhpExecutables');
 	}
 	
 	/**
