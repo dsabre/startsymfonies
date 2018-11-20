@@ -51,28 +51,9 @@ class App extends Component {
 	}
 	
 	render(){
-		if(this.state.configured){
-			return this.renderSite();
-		}
-		else{
-			return this.renderInstall();
-		}
-	}
-	
-	renderSite(){
 		return (
-			<div hidden={this.state.hidden}>
-				<BrowserRouter>
-					<div>
-						<Navbar formSearch={this.formSearch()}/>
-						
-						<Switch>
-							<Route path={'/system-info'} component={SystemInfo}/>
-							<Route path="/" render={() =>
-								<Dashboard search={this.state.search} searchActives={this.state.searchActives}/>}/>
-						</Switch>
-					</div>
-				</BrowserRouter>
+			<div>
+				{this.state.configured ? this.renderSite() : this.renderInstall()}
 				
 				<div className="text-center mt-2">
 					<ul className="list-inline mb-0">
@@ -96,6 +77,24 @@ class App extends Component {
 						</li>
 					</ul>
 				</div>
+			</div>
+		);
+	}
+	
+	renderSite(){
+		return (
+			<div hidden={this.state.hidden}>
+				<BrowserRouter>
+					<div>
+						<Navbar formSearch={this.formSearch()}/>
+						
+						<Switch>
+							<Route path={'/system-info'} component={SystemInfo}/>
+							<Route path="/" render={() =>
+								<Dashboard search={this.state.search} searchActives={this.state.searchActives}/>}/>
+						</Switch>
+					</div>
+				</BrowserRouter>
 			</div>
 		);
 	}
