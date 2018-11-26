@@ -54,12 +54,12 @@ $(echo $phpExecutable) bin/console assets:install --symlink
 #    echo 'SCAN COMPLETED'
 #fi
 
-# check if user want to autostart startsymfonies2 on pc boot
+# check if user want to autostart startsymfonies on pc boot
 if [ "$lineAutoStartExist" -eq "0" ]; then
     echo
-    read -p "Do you want to run startsymfonies2 on pc boot [y/N]? " -n 1 -r
+    read -p "Do you want to run startsymfonies on pc boot [y/N]? " -n 1 -r
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        (crontab -l; echo; echo "# STARTSYMFONIES 2 - AUTOSTART"; echo "$lineAutoStart") |crontab -
+        (crontab -l; echo; echo "# STARTSYMFONIES - AUTOSTART"; echo "$lineAutoStart") |crontab -
     fi
 fi
 
@@ -68,11 +68,11 @@ if [ "$lineAutoStartSymfoniesExist" -eq "0" ]; then
     echo
     read -p "Do you want to run all symfonies with an ip and a port on pc boot [y/N]? " -n 1 -r
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        (crontab -l; echo; echo "# STARTSYMFONIES 2 - AUTOSTART SYMFONIES"; echo "$lineAutoStartSymfonies") |crontab -
+        (crontab -l; echo; echo "# STARTSYMFONIES - AUTOSTART SYMFONIES"; echo "$lineAutoStartSymfonies") |crontab -
     fi
 fi
 
-# run startsymfonies2 now if not running
+# run startsymfonies now if not running
 if [ "$serverRunning" -eq "1" ]; then
     $(echo $phpExecutable) bin/console server:start $baseIp:$basePort
 fi

@@ -57,10 +57,10 @@ $(echo $phpExecutable) bin/console assets:install --symlink
 #    echo 'SCAN COMPLETED'
 #fi
 
-# check if user want to autostart startsymfonies2 on pc boot
+# check if user want to autostart startsymfonies on pc boot
 if [ "$fileAutoStartExist" -eq "0" ]; then
     echo
-    read -p "Do you want to run startsymfonies2 on pc boot [y/N]? " -n 1 -r
+    read -p "Do you want to run startsymfonies on pc boot [y/N]? " -n 1 -r
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         sudo echo '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs$
@@ -117,13 +117,12 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     done
 fi
 
-# run startsymfonies2 now if not running
+# run startsymfonies now if not running
 if [ "$serverRunning" -eq "1" ]; then
     $(echo $phpExecutable) bin/console server:start $baseIp:$basePort
 fi
 
 echo
-echo 'Startsymfonies2 successfully installed :)'
 echo
 
 exit 0
