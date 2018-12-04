@@ -1,14 +1,18 @@
 import React, {Component} from 'react';
-import toastr from "toastr";
 import {getTheme, getThemeSettings, setTheme, THEMES} from "../Utils/theme";
 import {INFO_STORAGE, setDocumentTitle} from "../Utils/utils";
+import {deepCopy} from "../Utils/deepCopy";
+import toastr from "toastr";
+
+const swal = require('sweetalert2');
 
 class Settings extends Component {
 	constructor(props){
 		super(props);
 		
 		this.state = {
-			info : []
+			info         : [],
+			newDirectory : ''
 		};
 		
 		this.theme         = getTheme();
@@ -73,6 +77,7 @@ class Settings extends Component {
 		const userRunning         = this.state.info.userRunning || '';
 		const autoupdate          = this.state.info.autoupdate || false;
 		const checkVersion        = this.state.info.checkVersion || false;
+		const configPath          = this.state.info.configPath || '';
 		
 		return (
 			<div className={"container"}>
@@ -82,11 +87,36 @@ class Settings extends Component {
 					<dl className="row">
 						<dt className="col-sm-3">Directories to scan</dt>
 						<dd className="col-sm-9">
-							<ol>
+							<table className={"table table-borderless table-sm table-striped table-hover"}>
+								<tbody>
 								{directoriesToScan.map((directory, i) =>{
-									return (<li key={i} className="font-monospace">{directory}</li>);
+									return (
+										<tr key={i}>
+											<td>{directory}</td>
+											<td>
+												<a onClick={this.removeDirectory.bind(this, i)} href="#" className={"btn btn-outline-danger btn-sm btn-block"}>
+													<i className="fas fa-times mr-2"/>
+													Remove
+												</a>
+											</td>
+										</tr>
+									);
 								})}
-							</ol>
+								<tr>
+									<td colSpan={2}>
+										<form onSubmit={this.addDirectory.bind(this)} className="form-inline">
+											<div className="form-group w-75 pr-3">
+												<input required={true} value={this.state.newDirectory} onChange={this.handleChangeNewDirectory.bind(this)} type="text" className={"form-control form-control-sm w-100"} placeholder={"New directory"}/>
+											</div>
+											<button type="submit" className="btn btn-outline-success btn-sm w-25">
+												<i className="fas fa-plus mr-2"/>
+												Add directory
+											</button>
+										</form>
+									</td>
+								</tr>
+								</tbody>
+							</table>
 						</dd>
 						
 						<dt className="col-sm-3">Php executable</dt>
@@ -129,20 +159,100 @@ class Settings extends Component {
 										<button onClick={setTheme.bind(this, theme)} key={k} className={"btn btn-secondary btn-sm" + (this.theme === theme ? ' active' : '')}>{theme}</button>);
 								})}
 							</div>
-							
-							{/*<p className="text-muted">*/}
-							{/*<small>*/}
-							{/*<b>Possible values:</b> {STYLES.join(', ')}*/}
-							{/*</small>*/}
-							{/*</p>*/}
 						</dd>
 						
 						<dt className="col-sm-3">Running on user</dt>
 						<dd className="col-sm-9 font-monospace">{userRunning}</dd>
+						
+						<dt className="col-sm-3">Config file path</dt>
+						<dd className="col-sm-9 font-monospace">
+							<a className={"text-" + this.themeSettings.links} title={"Click to show raw config"} href={"/raw-config"} target={"_blank"}>
+								<u>
+									<small>{configPath}</small>
+								</u>
+							</a>
+						</dd>
 					</dl>
 				</div>
 			</div>
 		);
+	}
+	
+	handleChangeNewDirectory(event){
+		const value  = event.target.value;
+		let tmpState = deepCopy(this.state);
+		
+		tmpState['newDirectory'] = value;
+		
+		this.setState(tmpState);
+	}
+	
+	addDirectory(event){
+		event.preventDefault();
+		
+		let tmpState = deepCopy(this.state);
+		
+		tmpState.info.directoriesToScan.push(tmpState.newDirectory);
+		tmpState['newDirectory'] = '';
+		
+		fetch('/api/set-directories-to-scan', {
+			method  : 'POST',
+			headers : {
+				Accept         : 'application/json',
+				'Content-Type' : 'application/json'
+			},
+			body    : JSON.stringify({
+				directoriesToScan : tmpState.info.directoriesToScan
+			})
+		})
+		.then(() => this.setState(tmpState));
+	}
+	
+	removeDirectory(k, event){
+		event.preventDefault();
+		
+		let tmpState = deepCopy(this.state);
+		
+		swal({
+			title               : 'Remove directory?',
+			text                : tmpState.info.directoriesToScan[k],
+			showCancelButton    : true,
+			confirmButtonText   : 'Continue',
+			showLoaderOnConfirm : true,
+			confirmButtonColor  : '#dc3545',
+			cancelButtonColor   : '#6c757d',
+			preConfirm          : () =>{
+				tmpState.info.directoriesToScan.splice(k, 1);
+				
+				return fetch('/api/set-directories-to-scan', {
+					method  : 'POST',
+					headers : {
+						Accept         : 'application/json',
+						'Content-Type' : 'application/json'
+					},
+					body    : JSON.stringify({
+						directoriesToScan : tmpState.info.directoriesToScan
+					})
+				})
+				.catch(error =>{
+					swal.showValidationMessage(
+						`Request failed: ${error}`
+					)
+				});
+			},
+			allowOutsideClick   : () => !swal.isLoading()
+		}).then(result =>{
+			if(result.value !== undefined){
+				this.setState(tmpState, () =>{
+					this.loadInfo(true);
+					
+					swal({
+						title : 'Directory removed correctly',
+						type  : 'success'
+					});
+				});
+			}
+		});
 	}
 }
 

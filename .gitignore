@@ -21,3 +21,4 @@ web/bundles/
 /public/build/
 /.env
 /startsymfonies.config.json
+/startsymfonies.config.json.bck

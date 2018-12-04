@@ -7,6 +7,7 @@ use App\Utils\Services\SymfoniesService;
 use App\Utils\Services\UtilService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -91,6 +92,7 @@ class ApiController extends Controller{
 		
 		$config['configured'] = !empty($config);
 		$config['userRunning'] = $utilService->getUserRunning();
+		$config['configPath'] = $utilService->getConfigPath();
 		
 		return new JsonResponse($config);
 	}
@@ -134,6 +136,40 @@ class ApiController extends Controller{
 			$this->get(SymfoniesService::class)->recheckSymfony($symfony);
 			
 			return new JsonResponse($this->get(SymfoniesService::class)->toArray($symfony));
+		}
+		catch(\Exception $exc){
+			$logger->error($exc);
+			
+			return new JsonResponse($exc->getMessage(), 500);
+		}
+	}
+	
+	/**
+	 * @Route("/set-directories-to-scan")
+	 *
+	 * @param Request         $request
+	 * @param LoggerInterface $logger
+	 *
+	 * @return JsonResponse
+	 */
+	public function setDirectoriesToScan(Request $request, LoggerInterface $logger){
+		try{
+			$data = json_decode($request->getContent(), true);
+			
+			$configPath = $this->get(UtilService::class)->getConfigPath();
+			
+			$content = file_get_contents($configPath);
+			$content = json_decode($content, true);
+			
+			$content['directoriesToScan'] = $data['directoriesToScan'];
+			$content = json_encode($content, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+			
+			dump($content);
+			
+			$fileSystem = new Filesystem();
+			$fileSystem->dumpFile($configPath, $content);
+			
+			return new JsonResponse();
 		}
 		catch(\Exception $exc){
 			$logger->error($exc);

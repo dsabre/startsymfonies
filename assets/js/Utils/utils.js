@@ -4,7 +4,7 @@ export const SYMFONIES_STORAGE       = 'symfonies';
 export const PHP_EXECUTABLES_STORAGE = 'php_executables';
 export const INFO_STORAGE            = 'settings';
 export const FAKE_TIMER              = 300;
-export const URL_GITHUB              = 'https://github.com/raniel86/startsymfonies2';
+export const URL_GITHUB              = 'https://github.com/raniel86/startsymfonies';
 
 export function setDocumentTitle(title){
 	getSiteName().then(siteName => {

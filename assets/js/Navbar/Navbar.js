@@ -67,7 +67,7 @@ class Navbar extends Component {
 									Home
 								</Link>
 							</li>
-							<li className={"nav-item" + (window.location.pathname === '/system-info' ? ' active' : '')}>
+							<li className={"nav-item" + (window.location.pathname === '/settings' ? ' active' : '')}>
 								<Link to={'/settings'} className={'nav-link'}>
 									<i className="fas fa-info-circle mr-1"/>
 									Settings

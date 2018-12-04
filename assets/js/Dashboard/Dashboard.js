@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import toastr from "toastr";
 import {deepCopy} from "../Utils/deepCopy";
 import {getThemeSettings} from "../Utils/theme";
-import {FAKE_TIMER, getPhpExecutables, PHP_EXECUTABLES_STORAGE, setDocumentTitle, sleep, SYMFONIES_STORAGE} from "../Utils/utils";
+import {FAKE_TIMER, getPhpExecutables, setDocumentTitle, sleep, SYMFONIES_STORAGE} from "../Utils/utils";
 import {withRouter} from "react-router-dom";
 
 const $           = require('jquery');
