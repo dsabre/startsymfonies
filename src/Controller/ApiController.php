@@ -127,10 +127,31 @@ class ApiController extends Controller{
 			
 			$symfony->setPhpExecutable($data['phpExecutable']);
 			
-			$em = $this->getDoctrine()->getManager();
-			$em->persist($symfony);
-			$em->flush();
+//			$em = $this->getDoctrine()->getManager();
+//			$em->persist($symfony);
+//			$em->flush();
 			
+			$this->get(SymfoniesService::class)->recheckSymfony($symfony);
+			
+			return new JsonResponse($this->get(SymfoniesService::class)->toArray($symfony));
+		}
+		catch(\Exception $exc){
+			$logger->error($exc);
+			
+			return new JsonResponse($exc->getMessage(), 500);
+		}
+	}
+	
+	/**
+	 * @Route("/recheck/{symfony}")
+	 *
+	 * @param Symfony         $symfony
+	 * @param LoggerInterface $logger
+	 *
+	 * @return JsonResponse
+	 */
+	public function recheck(Symfony $symfony, LoggerInterface $logger){
+		try{
 			$this->get(SymfoniesService::class)->recheckSymfony($symfony);
 			
 			return new JsonResponse($this->get(SymfoniesService::class)->toArray($symfony));

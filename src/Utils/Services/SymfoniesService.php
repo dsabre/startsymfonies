@@ -818,8 +818,39 @@ class SymfoniesService{
 		
 		$symfony->ok = $symfony->isOk();
 		$symfony->links = $this->getLinks($symfony);
+		$symfony->gitBranches = $this->getSymfonyGitBranches($symfony);
 		
 		return $symfony->toArray();
+	}
+	
+	/**
+	 * @param Symfony $symfony
+	 *
+	 * @return array|string
+	 *
+	 * @author Daniele Sabre 26/nov/2018
+	 */
+	public function getSymfonyGitBranches(Symfony $symfony){
+		$utilService = $this->container->get(UtilService::class);
+		
+		$git = $utilService->getConfig('gitExecutable');
+		
+		if(!$git){
+			return [];
+		}
+		
+		$command = sprintf("%s branch --list |sed 's/*//g' |sed 's/ //g'", $git);
+		$process = $utilService->processRun(true, false, $command, $symfony->getPath());
+		$branches = $process->getOutput();
+		$branches = explode(PHP_EOL, $branches);
+		
+		foreach($branches as $k => $branch){
+			if(empty($branch)){
+				unset($branches[$k]);
+			}
+		}
+		
+		return $branches;
 	}
 	
 }

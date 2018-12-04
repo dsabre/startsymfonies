@@ -255,12 +255,14 @@ class Dashboard extends Component {
 			},
 			allowOutsideClick   : () => !swal.isLoading()
 		}).then(result =>{
-			$this.alterSymfonyInfo(result.value, function(){
-				swal({
-					title : 'Symfony stopped correctly',
-					type  : 'success'
+			if(result.value !== undefined){
+				$this.alterSymfonyInfo(result.value, function(){
+					swal({
+						title : 'Symfony stopped correctly',
+						type  : 'success'
+					});
 				});
-			});
+			}
 		});
 	}
 	
@@ -293,13 +295,27 @@ class Dashboard extends Component {
 			},
 			allowOutsideClick   : () => !swal.isLoading()
 		}).then(result =>{
-			$this.alterSymfonyInfo(result.value, function(){
-				swal({
-					title : 'Symfony info deleted correctly',
-					type  : 'success'
+			if(result.value !== undefined){
+				$this.alterSymfonyInfo(result.value, function(){
+					swal({
+						title : 'Symfony info deleted correctly',
+						type  : 'success'
+					});
 				});
-			});
+			}
 		});
+	}
+	
+	recheck($symfony, $event){
+		$event.preventDefault();
+		
+		fetch('/api/recheck/' + $symfony.id)
+		.then(response => response.json())
+		.then(response => {
+			this.alterSymfonyInfo(response, function(){
+				toastr.success('Symfony successfully rechecked');
+			});
+		})
 	}
 	
 	remove($symfony, $event){
@@ -435,23 +451,28 @@ class Dashboard extends Component {
 						</a>
 					];
 					
-					const LinksOk = () =>{
-						let links = [
-							<a key={1} onClick={this.cacheAssetsReset.bind(this, row)} href="#" className={"btn btn-" + (this.themeSettings.body === 'dark' ? 'dark' : 'light') + " text-secondary"} aria-hidden="true" title="Cache &amp; assets reset">
-								<i className="fas fa-sync-alt"/>
-							</a>
-						];
-						
-						if(!!row.ip){
-							links.push(
-								<a key={2} onClick={this.deleteInfo.bind(this, row)} href="#" className={"btn btn-" + (this.themeSettings.body === 'dark' ? 'dark' : 'light') + " text-danger"} aria-hidden="true" title="Delete info">
-									<i className="fas fa-times"/>
-								</a>
-							);
-						}
-						
-						return links;
-					};
+					const LinksOk = () =>[
+						<a key={1} onClick={this.cacheAssetsReset.bind(this, row)} href="#" className={"btn btn-" + (this.themeSettings.body === 'dark' ? 'dark' : 'light') + " text-secondary"} aria-hidden="true" title="Cache &amp; assets reset">
+							<i className="fas fa-sync-alt"/>
+						</a>
+					];
+					//const LinksOk = () =>{
+					//	let links = [
+					//		<a key={1} onClick={this.cacheAssetsReset.bind(this, row)} href="#" className={"btn btn-" + (this.themeSettings.body === 'dark' ? 'dark' : 'light') + " text-secondary"} aria-hidden="true" title="Cache &amp; assets reset">
+					//			<i className="fas fa-sync-alt"/>
+					//		</a>
+					//	];
+					//
+					//	if(!!row.ip){
+					//		links.push(
+					//			<a key={2} onClick={this.deleteInfo.bind(this, row)} href="#" className={"btn btn-" + (this.themeSettings.body === 'dark' ? 'dark' : 'light') + " text-danger"} aria-hidden="true" title="Delete info">
+					//				<i className="fas fa-times"/>
+					//			</a>
+					//		);
+					//	}
+					//
+					//	return links;
+					//};
 					
 					return (
 						<tr key={row.id}>
@@ -560,11 +581,15 @@ class Dashboard extends Component {
 										</button>
 										<div className="dropdown-menu bg-light" aria-labelledby="btnGroupOperations">
 											<a onClick={this.handleOpenEditExecutable.bind(this, row)} className="dropdown-item" href="#" data-toggle="modal" data-target="#modalEditPhpExecutable">Edit php executable</a>
+											<a onClick={this.recheck.bind(this, row)} className="dropdown-item" title={"Recheck the symfony configuration"} href="#">Recheck now</a>
 											
 											{/*<a className="dropdown-item composerShow" href="#" data-toggle="modal" data-target="#modalComposerShow">Composer show</a>*/}
 											<a onClick={this.composerActivity.bind(this, row, 'install')} className="dropdown-item" href="#">Composer install</a>
 											{/*<a onClick={this.composerActivity.bind(this, row.id, 'update')} className="dropdown-item" href="#">Composer update</a>*/}
-											<a onClick={this.remove.bind(this, row)} className="dropdown-item text-danger" href="#">Delete</a>
+											
+											{!!row.ip && <a onClick={this.deleteInfo.bind(this, row)} className="dropdown-item text-danger" href="#">Delete info</a>}
+											
+											<a onClick={this.remove.bind(this, row)} className="dropdown-item text-danger" href="#">DELETE SYMFONY</a>
 										</div>
 									</div>
 								
