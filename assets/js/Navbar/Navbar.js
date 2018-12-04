@@ -11,7 +11,7 @@ import * as faviconRegex from '../../images/regex.ico';
 import * as faviconCb from '../../images/cb.png';
 import * as faviconJsonlint from '../../images/jsonlint.png';
 import * as faviconYopmail from '../../images/yopmail.gif';
-import {getPhpExecutables, longOperation, PHP_EXECUTABLES_STORAGE, SYMFONIES_STORAGE, URL_GITHUB, VERSION} from "../Utils/utils";
+import {getPhpExecutables, getVersion, longOperation, PHP_EXECUTABLES_STORAGE, SYMFONIES_STORAGE, URL_GITHUB} from "../Utils/utils";
 import {deepCopy} from "../Utils/deepCopy";
 
 class Navbar extends Component {
@@ -23,6 +23,7 @@ class Navbar extends Component {
 		this.state = {
 			updateAvailable : false,
 			phpExecutables  : [],
+			version         : '',
 			addSymfony      : {
 				path          : '',
 				phpExecutable : '',
@@ -34,6 +35,10 @@ class Navbar extends Component {
 		getPhpExecutables().then(phpExecutables =>{
 			this.setState({phpExecutables : phpExecutables});
 		});
+		
+		getVersion().then(version =>{
+			this.setState({version : version});
+		});
 	}
 	
 	render(){
@@ -44,7 +49,7 @@ class Navbar extends Component {
 						Startsymfonies
 					</Link>
 					
-					<a href={URL_GITHUB} target="_blank" className="badge badge-secondary ml-2 mr-2">{VERSION}</a>
+					<a href={URL_GITHUB} target="_blank" className="badge badge-secondary ml-2 mr-2">{this.state.version}</a>
 					
 					{this.state.updateAvailable &&
 					<a href={URL_GITHUB} target="_blank" className="badge badge-warning">Update available</a>
@@ -63,9 +68,9 @@ class Navbar extends Component {
 								</Link>
 							</li>
 							<li className={"nav-item" + (window.location.pathname === '/system-info' ? ' active' : '')}>
-								<Link to={'/system-info'} className={'nav-link'}>
+								<Link to={'/settings'} className={'nav-link'}>
 									<i className="fas fa-info-circle mr-1"/>
-									System info
+									Settings
 								</Link>
 							</li>
 							

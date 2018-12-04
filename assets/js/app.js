@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter, Route, Switch} from "react-router-dom";
 import Dashboard from "./Dashboard/Dashboard";
-import SystemInfo from "./SystemInfo/SystemInfo";
+import Settings from "./Settings/Settings";
 import Navbar from "./Navbar/Navbar";
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../../node_modules/bootstrap/dist/js/bootstrap.min.js';
@@ -89,7 +89,7 @@ class App extends Component {
 						<Navbar formSearch={this.formSearch()}/>
 						
 						<Switch>
-							<Route path={'/system-info'} component={SystemInfo}/>
+							<Route path={'/settings'} component={Settings}/>
 							<Route path="/" render={() =>
 								<Dashboard search={this.state.search} searchActives={this.state.searchActives}/>}/>
 						</Switch>

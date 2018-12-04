@@ -3,7 +3,7 @@ import toastr from "toastr";
 import {getTheme, getThemeSettings, setTheme, THEMES} from "../Utils/theme";
 import {INFO_STORAGE, setDocumentTitle} from "../Utils/utils";
 
-class SystemInfo extends Component {
+class Settings extends Component {
 	constructor(props){
 		super(props);
 		
@@ -42,10 +42,10 @@ class SystemInfo extends Component {
 	loadInfo(forceReload, callback){
 		forceReload = !!forceReload;
 		
-		const systemInfo = localStorage.getItem(INFO_STORAGE);
+		const settings = localStorage.getItem(INFO_STORAGE);
 		
-		if(systemInfo && !forceReload){
-			this.setState({info : JSON.parse(systemInfo)});
+		if(settings && !forceReload){
+			this.setState({info : JSON.parse(settings)});
 		}
 		else{
 			fetch('/api/get-system-info')
@@ -146,4 +146,4 @@ class SystemInfo extends Component {
 	}
 }
 
-export default SystemInfo;
+export default Settings;

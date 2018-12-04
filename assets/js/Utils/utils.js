@@ -2,14 +2,14 @@ const swal = require('sweetalert2');
 
 export const SYMFONIES_STORAGE       = 'symfonies';
 export const PHP_EXECUTABLES_STORAGE = 'php_executables';
-export const INFO_STORAGE            = 'system-info';
+export const INFO_STORAGE            = 'settings';
 export const FAKE_TIMER              = 300;
 export const URL_GITHUB              = 'https://github.com/raniel86/startsymfonies2';
-export const VERSION                 = '3.0.0';
-export const SITE_NAME               = 'Startsymfonies ' + (VERSION.split('.')[0]);
 
 export function setDocumentTitle(title){
-	document.title = title + " | " + SITE_NAME;
+	getSiteName().then(siteName => {
+		document.title = title + " | " + siteName;
+	});
 }
 
 export function getPhpExecutables(forceReload){
@@ -34,6 +34,34 @@ export function getPhpExecutables(forceReload){
 
 export function sleep(ms){
 	return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export function getSiteName(forceReload){
+	return getVersion(!!forceReload).then(version => {
+		version = parseInt(version.split('.')[0].replace('v', '').split(' ').join(''), 10);
+		
+		return 'Startsymfonies ' + version;
+	});
+}
+
+export function getVersion(forceReload){
+	const cid = 'version';
+	const version = localStorage.getItem(cid);
+	
+	if(version && !forceReload){
+		return new Promise(resolve => {
+			resolve(version);
+		});
+	}
+	else{
+		return fetch('https://api.github.com/repos/raniel86/startsymfonies/releases/latest')
+		.then(response => response.json())
+		.then(response => {
+			localStorage.setItem(cid, response.tag_name);
+			
+			return response.tag_name;
+		});
+	}
 }
 
 export function longOperation($title, $button, $confirmButtonColor, $apiEndpoint, $successMessage, $component, $fakeTimer, $event){
