@@ -11,7 +11,7 @@ import * as faviconRegex from '../../images/regex.ico';
 import * as faviconCb from '../../images/cb.png';
 import * as faviconJsonlint from '../../images/jsonlint.png';
 import * as faviconYopmail from '../../images/yopmail.gif';
-import {getPhpExecutables, getVersion, longOperation, PHP_EXECUTABLES_STORAGE, SYMFONIES_STORAGE, URL_GITHUB} from "../Utils/utils";
+import {CID_UPDATE, getLastVersion, getPhpExecutables, loadInfo, longOperation, URL_GITHUB, VERSION} from "../Utils/utils";
 import {deepCopy} from "../Utils/deepCopy";
 
 class Navbar extends Component {
@@ -21,9 +21,10 @@ class Navbar extends Component {
 		this.themeSettings = getThemeSettings();
 		
 		this.state = {
+			info         : [],
 			updateAvailable : false,
+			newVersion      : '',
 			phpExecutables  : [],
-			version         : '',
 			addSymfony      : {
 				path          : '',
 				phpExecutable : '',
@@ -32,16 +33,35 @@ class Navbar extends Component {
 	}
 	
 	componentDidMount(){
+		loadInfo(this);
+		
 		getPhpExecutables().then(phpExecutables =>{
 			this.setState({phpExecutables : phpExecutables});
 		});
 		
-		getVersion().then(version =>{
-			this.setState({version : version});
+		this.getLastVersion();
+	}
+	
+	getLastVersion(){
+		getLastVersion().then(newVersion =>{
+			this.setState({
+				updateAvailable : localStorage.getItem(CID_UPDATE) === '1',
+				newVersion      : newVersion
+			});
 		});
+		setInterval(() => {
+			getLastVersion().then(newVersion =>{
+				this.setState({
+					updateAvailable : localStorage.getItem(CID_UPDATE) === '1',
+					newVersion      : newVersion
+				});
+			});
+		}, 5000);
 	}
 	
 	render(){
+		const gitExecutable = this.state.info.gitExecutable || null;
+		
 		return (
 			<div>
 				<nav className={"navbar navbar-expand-lg navbar-" + this.themeSettings.brightness + " bg-" + this.themeSettings.color}>
@@ -49,10 +69,14 @@ class Navbar extends Component {
 						Startsymfonies
 					</Link>
 					
-					<a href={URL_GITHUB} target="_blank" className="badge badge-secondary ml-2 mr-2">{this.state.version}</a>
+					<a href={URL_GITHUB} target="_blank" className="badge badge-secondary ml-2 mr-2">{VERSION}</a>
 					
-					{this.state.updateAvailable &&
-					<a href={URL_GITHUB} target="_blank" className="badge badge-warning">Update available</a>
+					{this.state.updateAvailable && !gitExecutable &&
+						<a href={this.state.newVersion.html_url} target="_blank" className="badge badge-warning animated flash infinite slower">Update available</a>
+					}
+					
+					{this.state.updateAvailable && !!gitExecutable &&
+						<a href={"/action/update-startsymfonies"} className="badge badge-warning animated flash infinite slower">Update available</a>
 					}
 					
 					<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

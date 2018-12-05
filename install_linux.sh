@@ -24,6 +24,8 @@ echo
 read -p "PHP executable ["$(whereis php |sed 's/php: //g' |sed 's/ /\n/g' |head -n1)"]: " phpExecutable
 phpExecutable=${phpExecutable:-$(whereis php |sed 's/php: //g' |sed 's/ /\n/g' |head -n1)}
 
+echo $phpExecutable > "./startsymfonies_php_executable.txt"
+
 # installing symfony
 $(echo $phpExecutable) $(whereis composer |sed 's/composer: //g' |sed 's/ /\n/g' |head -n1) install
 yarn install

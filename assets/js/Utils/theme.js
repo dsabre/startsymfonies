@@ -1,3 +1,5 @@
+import {loadInfo} from "./utils";
+
 const THEME_STORAGE = 'theme';
 export const THEMES = {
 	blue   : {
@@ -75,11 +77,12 @@ export function getThemeSettings(){
 	return THEMES[getTheme()];
 }
 
-export function setTheme(theme){
-	localStorage.setItem(THEME_STORAGE, theme);
-	window.location.reload();
-}
-
 export function getTheme(){
-	return localStorage.getItem(THEME_STORAGE) || 'blue';
+	let theme = 'blue';
+	
+	loadInfo(null, false, info => {
+		theme = info.theme;
+	});
+	
+	return theme;
 }

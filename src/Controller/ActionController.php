@@ -21,13 +21,47 @@ class ActionController extends Controller{
 	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
 	 */
 	public function saveConfigurationAction(Request $request){
-		$newConfig = json_encode($request->get('configuration'), JSON_UNESCAPED_SLASHES);
+		$configuration = $request->get('configuration');
+		
+		$configuration['checkUpdates'] = isset($configuration['checkUpdates']) && $configuration['checkUpdates'] === 'on';
+		
+		$newConfig = json_encode($configuration, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 		$configPath = $this->get(UtilService::class)->getConfigPath();
 		
 		$fileSystem = new Filesystem();
 		$fileSystem->dumpFile($configPath, $newConfig);
 		
 		return $this->redirectToRoute('app_default_index', ['forced' => 1]);
+	}
+	
+	/**
+	 * @Route("/update-startsymfonies")
+	 */
+	public function updateStartsymfoniesAction(){
+		$this->get(UtilService::class)->updateStartsymfonies();
+		
+		return $this->redirectToRoute('app_default_index');
+	}
+	
+	/**
+	 * @Route("/set-theme/{theme}")
+	 *
+	 * @param string $theme
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 */
+	public function setTheme($theme){
+		$configuration = $this->get(UtilService::class)->getConfig();
+		
+		$configuration['theme'] = $theme;
+		
+		$newConfig = json_encode($configuration, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+		$configPath = $this->get(UtilService::class)->getConfigPath();
+		
+		$fileSystem = new Filesystem();
+		$fileSystem->dumpFile($configPath, $newConfig);
+		
+		return $this->redirectToRoute('settings', ['forced' => 1]);
 	}
 	
 //	/**

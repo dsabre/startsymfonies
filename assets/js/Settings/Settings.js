@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {getTheme, getThemeSettings, setTheme, THEMES} from "../Utils/theme";
-import {INFO_STORAGE, setDocumentTitle} from "../Utils/utils";
+import {getTheme, getThemeSettings, THEMES} from "../Utils/theme";
+import {loadInfo, setDocumentTitle} from "../Utils/utils";
 import {deepCopy} from "../Utils/deepCopy";
 import toastr from "toastr";
 
@@ -12,8 +12,11 @@ class Settings extends Component {
 		
 		this.state = {
 			info         : [],
-			newDirectory : ''
+			newDirectory : '',
+			hidden: true
 		};
+		
+		console.log(getTheme());
 		
 		this.theme         = getTheme();
 		this.themeSettings = getThemeSettings();
@@ -22,9 +25,21 @@ class Settings extends Component {
 	}
 	
 	componentDidMount(){
-		this.loadInfo();
+		const $urlParams   = new URLSearchParams(window.location.search);
+		const $forceReload = parseInt($urlParams.get('forced'), 10) === 1;
 		
-		document.addEventListener('keydown', this.handleReload);
+		if($forceReload){
+			loadInfo(null, true, () => {
+				window.location.href = '/settings';
+			});
+		}
+		else{
+			this.setState({hidden: false});
+			
+			loadInfo(this);
+			
+			document.addEventListener('keydown', this.handleReload);
+		}
 		
 		setDocumentTitle('System info');
 	}
@@ -37,31 +52,8 @@ class Settings extends Component {
 		if(e.key === 'F5'){
 			e.preventDefault();
 			
-			this.loadInfo(true, function(){
+			loadInfo(this, true, () =>{
 				toastr.info('Info reloaded');
-			});
-		}
-	}
-	
-	loadInfo(forceReload, callback){
-		forceReload = !!forceReload;
-		
-		const settings = localStorage.getItem(INFO_STORAGE);
-		
-		if(settings && !forceReload){
-			this.setState({info : JSON.parse(settings)});
-		}
-		else{
-			fetch('/api/get-system-info')
-			.then(response => response.json())
-			.then(info =>{
-				this.setState({info : info}, () =>{
-					localStorage.setItem(INFO_STORAGE, JSON.stringify(info));
-					
-					if(callback){
-						callback();
-					}
-				});
 			});
 		}
 	}
@@ -71,16 +63,16 @@ class Settings extends Component {
 		const phpExecutable       = this.state.info.phpExecutable || '';
 		const otherPhpExecutables = this.state.info.otherPhpExecutables || [];
 		const gitExecutable       = this.state.info.gitExecutable || '';
+		const yarnExecutable      = this.state.info.yarnExecutable || '';
 		const composerExecutable  = this.state.info.composerExecutable || '';
 		const hostsFile           = this.state.info.hostsFile || '';
-		//const themeSelected       = this.state.info.themeSelected || '';
+		const themeSelected       = this.state.info.theme || '';
 		const userRunning         = this.state.info.userRunning || '';
-		const autoupdate          = this.state.info.autoupdate || false;
-		const checkVersion        = this.state.info.checkVersion || false;
+		const checkUpdates        = this.state.info.checkUpdates || false;
 		const configPath          = this.state.info.configPath || '';
 		
 		return (
-			<div className={"container"}>
+			<div className={"container"} hidden={this.state.hidden}>
 				<div className={"bg-" + (this.themeSettings.body === null ? 'light' : this.themeSettings.body) + " text-" + (this.themeSettings.text === null ? 'dark' : this.themeSettings.text) + " p-3 mt-3 border border-secondary rounded animated fadeIn"}>
 					<h1 className="mb-3">Settings</h1>
 					
@@ -131,19 +123,13 @@ class Settings extends Component {
 						<dt className="col-sm-3">Composer executable</dt>
 						<dd className="col-sm-9 font-monospace">{composerExecutable}</dd>
 						
-						<dt className="col-sm-3">Symfony executable</dt>
-						<dd className="col-sm-9 font-monospace">/usr/local/bin/symfony</dd>
+						<dt className="col-sm-3">Yarn executable</dt>
+						<dd className="col-sm-9 font-monospace">{yarnExecutable}</dd>
 						
-						<dt className="col-sm-3">Check version</dt>
+						<dt className="col-sm-3">Check updates</dt>
 						<dd className="col-sm-9">
-							{checkVersion && <i className="fas fa-check text-success" aria-hidden="true"/>}
-							{!checkVersion && <i className="fas fa-times text-muted" aria-hidden="true"/>}
-						</dd>
-						
-						<dt className="col-sm-3 text-truncate">Autoupdate</dt>
-						<dd className="col-sm-9">
-							{autoupdate && <i className="fas fa-check text-success" aria-hidden="true"/>}
-							{!autoupdate && <i className="fas fa-times text-muted" aria-hidden="true"/>}
+							{checkUpdates && <i className="fas fa-check text-success" aria-hidden="true"/>}
+							{!checkUpdates && <i className="fas fa-times text-muted" aria-hidden="true"/>}
 						</dd>
 						
 						<dt className="col-sm-3">Host file</dt>
@@ -151,12 +137,12 @@ class Settings extends Component {
 						
 						<dt className="col-sm-3">Theme</dt>
 						<dd className="col-sm-9 font-monospace">
-							<p className={"m-0"}>{this.theme}</p>
+							<p className={"m-0"}>{themeSelected}</p>
 							
 							<div className="btn-group" role="group" aria-label="Select theme">
 								{Object.keys(THEMES).map((theme, k) =>{
 									return (
-										<button onClick={setTheme.bind(this, theme)} key={k} className={"btn btn-secondary btn-sm" + (this.theme === theme ? ' active' : '')}>{theme}</button>);
+										<a key={k} href={"/action/set-theme/" + theme} className={"btn btn-secondary btn-sm" + (themeSelected === theme ? ' active' : '')}>{theme}</a>);
 								})}
 							</div>
 						</dd>
@@ -244,7 +230,7 @@ class Settings extends Component {
 		}).then(result =>{
 			if(result.value !== undefined){
 				this.setState(tmpState, () =>{
-					this.loadInfo(true);
+					loadInfo(this, true);
 					
 					swal({
 						title : 'Directory removed correctly',

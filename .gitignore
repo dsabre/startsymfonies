@@ -22,3 +22,4 @@ web/bundles/
 /.env
 /startsymfonies.config.json
 /startsymfonies.config.json.bck
+/startsymfonies_php_executable.txt

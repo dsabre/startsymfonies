@@ -23,6 +23,7 @@ class DefaultController extends Controller{
 	
 	/**
 	 * @Route("/")
+	 * @Route("/settings", name="settings")
 	 * @Route("{route}")
 	 */
 	public function index($route = null){

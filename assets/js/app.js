@@ -7,8 +7,9 @@ import Navbar from "./Navbar/Navbar";
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../../node_modules/bootstrap/dist/js/bootstrap.min.js';
 import '../../node_modules/toastr/build/toastr.min.css';
+import '../../node_modules/animate.css/animate.css';
 import '../css/app.css';
-import {getThemeSettings} from "./Utils/theme";
+import {getThemeSettings, setTheme, THEMES} from "./Utils/theme";
 import {deepCopy} from "./Utils/deepCopy";
 import {INFO_STORAGE} from "./Utils/utils";
 
@@ -198,9 +199,28 @@ class App extends Component {
 							<input type="text" className="form-control" id="symfonyExecutable" name={"configuration[symfonyExecutable]"} placeholder="Symfony executable" />
 						</div>
 						<div className="form-group col-md-6">
+							<label htmlFor="yarnExecutable"><b>Yarn executable</b></label>
+							<input defaultValue={'/usr/bin/yarn'} type="text" className="form-control" id="yarnExecutable" name={"configuration[yarnExecutable]"} placeholder="Yarn executable" />
+						</div>
+						<div className="form-group col-md-6">
 							<label htmlFor="hostsFile"><b>Host file</b></label>
 							<input defaultValue={'/etc/hosts'} type="text" className="form-control" id="hostsFile" name={"configuration[hostsFile]"} placeholder="Host file" required={true} />
 						</div>
+						<div className="form-group col-md-6">
+							<label htmlFor="theme"><b>Theme</b></label>
+							<select className="form-control" name={"configuration[theme]"} id="theme">
+								{Object.keys(THEMES).map((theme, k) =>{
+									return (
+										<option key={k} value={theme}>{theme}</option>
+									);
+								})}
+							</select>
+						</div>
+					</div>
+					
+					<div className="custom-control custom-checkbox mb-3">
+						<input type="checkbox" className="custom-control-input" name={"configuration[checkUpdates]"} id="checkUpdates" />
+						<label className="custom-control-label" htmlFor="checkUpdates">Auto-check for updates</label>
 					</div>
 					
 					<button type="submit" className="btn btn-primary btn-lg btn-block">Save configuration</button>

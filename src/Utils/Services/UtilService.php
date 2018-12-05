@@ -23,7 +23,6 @@ class UtilService{
 	
 	use ContainerAwareTrait;
 	
-	const URL_VERSION = 'https://raw.githubusercontent.com/raniel86/startsymfonies2/master/.version_number';
 	const COOKIE_VERSION = 'remote_version';
 	const URL_GITHUB = 'https://github.com/raniel86/startsymfonies2';
 	
@@ -54,32 +53,6 @@ class UtilService{
 		$version = file_get_contents($this->container->get('kernel')->getRootDir() . '/../.version_number');
 		
 		return trim($version);
-	}
-	
-	/**
-	 * Return the current version number of the app
-	 *
-	 * @param Response $response
-	 *
-	 * @return string|null
-	 */
-	public function getCurrentVersionNumber(Response $response, $forceGet = false){
-		// check if the version checker is active
-		if(!$this->container->getParameter('check_version')){
-			return null;
-		}
-		
-		// get current version from cookie
-		$curVersion = $this->container->get('request_stack')->getMasterRequest()->cookies->get(self::COOKIE_VERSION);
-		
-		if(!$curVersion || $forceGet){
-			// get current version from remote github url
-			$curVersion = file_get_contents(self::URL_VERSION . '?' . uniqid());
-			$expire = strtotime('now + 12 hours');
-			$response->headers->setCookie(new Cookie(self::COOKIE_VERSION, $curVersion, $expire));
-		}
-		
-		return trim($curVersion);
 	}
 	
 	/**
@@ -221,21 +194,12 @@ class UtilService{
 	}
 	
 	/**
-	 * @return string|null
-	 */
-	public function getGitExecutable(){
-		return $this->container->getParameter('git_executable');
-	}
-	
-	/**
-	 * Update startsymfonies2 if git executable is configured
-	 *
-	 * @param Response $response
+	 * Update startsymfonies if git executable is configured
 	 *
 	 * @return $this
 	 */
-	public function updateStartsymfonies2(Response $response){
-		$gitExecutable = $this->getGitExecutable();
+	public function updateStartsymfonies(){
+		$gitExecutable = $this->getConfig('gitExecutable');
 		
 		// stop if git executable is not defined
 		if($gitExecutable === null){
@@ -243,20 +207,30 @@ class UtilService{
 		}
 		
 		$cwd = $this->container->get('kernel')->getRootDir() . '/..';
-		
-		$phpExecutable = $this->container->get(SymfoniesService::class)->getPhpExecutable();
+		$yarnExecutable = $this->getConfig('yarnExecutable');
+		$phpExecutable = trim(file_get_contents($cwd . '/startsymfonies_php_executable.txt'));
 		
 		$commands = [
 			sprintf('%s pull', $gitExecutable),
 			sprintf('%s bin/console -q cache:clear &', $phpExecutable),
-			sprintf('%s bin/console -q assets:install --symlink &', $phpExecutable)
+			sprintf('%s dev', $yarnExecutable)
 		];
 		
 		foreach($commands as $command){
 			$this->processRun(true, true, $command, $cwd);
 		}
 		
-		$this->getCurrentVersionNumber($response, true);
+		// execute extra commands if file exists
+		$extraCommandsPath = $cwd . '/startsymfonies_update_commands.txt';
+		
+		if(file_exists($extraCommandsPath)){
+			$extraCommands = file_get_contents($extraCommandsPath);
+			$extraCommands = explode(PHP_EOL, $extraCommands);
+			
+			foreach($extraCommands as $command){
+				$this->processRun(true, true, $command, $cwd);
+			}
+		}
 		
 		return $this;
 	}
