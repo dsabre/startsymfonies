@@ -16,8 +16,6 @@ class Settings extends Component {
 			hidden: true
 		};
 		
-		console.log(getTheme());
-		
 		this.theme         = getTheme();
 		this.themeSettings = getThemeSettings();
 		
