@@ -425,18 +425,10 @@ class Dashboard extends Component {
 						return true;
 					}
 				}).map(row =>{
-					let badgeColor = 'primary';
-					switch(row.version.charAt(0)){
-						case '2':
-							badgeColor = 'info';
-							break;
-						case '3':
-							badgeColor = 'success';
-							break;
-					}
+					let badgeColor = 'badge-symfony-' + row.version.charAt(0);
 					
 					if(row.version.indexOf('x.x') > -1){
-						badgeColor = 'danger';
+						badgeColor = 'badge-danger';
 					}
 					
 					const LinksActive = () => [
@@ -491,7 +483,7 @@ class Dashboard extends Component {
 								<small>{row.path}</small>
 							</td>
 							<td className={"text-center"}>
-								<span className={"badge badge-" + badgeColor}>{row.version}</span>
+								<span className={"badge " + badgeColor}>{row.version}</span>
 							</td>
 							<td>
 								<small>{row.phpExecutable}</small>
