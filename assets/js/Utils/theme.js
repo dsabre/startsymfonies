@@ -81,7 +81,9 @@ export function getTheme(){
 	let theme = 'blue';
 	
 	loadInfo(null, false, info => {
-		theme = info.theme;
+		if(info.theme){
+			theme = info.theme;
+		}
 	});
 	
 	return theme;

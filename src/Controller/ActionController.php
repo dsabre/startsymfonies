@@ -31,7 +31,7 @@ class ActionController extends Controller{
 		$fileSystem = new Filesystem();
 		$fileSystem->dumpFile($configPath, $newConfig);
 		
-		return $this->redirectToRoute('app_default_index', ['forced' => 1]);
+		return $this->redirectToRoute('settings', ['forced' => 1]);
 	}
 	
 	/**
