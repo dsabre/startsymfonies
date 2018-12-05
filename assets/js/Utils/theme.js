@@ -2,69 +2,70 @@ import {loadInfo} from "./utils";
 
 const THEME_STORAGE = 'theme';
 export const THEMES = {
-	blue   : {
+	blue    : {
 		brightness : 'dark',
 		color      : 'primary',
 		links      : 'primary',
 		body       : null,
 		text       : null
 	},
-	red    : {
+	red     : {
 		brightness : 'dark',
 		color      : 'danger',
 		links      : 'danger',
 		body       : null,
 		text       : null
 	},
-	yellow : {
+	yellow  : {
 		brightness : 'light',
 		color      : 'warning',
 		links      : 'dark',
 		body       : null,
 		text       : null
 	},
-	cyan   : {
+	cyan    : {
 		brightness : 'dark',
 		color      : 'info',
 		links      : 'info',
 		body       : null,
 		text       : null
 	},
-	white  : {
+	white   : {
 		brightness : 'light',
 		color      : 'default',
 		links      : 'dark',
 		body       : null,
 		text       : null
 	},
-	black  : {
+	black   : {
 		brightness : 'dark',
 		color      : 'dark',
 		links      : 'dark',
 		body       : null,
 		text       : null
 	},
-	green  : {
+	green   : {
 		brightness : 'dark',
 		color      : 'success',
 		links      : 'success',
 		body       : null,
 		text       : null
 	},
-	gray   : {
+	gray    : {
 		brightness : 'dark',
 		color      : 'secondary',
 		links      : 'secondary',
 		body       : null,
 		text       : null
 	},
-	//symfony : {
-	//	brightness : 'light',
-	//	color      : 'symfony',
-	//	body       : null,
-	//	text       : null
-	//},
-	dark   : {
+	symfony : {
+		brightness : 'light',
+		color      : 'symfony',
+		links      : 'dark',
+		body       : null,
+		text       : null
+	},
+	dark    : {
 		brightness : 'dark',
 		color      : 'dark',
 		links      : 'light',
@@ -80,7 +81,7 @@ export function getThemeSettings(){
 export function getTheme(){
 	let theme = 'blue';
 	
-	loadInfo(null, false, info => {
+	loadInfo(null, false, info =>{
 		if(info.theme){
 			theme = info.theme;
 		}
