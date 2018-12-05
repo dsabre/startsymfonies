@@ -524,4 +524,42 @@ class ApiController extends Controller{
 		}
 	}
 	
+	/**
+	 * @Route("/set-config-value", methods={"POST"})
+	 * @Route("/set-config-value/bool", methods={"POST"}, name="set_config_value_bool")
+	 *
+	 * @param Request         $request
+	 * @param LoggerInterface $logger
+	 *
+	 * @return JsonResponse
+	 */
+	public function setConfigValueAction(Request $request, LoggerInterface $logger){
+		try{
+			$data = json_decode($request->getContent(), true);
+			$field = trim($data['field']);
+			$value = trim($data['value']);
+			
+			if($request->get('_route') === 'set_config_value_bool'){
+				$value = $value == 1;
+			}
+			
+			$configuration = $this->get(UtilService::class)->getConfig();
+			
+			$configuration[$field] = $value;
+			
+			$newConfig = json_encode($configuration, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+			$configPath = $this->get(UtilService::class)->getConfigPath();
+			
+			$fileSystem = new Filesystem();
+			$fileSystem->dumpFile($configPath, $newConfig);
+			
+			return new JsonResponse();
+		}
+		catch(\Exception $exc){
+			$logger->error($exc);
+			
+			return new JsonResponse($exc->getMessage(), 500);
+		}
+	}
+	
 }

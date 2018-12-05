@@ -30,3 +30,7 @@ table td, table th{
     background-color: #dc8b35;
     color: white;
 }
+
+.font-monospace{
+    font-family: monospace;
+}

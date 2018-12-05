@@ -13,7 +13,9 @@ class Settings extends Component {
 		this.state = {
 			info         : [],
 			newDirectory : '',
-			hidden: true
+			hidden       : true,
+			edit         : '',
+			editValue    : ''
 		};
 		
 		this.theme         = getTheme();
@@ -27,12 +29,12 @@ class Settings extends Component {
 		const $forceReload = parseInt($urlParams.get('forced'), 10) === 1;
 		
 		if($forceReload){
-			loadInfo(null, true, () => {
+			loadInfo(null, true, () =>{
 				window.location.href = '/settings';
 			});
 		}
 		else{
-			this.setState({hidden: false});
+			this.setState({hidden : false});
 			
 			loadInfo(this);
 			
@@ -71,18 +73,18 @@ class Settings extends Component {
 		
 		return (
 			<div className={"container"} hidden={this.state.hidden}>
-				<div className={"bg-" + (this.themeSettings.body === null ? 'light' : this.themeSettings.body) + " text-" + (this.themeSettings.text === null ? 'dark' : this.themeSettings.text) + " p-3 mt-3 border border-secondary rounded animated fadeIn"}>
+				<div className={"bg-" + (this.themeSettings.body === null ? 'light' : this.themeSettings.body) + " text-" + (this.themeSettings.text === null ? 'dark' : this.themeSettings.text) + " p-3 mt-3 border border-secondary py-2 rounded animated fadeIn"}>
 					<h1 className="mb-3">Settings</h1>
 					
 					<dl className="row">
-						<dt className="col-sm-3">Directories to scan</dt>
-						<dd className="col-sm-9">
+						<dt className="col-sm-3 border-top border-secondary py-2">Directories to scan</dt>
+						<dd className="col-sm-9 border-top border-secondary py-2">
 							<table className={"table table-borderless table-sm table-striped table-hover"}>
 								<tbody>
 								{directoriesToScan.map((directory, i) =>{
 									return (
 										<tr key={i}>
-											<td>{directory}</td>
+											<td className={"font-monospace"}>{directory}</td>
 											<td>
 												<a onClick={this.removeDirectory.bind(this, i)} href="#" className={"btn btn-outline-danger btn-sm btn-block"}>
 													<i className="fas fa-times mr-2"/>
@@ -109,33 +111,47 @@ class Settings extends Component {
 							</table>
 						</dd>
 						
-						<dt className="col-sm-3">Php executable</dt>
-						<dd className="col-sm-9 font-monospace">{phpExecutable}</dd>
-						
-						<dt className="col-sm-3">Other php executables</dt>
-						<dd className="col-sm-9 font-monospace">{otherPhpExecutables.join(', ') || ''}</dd>
-						
-						<dt className="col-sm-3">Git executable</dt>
-						<dd className="col-sm-9 font-monospace">{gitExecutable}</dd>
-						
-						<dt className="col-sm-3">Composer executable</dt>
-						<dd className="col-sm-9 font-monospace">{composerExecutable}</dd>
-						
-						<dt className="col-sm-3">Yarn executable</dt>
-						<dd className="col-sm-9 font-monospace">{yarnExecutable}</dd>
-						
-						<dt className="col-sm-3">Check updates</dt>
-						<dd className="col-sm-9">
-							{checkUpdates && <i className="fas fa-check text-success" aria-hidden="true"/>}
-							{!checkUpdates && <i className="fas fa-times text-muted" aria-hidden="true"/>}
+						<dt className="col-sm-3 border-top border-secondary py-2">Php executable</dt>
+						<dd className="col-sm-9 border-top border-secondary py-2">
+							{this.editableField('phpExecutable', phpExecutable)}
 						</dd>
 						
-						<dt className="col-sm-3">Host file</dt>
-						<dd className="col-sm-9 font-monospace">{hostsFile}</dd>
+						<dt className="col-sm-3 border-top border-secondary py-2">Other php executables</dt>
+						<dd className="col-sm-9 border-top border-secondary py-2 font-monospace">{otherPhpExecutables.join(', ') || ''}</dd>
 						
-						<dt className="col-sm-3">Theme</dt>
-						<dd className="col-sm-9 font-monospace">
-							<p className={"m-0"}>{themeSelected}</p>
+						<dt className="col-sm-3 border-top border-secondary py-2">Git executable</dt>
+						<dd className="col-sm-9 border-top border-secondary py-2">
+							{this.editableField('gitExecutable', gitExecutable)}
+						</dd>
+						
+						<dt className="col-sm-3 border-top border-secondary py-2">Composer executable</dt>
+						<dd className="col-sm-9 border-top border-secondary py-2">
+							{this.editableField('composerExecutable', composerExecutable)}
+						</dd>
+						
+						<dt className="col-sm-3 border-top border-secondary py-2">Yarn executable</dt>
+						<dd className="col-sm-9 border-top border-secondary py-2">
+							{this.editableField('yarnExecutable', yarnExecutable)}
+						</dd>
+						
+						<dt className="col-sm-3 border-top border-secondary py-2">Check updates</dt>
+						<dd className="col-sm-9 border-top border-secondary py-2">
+							<span className={"float-left"}>
+								{checkUpdates && <i onDoubleClick={this.editBoolValue.bind(this, 'checkUpdates', false)} className="fas fa-check text-success" aria-hidden="true"/>}
+								{!checkUpdates && <i onDoubleClick={this.editBoolValue.bind(this, 'checkUpdates', true)} className="fas fa-times text-muted" aria-hidden="true"/>}
+							</span>
+							
+							<small className={"text-secondary ml-2 float-right"}>(Double click on icon to change)</small>
+						</dd>
+						
+						<dt className="col-sm-3 border-top border-secondary py-2">Host file</dt>
+						<dd className="col-sm-9 border-top border-secondary py-2">
+							{this.editableField('hostsFile', hostsFile)}
+						</dd>
+						
+						<dt className="col-sm-3 border-top border-secondary py-2">Theme</dt>
+						<dd className="col-sm-9 border-top border-secondary py-2">
+							<p className={"m-0 font-monospace"}>{themeSelected}</p>
 							
 							<div className="btn-group" role="group" aria-label="Select theme">
 								{Object.keys(THEMES).map((theme, k) =>{
@@ -145,18 +161,38 @@ class Settings extends Component {
 							</div>
 						</dd>
 						
-						<dt className="col-sm-3">Running on user</dt>
-						<dd className="col-sm-9 font-monospace">{userRunning}</dd>
+						<dt className="col-sm-3 border-top border-secondary py-2">Running on user</dt>
+						<dd className="col-sm-9 border-top border-secondary py-2 font-monospace">{userRunning}</dd>
 						
-						<dt className="col-sm-3">Config file path</dt>
-						<dd className="col-sm-9 font-monospace">
+						<dt className="col-sm-3 border-top border-secondary py-2">Config file path</dt>
+						<dd className="col-sm-9 border-top border-secondary py-2">
 							<a className={"text-" + this.themeSettings.links} title={"Click to show raw config"} href={"/raw-config"} target={"_blank"}>
-								<u>
-									<small>{configPath}</small>
+								<u className={"font-monospace"}>
+									{configPath}
 								</u>
 							</a>
 						</dd>
 					</dl>
+				</div>
+			</div>
+		);
+	}
+	
+	editableField(field, value){
+		return (
+			<div>
+				<div hidden={this.state.edit === field}>
+					<span className="float-left font-monospace">{value}</span>
+					<button onClick={this.setEdit.bind(this, field, value)} className={"btn btn-outline-secondary btn-sm ml-2 float-right"}>
+						<i className="fas fa-edit mr-1"/>
+						Edit
+					</button>
+				</div>
+				
+				<div hidden={this.state.edit !== field}>
+					<input onChange={this.handleChangeEditValue.bind(this)} type="text" className={"form-control form-control-sm d-inline w-50"} value={this.state.editValue}/>
+					<button onClick={this.saveEditValue.bind(this)} className={"btn btn-primary btn-sm ml-2"}>Save</button>
+					<button onClick={this.setEdit.bind(this, '', '')} className={"btn btn-secondary btn-sm ml-2"}>Cancel</button>
 				</div>
 			</div>
 		);
@@ -236,6 +272,76 @@ class Settings extends Component {
 					});
 				});
 			}
+		});
+	}
+	
+	setEdit(field, value){
+		let tmpState = deepCopy(this.state);
+		
+		tmpState.edit      = field;
+		tmpState.editValue = value;
+		
+		this.setState(tmpState);
+	}
+	
+	handleChangeEditValue(event){
+		const value  = event.target.value;
+		let tmpState = deepCopy(this.state);
+		
+		tmpState.editValue = value;
+		
+		this.setState(tmpState);
+	}
+	
+	saveEditValue(){
+		let tmpState = deepCopy(this.state);
+		
+		fetch('/api/set-config-value', {
+			method  : 'POST',
+			headers : {
+				Accept         : 'application/json',
+				'Content-Type' : 'application/json'
+			},
+			body    : JSON.stringify({
+				field : tmpState.edit,
+				value : tmpState.editValue
+			})
+		})
+		.then(() =>{
+			tmpState.info[tmpState.edit] = tmpState.editValue;
+			
+			tmpState.edit      = '';
+			tmpState.editValue = '';
+			
+			this.setState(tmpState, () =>{
+				loadInfo(this, true);
+			});
+		});
+	}
+	
+	editBoolValue(field, value){
+		let tmpState = deepCopy(this.state);
+		
+		fetch('/api/set-config-value/bool', {
+			method  : 'POST',
+			headers : {
+				Accept         : 'application/json',
+				'Content-Type' : 'application/json'
+			},
+			body    : JSON.stringify({
+				field : field,
+				value : value
+			})
+		})
+		.then(() =>{
+			tmpState.info[tmpState.edit] = tmpState.editValue;
+			
+			tmpState.edit      = '';
+			tmpState.editValue = '';
+			
+			this.setState(tmpState, () =>{
+				loadInfo(this, true);
+			});
 		});
 	}
 }
