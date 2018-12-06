@@ -223,16 +223,16 @@ class UtilService{
 		}
 		
 		// execute extra commands if file exists
-		$extraCommandsPath = $cwd . '/startsymfonies_update_commands.txt';
-		
-		if(file_exists($extraCommandsPath)){
-			$extraCommands = file_get_contents($extraCommandsPath);
-			$extraCommands = explode(PHP_EOL, $extraCommands);
-			
-			foreach($extraCommands as $command){
-				$this->processRun(true, true, $command, $cwd);
-			}
-		}
+//		$extraCommandsPath = $cwd . '/startsymfonies_update_commands.txt';
+//
+//		if(file_exists($extraCommandsPath)){
+//			$extraCommands = file_get_contents($extraCommandsPath);
+//			$extraCommands = explode(PHP_EOL, $extraCommands);
+//
+//			foreach($extraCommands as $command){
+//				$this->processRun(true, true, $command, $cwd);
+//			}
+//		}
 		
 		return $this;
 	}
