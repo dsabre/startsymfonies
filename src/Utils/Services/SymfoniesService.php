@@ -29,9 +29,11 @@ class SymfoniesService{
 	/**
 	 * Scan the directories and save all symfonies found on db
 	 *
+	 * @param null|string $directory Specify the single dir to scan
+	 *
 	 * @return $this
 	 */
-	public function scan(){
+	public function scan($directory = null){
 		set_time_limit(0);
 		
 		$doctrine = $this->container->get('doctrine');
@@ -39,12 +41,12 @@ class SymfoniesService{
 		$repo = $doctrine->getRepository(Symfony::class);
 		
 		// get all symfonies
-		$list = $this->getSymfonies();
+		$list = $this->getSymfonies($directory ? [$directory] : null);
 		
 		$startSymfoniesName = $this->container->get(UtilService::class)->getStartSymfoniesName();
 		
 		// remove startsymfonies2 from the list
-		$list = array_filter($list, function($v, $k) use($startSymfoniesName){
+		$list = array_filter($list, function($v, $k) use ($startSymfoniesName){
 			return !strstr($v, $startSymfoniesName);
 		}, ARRAY_FILTER_USE_BOTH);
 		
@@ -77,12 +79,15 @@ class SymfoniesService{
 	/**
 	 * Get all symfonies found
 	 *
+	 * @param array|null $directories
+	 *
 	 * @return array
 	 */
-	private function getSymfonies(){
+	private function getSymfonies(array $directories = null){
 		$symfonies = [];
+		$directories = $directories === null ? $this->getDirectories() : $directories;
 		
-		foreach($this->getDirectories() as $directory){
+		foreach($directories as $directory){
 			$symfonies = array_merge($symfonies, $this->getSymfoniesFromDir($directory));
 		}
 		
@@ -167,7 +172,7 @@ class SymfoniesService{
 		$command = sprintf('%s %s/console -q server:start %s:%d > /dev/null 2>&1', $phpExecutable, $dirConsole, $symfony->getIp(), $symfony->getPort());
 		
 		$this->container->get(UtilService::class)->processRun(true, true, $command, $symfony->getPath(), null, null, 60, true);
-
+		
 		// set the symfony status active
 		$symfony->setStatus(Symfony::STATUS_ACTIVE);
 		$em = $this->container->get('doctrine')->getManager();
@@ -200,9 +205,9 @@ class SymfoniesService{
 		
 		return $this->start($symfony);
 		
-//		$em = $this->container->get('doctrine')->getManager();
-//		$em->persist($symfony);
-//		$em->flush();
+		//		$em = $this->container->get('doctrine')->getManager();
+		//		$em->persist($symfony);
+		//		$em->flush();
 	}
 	
 	/**
@@ -436,14 +441,22 @@ class SymfoniesService{
 	/**
 	 * System prune
 	 *
+	 * @param null|string $directory
+	 *
 	 * @return $this
 	 *
 	 * @author Daniele Sabre 26/ott/2018
 	 */
-	public function prune(){
+	public function prune($directory = null){
 		$doctrine = $this->container->get('doctrine');
 		$em = $doctrine->getManager();
 		$symfonies = $doctrine->getRepository(Symfony::class)->findBy(['ip' => null]);
+		
+		$symfonies = array_filter($symfonies, function(Symfony $symfony) use ($directory){
+			$directory = str_replace('/', '\\/', $directory);
+			
+			return preg_match('/^' . $directory . '/', $symfony->getPath());
+		});
 		
 		/** @var Symfony $symfony */
 		foreach($symfonies as $symfony){
@@ -609,7 +622,7 @@ class SymfoniesService{
 			if(preg_match('/^' . $symfony->getIp() . '\t/', $host)){
 				$host = str_replace($symfony->getIp(), '', $host);
 				$host = trim($host);
-
+				
 				if($entryPoints){
 					foreach($entryPoints as $entryPoint){
 						$aliases[] = 'http://' . $host . ':' . $symfony->getPort() . $entryPoint;

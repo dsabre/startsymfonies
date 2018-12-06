@@ -44,13 +44,21 @@ class ApiController extends Controller{
 	
 	/**
 	 * @Route("/scan")
+	 * @Route("/scan/{dirKey}")
+	 *
+	 * @param null|int        $dirKey
 	 * @param LoggerInterface $logger
 	 *
 	 * @return JsonResponse
 	 */
-	public function scan(LoggerInterface $logger){
+	public function scan($dirKey = null, LoggerInterface $logger){
 		try{
-			$this->get(SymfoniesService::class)->scan();
+			$dir = null;
+			if($dirKey !== null){
+				$dir = $this->get(UtilService::class)->getConfig('directoriesToScan')[(int)$dirKey];
+			}
+			
+			$this->get(SymfoniesService::class)->scan($dir);
 			
 			return new JsonResponse();
 		}
@@ -63,13 +71,21 @@ class ApiController extends Controller{
 	
 	/**
 	 * @Route("/prune")
+	 * @Route("/prune/{dirKey}")
+	 *
+	 * @param null|int        $dirKey
 	 * @param LoggerInterface $logger
 	 *
 	 * @return JsonResponse
 	 */
-	public function prune(LoggerInterface $logger){
+	public function prune($dirKey = null, LoggerInterface $logger){
 		try{
-			$this->get(SymfoniesService::class)->prune();
+			$dir = null;
+			if($dirKey !== null){
+				$dir = $this->get(UtilService::class)->getConfig('directoriesToScan')[(int)$dirKey];
+			}
+			
+			$this->get(SymfoniesService::class)->prune($dir);
 			
 			return new JsonResponse();
 		}
@@ -129,9 +145,9 @@ class ApiController extends Controller{
 			
 			$symfony->setPhpExecutable($data['phpExecutable']);
 			
-//			$em = $this->getDoctrine()->getManager();
-//			$em->persist($symfony);
-//			$em->flush();
+			//			$em = $this->getDoctrine()->getManager();
+			//			$em->persist($symfony);
+			//			$em->flush();
 			
 			$this->get(SymfoniesService::class)->recheckSymfony($symfony);
 			

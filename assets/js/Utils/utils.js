@@ -1,11 +1,11 @@
-const swal      = require('sweetalert2');
+const swal = require('sweetalert2');
 
 export const SYMFONIES_STORAGE       = 'symfonies';
 export const PHP_EXECUTABLES_STORAGE = 'php_executables';
 export const INFO_STORAGE            = 'settings';
 export const FAKE_TIMER              = 300;
 export const URL_GITHUB              = 'https://github.com/raniel86/startsymfonies';
-export const VERSION                 = 'v3.2.7';
+export const VERSION                 = 'v3.3.0';
 export const CID_CHECK               = 'last_version_check';
 export const CID_UPDATE              = 'update_available';
 
@@ -59,7 +59,7 @@ export function getLastVersion(forceReload){
 		return fetch('https://api.github.com/repos/raniel86/startsymfonies/releases/latest')
 		.then(response => response.json())
 		.then(response =>{
-			loadInfo(null, false, info => {
+			loadInfo(null, false, info =>{
 				localStorage.setItem(cid, JSON.stringify(response));
 				localStorage.setItem(CID_CHECK, '' + now.getTime());
 				localStorage.setItem(CID_UPDATE, response.tag_name !== VERSION && info.checkUpdates ? '1' : '0');
@@ -76,8 +76,17 @@ export function longOperation($title, $button, $confirmButtonColor, $apiEndpoint
 	$confirmButtonColor = $confirmButtonColor || '#007bff';
 	$fakeTimer          = parseInt($fakeTimer || 0, 10);
 	
+	let $text = '';
+	if($title.indexOf('\n') > -1){
+		let $texts = $title.split('\n');
+		
+		$title = $texts[0];
+		$text  = $texts[1];
+	}
+	
 	swal({
 		title               : $title,
+		text                : $text,
 		showCancelButton    : true,
 		confirmButtonText   : $button,
 		showLoaderOnConfirm : true,
@@ -131,7 +140,7 @@ export function loadInfo(component, forceReload, callback){
 		const info = JSON.parse(settings);
 		
 		if(component){
-			component.setState({info : info}, () => {
+			component.setState({info : info}, () =>{
 				if(callback){
 					callback(info);
 				}

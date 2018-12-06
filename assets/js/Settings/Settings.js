@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {getTheme, getThemeSettings, THEMES} from "../Utils/theme";
-import {getLastVersion, loadInfo, setDocumentTitle} from "../Utils/utils";
+import {getLastVersion, loadInfo, longOperation, setDocumentTitle} from "../Utils/utils";
 import {deepCopy} from "../Utils/deepCopy";
 import toastr from "toastr";
 
@@ -85,11 +85,19 @@ class Settings extends Component {
 									return (
 										<tr key={i}>
 											<td className={"font-monospace"}>{directory}</td>
-											<td>
-												<a onClick={this.removeDirectory.bind(this, i)} href="#" className={"btn btn-outline-danger btn-sm btn-block"}>
+											<td className={"text-right"}>
+												<button onClick={longOperation.bind(this, 'Launch scan now?\n' + directory, 'Scan', null, 'scan/' + i, 'Scan completed', this, null)} className={"btn btn-outline-info btn-sm mr-2"} type={"button"}>
+													<i className="fas fa-search-plus mr-2"/>
+													<small>Scan</small>
+												</button>
+												<button onClick={longOperation.bind(this, 'Launch prune now?\n' + directory, 'Prune', '#dc3545', 'prune/' + i, 'Prune completed', this, null)} className={"btn btn-outline-danger btn-sm mr-2"} type={"button"}>
+													<i className="fas fa-search-minus mr-2"/>
+													<small>Prune</small>
+												</button>
+												<button onClick={this.removeDirectory.bind(this, i)} className={"btn btn-danger btn-sm"} type={"button"}>
 													<i className="fas fa-times mr-2"/>
-													Remove
-												</a>
+													<small>Remove</small>
+												</button>
 											</td>
 										</tr>
 									);
