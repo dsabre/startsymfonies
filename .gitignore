@@ -24,3 +24,4 @@ web/bundles/
 /startsymfonies.config.json.bck
 /startsymfonies_php_executable.txt
 /package-lock.json
+/yarn.lock
