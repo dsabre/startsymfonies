@@ -211,8 +211,9 @@ class UtilService{
 		$phpExecutable = trim(file_get_contents($cwd . '/startsymfonies_php_executable.txt'));
 		
 		$commands = [
-			sprintf('%s pull', $gitExecutable),
-			sprintf('%s install', $yarnExecutable),
+			sprintf('%s pull -q', $gitExecutable),
+			sprintf('%s -s install', $yarnExecutable),
+			sprintf('%s bin/console -q doctrine:schema:update --force &', $phpExecutable),
 			sprintf('%s bin/console -q cache:clear &', $phpExecutable),
 			sprintf('%s dev', $yarnExecutable)
 		];
