@@ -115,7 +115,7 @@ class Navbar extends Component {
 		return (
 			<li className="nav-item dropdown">
 				<a className="nav-link dropdown-toggle" href="#" id="manageLinks" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					<i className="fas fa-wrench"/>
+					<i className="fas fa-wrench mr-1"/>
 					Manage
 				</a>
 				<div className={"dropdown-menu bg-" + (this.themeSettings.body || 'light')} aria-labelledby="manageLinks">
@@ -152,7 +152,7 @@ class Navbar extends Component {
 		return (
 			<li className="nav-item dropdown">
 				<a className="nav-link dropdown-toggle" href="#" id="usefulLinks" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					<i className="fas fa-link"/>
+					<i className="fas fa-link mr-1"/>
 					Useful links
 				</a>
 				<div className={"dropdown-menu bg-" + (this.themeSettings.body || 'light')} aria-labelledby="usefulLinks">
