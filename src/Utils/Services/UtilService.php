@@ -212,6 +212,7 @@ class UtilService{
 		
 		$commands = [
 			sprintf('%s pull', $gitExecutable),
+			sprintf('%s install', $yarnExecutable),
 			sprintf('%s bin/console -q cache:clear &', $phpExecutable),
 			sprintf('%s dev', $yarnExecutable)
 		];
