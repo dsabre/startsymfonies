@@ -40,7 +40,7 @@ class ActionController extends Controller{
 	public function updateStartsymfoniesAction(){
 		$this->get(UtilService::class)->updateStartsymfonies();
 		
-		return $this->redirectToRoute('app_default_index');
+		return $this->redirectToRoute('settings', ['forced' => 1]);
 	}
 	
 	/**

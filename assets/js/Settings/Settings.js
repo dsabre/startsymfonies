@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {getTheme, getThemeSettings, THEMES} from "../Utils/theme";
-import {loadInfo, setDocumentTitle} from "../Utils/utils";
+import {getLastVersion, loadInfo, setDocumentTitle} from "../Utils/utils";
 import {deepCopy} from "../Utils/deepCopy";
 import toastr from "toastr";
 
@@ -30,7 +30,7 @@ class Settings extends Component {
 		
 		if($forceReload){
 			loadInfo(null, true, () =>{
-				window.location.href = '/settings';
+				getLastVersion(true).then(() => window.location.href = '/settings');
 			});
 		}
 		else{
