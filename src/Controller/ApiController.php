@@ -514,6 +514,30 @@ class ApiController extends Controller{
 	}
 	
 	/**
+	 * @Route("/git-pull-symfony/{symfony}/{gitBranch}")
+	 *
+	 * @param Symfony         $symfony
+	 * @param string          $gitBranch
+	 * @param LoggerInterface $logger
+	 *
+	 * @return JsonResponse
+	 */
+	public function gitPullSymfony(Symfony $symfony, $gitBranch, LoggerInterface $logger){
+		try{
+			$symfoniesService = $this->get(SymfoniesService::class);
+			
+			$symfony = $symfoniesService->gitPullSymfony($symfony, $gitBranch);
+			
+			return new JsonResponse($symfoniesService->toArray($symfony));
+		}
+		catch(\Exception $exc){
+			$logger->error($exc);
+			
+			return new JsonResponse($exc->getMessage(), 500);
+		}
+	}
+	
+	/**
 	 * @Route("/add-symfony-from-path")
 	 *
 	 * @param Request         $request

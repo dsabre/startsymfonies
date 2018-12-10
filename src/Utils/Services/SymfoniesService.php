@@ -697,7 +697,11 @@ class SymfoniesService{
 			
 			$version = trim($matches[0]);
 			
-			$symfony->setVersion($version)->setStatus(Symfony::STATUS_STOPPED);
+			$symfony->setVersion($version);
+			
+			if($symfony->getStatus() !== Symfony::STATUS_ACTIVE){
+				$symfony->setStatus(Symfony::STATUS_STOPPED);
+			}
 			
 			$em = $this->container->get('doctrine')->getManager();
 			$em->persist($symfony);
@@ -832,8 +836,27 @@ class SymfoniesService{
 		$symfony->ok = $symfony->isOk();
 		$symfony->links = $this->getLinks($symfony);
 		$symfony->gitBranches = $this->getSymfonyGitBranches($symfony);
+		$symfony->currentGitBranch = $this->getSymfonyCurrentGitBranch($symfony);
 		
 		return $symfony->toArray();
+	}
+	
+	/**
+	 * @param Symfony $symfony
+	 *
+	 * @return string
+	 *
+	 * @author Daniele Sabre 06/dic/2018
+	 */
+	public function getSymfonyCurrentGitBranch(Symfony $symfony){
+		$utilService = $this->container->get(UtilService::class);
+		$git = $utilService->getConfig('gitExecutable');
+		
+		$command = sprintf("%s branch | grep \* | cut -d ' ' -f2", $git);
+		$process = $utilService->processRun(true, false, $command, $symfony->getPath());
+		$branch = $process->getOutput();
+		
+		return trim($branch);
 	}
 	
 	/**
@@ -864,6 +887,42 @@ class SymfoniesService{
 		}
 		
 		return $branches;
+	}
+	
+	/**
+	 * @param Symfony $symfony
+	 * @param string  $gitBranch
+	 *
+	 * @return Symfony
+	 *
+	 * @author Daniele Sabre 06/dic/2018
+	 */
+	public function gitPullSymfony(Symfony $symfony, $gitBranch = 'master'){
+		set_time_limit(0);
+		
+		$utilService = $this->container->get(UtilService::class);
+		
+		$gitExecutable = $utilService->getConfig('gitExecutable');
+		$composerExecutable = $utilService->getConfig('composerExecutable');
+		$phpExecutable = $this->getPhpExecutable($symfony);
+		$cwd = $symfony->getPath();
+		$dirConsole = $symfony->getVersion(true) === 2 ? 'app' : 'bin';
+		
+		$commands = [
+			sprintf('%s checkout -q %s', $gitExecutable, $gitBranch),
+			sprintf('%s pull -q', $gitExecutable),
+			sprintf('%s %s install', $phpExecutable, $composerExecutable),
+			sprintf('%s bin/console -q cache:clear &', $phpExecutable),
+			sprintf('%s %s/console -q assets:install --symlink &', $phpExecutable, $dirConsole)
+		];
+		
+		foreach($commands as $command){
+			$utilService->processRun(true, true, $command, $cwd);
+		}
+		
+		$this->recheckSymfony($symfony);
+		
+		return $symfony;
 	}
 	
 }

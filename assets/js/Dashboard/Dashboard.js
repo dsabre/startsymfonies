@@ -23,6 +23,11 @@ class Dashboard extends Component {
 				entry : '',
 				edit  : false
 			},
+			gitPull          : {
+				currentBranch : '',
+				symfony       : null,
+				started       : false
+			},
 			faviconHash      : Date.now(),
 			phpExecutables   : [],
 			changeExecutable : {
@@ -56,7 +61,7 @@ class Dashboard extends Component {
 			}
 		});
 		
-		getPhpExecutables().then(phpExecutables => {
+		getPhpExecutables().then(phpExecutables =>{
 			this.setState({phpExecutables : phpExecutables});
 		});
 		
@@ -311,11 +316,11 @@ class Dashboard extends Component {
 		
 		fetch('/api/recheck/' + $symfony.id)
 		.then(response => response.json())
-		.then(response => {
+		.then(response =>{
 			this.alterSymfonyInfo(response, function(){
 				toastr.success('Symfony successfully rechecked');
 			});
-		})
+		});
 	}
 	
 	remove($symfony, $event){
@@ -443,7 +448,7 @@ class Dashboard extends Component {
 						</a>
 					];
 					
-					const LinksOk = () =>[
+					const LinksOk = () => [
 						<a key={1} onClick={this.cacheAssetsReset.bind(this, row)} href="#" className={"btn btn-" + (this.themeSettings.body === 'dark' ? 'dark' : 'light') + " text-secondary"} aria-hidden="true" title="Cache &amp; assets reset">
 							<i className="fas fa-sync-alt"/>
 						</a>
@@ -579,7 +584,11 @@ class Dashboard extends Component {
 											<a onClick={this.composerActivity.bind(this, row, 'install')} className="dropdown-item" href="#">Composer install</a>
 											{/*<a onClick={this.composerActivity.bind(this, row.id, 'update')} className="dropdown-item" href="#">Composer update</a>*/}
 											
-											{!!row.ip && <a onClick={this.deleteInfo.bind(this, row)} className="dropdown-item text-danger" href="#">Delete info</a>}
+											{!!row.currentGitBranch &&
+											<a onClick={this.handleOpenGitPull.bind(this, row)} className="dropdown-item" href="#" data-toggle="modal" data-target="#modalGitPull">Git pull</a>}
+											
+											{!!row.ip &&
+											<a onClick={this.deleteInfo.bind(this, row)} className="dropdown-item text-danger" href="#">Delete info</a>}
 											
 											<a onClick={this.remove.bind(this, row)} className="dropdown-item text-danger" href="#">DELETE SYMFONY</a>
 										</div>
@@ -604,6 +613,7 @@ class Dashboard extends Component {
 			<div className={"container-fluid"}>
 				{symfonies.length > 0 && $tableRows > 0 && $table}
 				{symfonies.length > 0 && $tableRows > 0 && this.modalSymfony()}
+				{symfonies.length > 0 && $tableRows > 0 && this.modalGitPull()}
 				{symfonies.length > 0 && $tableRows > 0 && this.modalEditPhpExecutable()}
 				
 				{symfonies.length > 0 && $tableRows === 0 &&
@@ -613,6 +623,86 @@ class Dashboard extends Component {
 				<p className={"bg-warning mt-3 p-3"}>No symfonies found, launch a scan now.</p>}
 			</div>
 		);
+	}
+	
+	modalGitPull(){
+		return (
+			<div className="modal fade" id="modalGitPull" tabIndex="-1" role="dialog" aria-labelledby="modalGitPullLabel" aria-hidden="true">
+				<div className="modal-dialog modal-lg text-dark" role="document">
+					<div className="modal-content">
+						<div className="modal-header">
+							<h5 className="modal-title" id="modalGitPullLabel">{!!this.state.gitPull.symfony ? this.state.gitPull.symfony.path : ''}</h5>
+							<button type="button" className="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<form onSubmit={this.gitPull.bind(this)}>
+							<div className="modal-body">
+								<p className={"mb-0"}><b>Select git branch to pull:</b></p>
+								
+								{!!this.state.gitPull.symfony && this.state.gitPull.symfony.gitBranches.map((branch, k) =>{
+									return (
+										<div key={k} className="custom-control custom-radio">
+											<input onChange={this.selectBranch.bind(this, branch)} checked={this.state.gitPull.currentBranch === branch} type="radio" id={"gitBranch_" + branch} className="custom-control-input"/>
+											<label className="custom-control-label" htmlFor={"gitBranch_" + branch}>{branch}</label>
+										</div>
+									);
+								})}
+							</div>
+							<div className="modal-footer">
+								{!this.state.gitPull.started && <div>
+									<button type="button" className="btn btn-secondary mr-2" data-dismiss="modal">Cancel</button>
+									<button type="submit" className="btn btn-primary">Pull</button>
+								</div>}
+								
+								{this.state.gitPull.started && <div>
+									<i className="fas fa-spinner fa-pulse"/>
+								</div>}
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		);
+	}
+	
+	handleOpenGitPull(symfony){
+		let tmpState = deepCopy(this.state);
+		
+		tmpState.gitPull.currentBranch = symfony.currentGitBranch;
+		tmpState.gitPull.symfony       = symfony;
+		
+		this.setState(tmpState);
+	}
+	
+	selectBranch(branch){
+		let tmpState = deepCopy(this.state);
+		
+		tmpState.gitPull.currentBranch = branch;
+		
+		this.setState(tmpState);
+	}
+	
+	gitPull(event){
+		event.preventDefault();
+		
+		let tmpState = deepCopy(this.state);
+		
+		tmpState.gitPull.started = true;
+		this.setState(tmpState);
+		
+		fetch('/api/git-pull-symfony/' + tmpState.gitPull.symfony.id + '/' + tmpState.gitPull.currentBranch)
+		.then(response => response.json())
+		.then(response =>{
+			this.alterSymfonyInfo(response, () => {
+				$('#modalGitPull').modal('hide');
+				
+				tmpState.gitPull.started = false;
+				this.setState(tmpState);
+				
+				toastr.success('Symfony git pull successfully executed');
+			});
+		});
 	}
 	
 	modalSymfony(){
