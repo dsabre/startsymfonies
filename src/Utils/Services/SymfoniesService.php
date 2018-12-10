@@ -837,8 +837,29 @@ class SymfoniesService{
 		$symfony->links = $this->getLinks($symfony);
 		$symfony->gitBranches = $this->getSymfonyGitBranches($symfony);
 		$symfony->currentGitBranch = $this->getSymfonyCurrentGitBranch($symfony);
+		$symfony->faviconUrl = $this->getFaviconUrl($symfony);
 		
 		return $symfony->toArray();
+	}
+	
+	/**
+	 * @param Symfony $symfony
+	 *
+	 * @return string
+	 *
+	 * @author Daniele Sabre 10/dic/2018
+	 */
+	public function getFaviconUrl(Symfony $symfony){
+		$url = sprintf('http://%s:%d/favicon.ico?%d', $symfony->getIp(), $symfony->getPort(), time());
+		$exists = false;
+		
+		try{
+			$exists = (bool)file_get_contents($url);
+		}
+		catch(\Exception $exc){
+		}
+		
+		return $exists ? $url : '/favicon.ico';
 	}
 	
 	/**

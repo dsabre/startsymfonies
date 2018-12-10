@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {getTheme, getThemeSettings, THEMES} from "../Utils/theme";
-import {getLastVersion, loadInfo, longOperation, setDocumentTitle} from "../Utils/utils";
+import {getLastVersion, loadInfo, longOperation, setDocumentTitle, SYMFONIES_STORAGE} from "../Utils/utils";
 import {deepCopy} from "../Utils/deepCopy";
 import toastr from "toastr";
 
@@ -30,6 +30,8 @@ class Settings extends Component {
 		
 		if($forceReload){
 			loadInfo(null, true, () =>{
+				localStorage.removeItem(SYMFONIES_STORAGE);
+				
 				getLastVersion(true).then(() => window.location.href = '/settings');
 			});
 		}

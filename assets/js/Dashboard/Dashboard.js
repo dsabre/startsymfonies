@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import toastr from "toastr";
 import {deepCopy} from "../Utils/deepCopy";
 import {getThemeSettings} from "../Utils/theme";
-import {FAKE_TIMER, getPhpExecutables, setDocumentTitle, sleep, SYMFONIES_STORAGE} from "../Utils/utils";
+import {FAKE_TIMER, getPhpExecutables, setDocumentTitle, sleep, SYMFONIES_STORAGE, onFaviconError} from "../Utils/utils";
 import {withRouter} from "react-router-dom";
 
 const $           = require('jquery');
@@ -481,7 +481,9 @@ class Dashboard extends Component {
 							</td>
 							<td className={"text-center"}>
 								{!!row.status &&
-								<img src={"http://" + row.ip + ":" + row.port + "/favicon.ico?" + faviconHash} alt="" width={16}/>}
+								<img onError={onFaviconError.bind(this)} src={row.faviconUrl} alt="" width={16}/>
+								}
+								
 								{!row.status && <span className={"text-secondary"}>--</span>}
 							</td>
 							<td>
@@ -694,7 +696,7 @@ class Dashboard extends Component {
 		fetch('/api/git-pull-symfony/' + tmpState.gitPull.symfony.id + '/' + tmpState.gitPull.currentBranch)
 		.then(response => response.json())
 		.then(response =>{
-			this.alterSymfonyInfo(response, () => {
+			this.alterSymfonyInfo(response, () =>{
 				$('#modalGitPull').modal('hide');
 				
 				tmpState.gitPull.started = false;

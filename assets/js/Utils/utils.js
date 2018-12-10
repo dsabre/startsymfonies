@@ -1,3 +1,5 @@
+import React from 'react';
+
 const swal = require('sweetalert2');
 
 export const SYMFONIES_STORAGE       = 'symfonies';
@@ -5,7 +7,7 @@ export const PHP_EXECUTABLES_STORAGE = 'php_executables';
 export const INFO_STORAGE            = 'settings';
 export const FAKE_TIMER              = 300;
 export const URL_GITHUB              = 'https://github.com/raniel86/startsymfonies';
-export const VERSION                 = 'v3.4.0';
+export const VERSION                 = 'v3.4.1';
 export const CID_CHECK               = 'last_version_check';
 export const CID_UPDATE              = 'update_available';
 
@@ -68,6 +70,10 @@ export function getLastVersion(forceReload){
 			return response;
 		});
 	}
+}
+
+export function onFaviconError(event){
+	event.target.src = '/favicon.ico';
 }
 
 export function longOperation($title, $button, $confirmButtonColor, $apiEndpoint, $successMessage, $component, $fakeTimer, $event){
