@@ -2,8 +2,9 @@ import React, {Component} from 'react';
 import toastr from "toastr";
 import {deepCopy} from "../Utils/deepCopy";
 import {getThemeSettings} from "../Utils/theme";
-import {FAKE_TIMER, getPhpExecutables, setDocumentTitle, sleep, SYMFONIES_STORAGE, onFaviconError} from "../Utils/utils";
+import {FAKE_TIMER, getPhpExecutables, onFaviconError, setDocumentTitle, sleep, SYMFONIES_STORAGE} from "../Utils/utils";
 import {withRouter} from "react-router-dom";
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 const $           = require('jquery');
 const swal        = require('sweetalert2');
@@ -28,7 +29,6 @@ class Dashboard extends Component {
 				symfony       : null,
 				started       : false
 			},
-			faviconHash      : Date.now(),
 			phpExecutables   : [],
 			changeExecutable : {
 				id            : '',
@@ -396,7 +396,7 @@ class Dashboard extends Component {
 	}
 	
 	symfoniesTable(){
-		const {symfonies, faviconHash, search, searchActives} = this.state;
+		const {symfonies, search, searchActives} = this.state;
 		
 		return (
 			<table className={"table table-hover table-sm table-bordered mb-0" + (symfonies.length === 0 ? ' d-none' : '') + (this.themeSettings.body === 'dark' ? ' table-dark' : '')}>
@@ -481,13 +481,20 @@ class Dashboard extends Component {
 							</td>
 							<td className={"text-center"}>
 								{!!row.status &&
-								<img onError={onFaviconError.bind(this)} src={row.faviconUrl} alt="" width={16}/>
+									<span className={"bg-white rounded-circle p-1"}>
+										<img style={{marginTop: '-1px'}} onError={onFaviconError.bind(this)} src={row.faviconUrl} alt="" width={16}/>
+									</span>
 								}
 								
 								{!row.status && <span className={"text-secondary"}>--</span>}
 							</td>
 							<td>
-								<small>{row.path}</small>
+								<CopyToClipboard
+									text={row.path}
+									onCopy={() => toastr.info('Path copied to clipboard')}
+								>
+									<small style={{cursor: 'pointer'}} title={"Click to copy path to clipboard"}>{row.path}</small>
+								</CopyToClipboard>
 							</td>
 							<td className={"text-center"}>
 								<span className={"badge " + badgeColor}>{row.version}</span>
