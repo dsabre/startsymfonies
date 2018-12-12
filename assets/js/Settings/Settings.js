@@ -3,6 +3,8 @@ import {getTheme, getThemeSettings, THEMES} from "../Utils/theme";
 import {getLastVersion, loadInfo, longOperation, setDocumentTitle, SYMFONIES_STORAGE} from "../Utils/utils";
 import {deepCopy} from "../Utils/deepCopy";
 import toastr from "toastr";
+import Switch from 'react-toggle-switch';
+import '../../../node_modules/react-toggle-switch/dist/css/switch.min.css';
 
 const swal = require('sweetalert2');
 
@@ -146,12 +148,16 @@ class Settings extends Component {
 						
 						<dt className="col-sm-3 border-top border-secondary py-2">Check updates</dt>
 						<dd className="col-sm-9 border-top border-secondary py-2">
-							<span className={"float-left"}>
-								{checkUpdates && <i onDoubleClick={this.editBoolValue.bind(this, 'checkUpdates', false)} className="fas fa-check text-success" aria-hidden="true"/>}
-								{!checkUpdates && <i onDoubleClick={this.editBoolValue.bind(this, 'checkUpdates', true)} className="fas fa-times text-muted" aria-hidden="true"/>}
+							<span style={{marginBottom: '-6px'}} className={"float-left mt-1"}>
+								<Switch onClick={this.editBoolValue.bind(this, 'checkUpdates', !checkUpdates)} on={checkUpdates} />
 							</span>
 							
-							<small className={"text-secondary ml-2 float-right"}>(Double click on icon to change)</small>
+							{checkUpdates && <div className={"float-right"}>
+								<button onClick={() => getLastVersion(true)} type={'button'} className={'btn btn-outline-secondary btn-sm'}>
+									<i className="fas fa-sync-alt mr-1" />
+									Check now
+								</button>
+							</div>}
 						</dd>
 						
 						<dt className="col-sm-3 border-top border-secondary py-2">Host file</dt>
@@ -332,6 +338,9 @@ class Settings extends Component {
 	editBoolValue(field, value){
 		let tmpState = deepCopy(this.state);
 		
+		tmpState.info[field] = value;
+		this.setState(tmpState);
+		
 		fetch('/api/set-config-value/bool', {
 			method  : 'POST',
 			headers : {
@@ -342,16 +351,8 @@ class Settings extends Component {
 				field : field,
 				value : value
 			})
-		})
-		.then(() =>{
-			tmpState.info[tmpState.edit] = tmpState.editValue;
-			
-			tmpState.edit      = '';
-			tmpState.editValue = '';
-			
-			this.setState(tmpState, () =>{
-				loadInfo(this, true);
-			});
+		}).then(() =>{
+			loadInfo(this, true);
 		});
 	}
 }
