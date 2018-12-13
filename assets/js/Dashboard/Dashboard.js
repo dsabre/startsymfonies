@@ -463,6 +463,10 @@ class Dashboard extends Component {
 					const contextMenuTrigger = 'context_menu_symfony_' + row.id;
 					const contextMenu = (
 						<ContextMenu id={contextMenuTrigger}>
+							<MenuItem disabled={true}>
+								{'.../' + row.path.split('/').slice(-2).join('/')}
+							</MenuItem>
+							
 							{!!row.ok && !row.status &&
 								<MenuItem onClick={this.handleOpenStart.bind(this, row, false)} attributes={{'className': 'text-success', 'data-toggle': 'modal', 'data-target': '#modalSymfony'}}>
 									<i className="fas fa-play mr-2"/>
@@ -498,12 +502,12 @@ class Dashboard extends Component {
 								</MenuItem>
 							}
 							
-							{/*<SubMenu title='Custom commands' hoverDelay={1}>*/}
-								{/*<MenuItem>*/}
-									{/*<i className="fas fa-plus text-success mr-2"/>*/}
-									{/*New custom command*/}
-								{/*</MenuItem>*/}
-							{/*</SubMenu>*/}
+							<SubMenu title='Custom commands' hoverDelay={1}>
+								<MenuItem>
+									<i className="fas fa-plus text-success mr-2"/>
+									New custom command
+								</MenuItem>
+							</SubMenu>
 							
 							<SubMenu title='Other actions' hoverDelay={1}>
 								<MenuItem onClick={this.handleOpenEditExecutable.bind(this, row)} attributes={{'data-toggle': 'modal', 'data-target': '#modalEditPhpExecutable'}}>
