@@ -477,10 +477,10 @@ class Dashboard extends Component {
 								</MenuItem>
 							}
 							
-							{!!row.ok && !!row.status &&
-								<MenuItem onClick={this.stop.bind(this, row)}>
-									<i className="fas fa-stop mr-2"/>
-									Stop
+							{!!row.ok &&
+								<MenuItem onClick={this.cacheAssetsReset.bind(this, row)} attributes={{'className': 'text-secondary'}}>
+									<i className="fas fa-sync-alt mr-2"/>
+									Cache & assets reset
 								</MenuItem>
 							}
 							
@@ -491,27 +491,38 @@ class Dashboard extends Component {
 								</MenuItem>
 							}
 							
-							{!!row.ok &&
-								<MenuItem onClick={this.cacheAssetsReset.bind(this, row)} attributes={{'className': 'text-secondary'}}>
-									<i className="fas fa-sync-alt mr-2"/>
-									Cache & assets reset
+							{!!row.ok && !!row.status &&
+								<MenuItem onClick={this.stop.bind(this, row)}>
+									<i className="fas fa-stop mr-2"/>
+									Stop
 								</MenuItem>
 							}
 							
+							{/*<SubMenu title='Custom commands' hoverDelay={1}>*/}
+								{/*<MenuItem>*/}
+									{/*<i className="fas fa-plus text-success mr-2"/>*/}
+									{/*New custom command*/}
+								{/*</MenuItem>*/}
+							{/*</SubMenu>*/}
+							
 							<SubMenu title='Other actions' hoverDelay={1}>
 								<MenuItem onClick={this.handleOpenEditExecutable.bind(this, row)} attributes={{'data-toggle': 'modal', 'data-target': '#modalEditPhpExecutable'}}>
+									<i className="fab fa-php mr-2"/>
 									Edit php executable
 								</MenuItem>
 								<MenuItem onClick={this.recheck.bind(this, row)}>
+									<i className="fas fa-retweet mr-2"/>
 									Recheck configuration now
 								</MenuItem>
 								<MenuItem onClick={this.composerActivity.bind(this, row, 'install')}>
+									<i className="fas fa-cloud-download-alt mr-2"/>
 									Composer install
 								</MenuItem>
 								
 								{!!row.currentGitBranch &&
 								<MenuItem onClick={this.handleOpenGitPull.bind(this, row)} attributes={{'data-toggle': 'modal', 'data-target': '#modalGitPull'}}>
-									Git pull
+									<i className="fab fa-git mr-2"/>
+									Pull
 								</MenuItem>
 								}
 								
@@ -519,12 +530,14 @@ class Dashboard extends Component {
 								
 								{!!row.ip &&
 									<MenuItem onClick={this.deleteInfo.bind(this, row)} attributes={{'className': 'text-danger'}}>
+										<i className="fas fa-times mr-2"/>
 										Delete info
 									</MenuItem>
 								}
 								
 								<MenuItem onClick={this.remove.bind(this, row)} attributes={{'className': 'text-danger'}}>
-									DELETE SYMFONY
+									<i className="fas fa-exclamation mr-2"/>
+									REMOVE SYMFONY
 								</MenuItem>
 							</SubMenu>
 						</ContextMenu>
