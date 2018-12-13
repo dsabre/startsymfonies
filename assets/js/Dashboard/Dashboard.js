@@ -5,6 +5,8 @@ import {getThemeSettings} from "../Utils/theme";
 import {FAKE_TIMER, getPhpExecutables, onFaviconError, setDocumentTitle, sleep, SYMFONIES_STORAGE} from "../Utils/utils";
 import {withRouter} from "react-router-dom";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
+import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
+import '../../css/react-contextmenu.css';
 
 const $           = require('jquery');
 const swal        = require('sweetalert2');
@@ -78,7 +80,9 @@ class Dashboard extends Component {
 		if(e.key === 'F5'){
 			e.preventDefault();
 			
-			this.loadSymfonies(true);
+			this.loadSymfonies(true, null, () => {
+				toastr.info('Symfonies reloaded');
+			});
 		}
 	}
 	
@@ -453,27 +457,45 @@ class Dashboard extends Component {
 							<i className="fas fa-sync-alt"/>
 						</a>
 					];
-					//const LinksOk = () =>{
-					//	let links = [
-					//		<a key={1} onClick={this.cacheAssetsReset.bind(this, row)} href="#" className={"btn btn-" + (this.themeSettings.body === 'dark' ? 'dark' : 'light') + " text-secondary"} aria-hidden="true" title="Cache &amp; assets reset">
-					//			<i className="fas fa-sync-alt"/>
-					//		</a>
-					//	];
-					//
-					//	if(!!row.ip){
-					//		links.push(
-					//			<a key={2} onClick={this.deleteInfo.bind(this, row)} href="#" className={"btn btn-" + (this.themeSettings.body === 'dark' ? 'dark' : 'light') + " text-danger"} aria-hidden="true" title="Delete info">
-					//				<i className="fas fa-times"/>
-					//			</a>
-					//		);
-					//	}
-					//
-					//	return links;
-					//};
+					
+					const contextMenuTrigger = 'context_menu_symfony_' + row.id;
+					const contextMenu = (
+						<ContextMenu id={contextMenuTrigger}>
+							<MenuItem onClick={this.handleOpenEditExecutable.bind(this, row)} attributes={{'data-toggle': 'modal', 'data-target': '#modalEditPhpExecutable'}}>
+								Edit php executable
+							</MenuItem>
+							<MenuItem onClick={this.recheck.bind(this, row)}>
+								Recheck configuration now
+							</MenuItem>
+							<MenuItem onClick={this.composerActivity.bind(this, row, 'install')}>
+								Composer install
+							</MenuItem>
+							
+							{!!row.currentGitBranch &&
+							<MenuItem onClick={this.handleOpenGitPull.bind(this, row)} attributes={{'data-toggle': 'modal', 'data-target': '#modalGitPull'}}>
+								Git pull
+							</MenuItem>
+							}
+							
+							<MenuItem divider />
+							
+							{!!row.ip &&
+								<MenuItem onClick={this.deleteInfo.bind(this, row)} attributes={{'className': 'text-danger'}}>
+									Delete info
+								</MenuItem>
+							}
+							
+							<MenuItem onClick={this.remove.bind(this, row)} attributes={{'className': 'text-danger'}}>
+								DELETE SYMFONY
+							</MenuItem>
+						</ContextMenu>
+					);
 					
 					return (
-						<tr key={row.id}>
+						<ContextMenuTrigger key={row.id} id={contextMenuTrigger} renderTag={'tr'}>
 							<td className={"text-center"}>
+								{contextMenu}
+								
 								{row.starred &&
 								<i className="fas fa-star text-warning" onClick={this.switchStarred.bind(this, row.id)}/>}
 								{!row.starred &&
@@ -605,7 +627,7 @@ class Dashboard extends Component {
 								
 								</div>
 							</td>
-						</tr>
+						</ContextMenuTrigger>
 					);
 				})}
 				</tbody>

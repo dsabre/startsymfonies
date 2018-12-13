@@ -3,6 +3,7 @@
 namespace App\Utils\Services;
 
 use App\Entity\Symfony;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -16,12 +17,19 @@ class SymfoniesService{
 	const START_SYMFONIES_NAME = 'startsymfonies3';
 	
 	/**
+	 * @var LoggerInterface
+	 */
+	private $logger;
+	
+	/**
 	 * SymfoniesService constructor.
 	 *
 	 * @param ContainerInterface $container
+	 * @param LoggerInterface    $logger
 	 */
-	public function __construct(ContainerInterface $container){
+	public function __construct(ContainerInterface $container, LoggerInterface $logger){
 		$this->setContainer($container);
+		$this->logger = $logger;
 		
 		$this->container->get(UtilService::class)->loadEnv();
 	}
@@ -709,7 +717,7 @@ class SymfoniesService{
 		}
 		catch(\Exception $exc){
 			$msg = $exc->getMessage();
-			$this->container->get('logger')->error($msg);
+			$this->logger->error($msg);
 			
 			return false;
 		}

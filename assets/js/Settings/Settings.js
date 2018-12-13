@@ -57,7 +57,7 @@ class Settings extends Component {
 			e.preventDefault();
 			
 			loadInfo(this, true, () =>{
-				toastr.info('Info reloaded');
+				toastr.info('Settings reloaded');
 			});
 		}
 	}
