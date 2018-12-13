@@ -7,7 +7,7 @@ export const PHP_EXECUTABLES_STORAGE = 'php_executables';
 export const INFO_STORAGE            = 'settings';
 export const FAKE_TIMER              = 300;
 export const URL_GITHUB              = 'https://github.com/raniel86/startsymfonies';
-export const VERSION                 = 'v3.6.0';
+export const VERSION                 = 'v3.6.1';
 export const CID_CHECK               = 'last_version_check';
 export const CID_UPDATE              = 'update_available';
 

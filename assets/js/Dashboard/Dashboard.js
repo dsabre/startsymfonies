@@ -5,7 +5,7 @@ import {getThemeSettings} from "../Utils/theme";
 import {FAKE_TIMER, getPhpExecutables, onFaviconError, setDocumentTitle, sleep, SYMFONIES_STORAGE} from "../Utils/utils";
 import {withRouter} from "react-router-dom";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
-import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
+import {ContextMenu, MenuItem, ContextMenuTrigger, SubMenu} from "react-contextmenu";
 import '../../css/react-contextmenu.css';
 
 const $           = require('jquery');
@@ -227,11 +227,13 @@ class Dashboard extends Component {
 				});
 			},
 			allowOutsideClick   : () => !swal.isLoading()
-		}).then(() =>{
-			swal({
-				title : 'Cache and assets resetted correctly',
-				type  : 'success'
-			});
+		}).then(result =>{
+			if(result.value !== undefined){
+				swal({
+					title : 'Cache and assets resetted correctly',
+					type  : 'success'
+				});
+			}
 		});
 	}
 	
@@ -413,7 +415,7 @@ class Dashboard extends Component {
 					<th>PHP used</th>
 					<th>Status</th>
 					<th>Links</th>
-					<th>Operations</th>
+					{/*<th>Operations</th>*/}
 				</tr>
 				</thead>
 				<tbody>
@@ -440,54 +442,91 @@ class Dashboard extends Component {
 						badgeColor = 'badge-danger';
 					}
 					
-					const LinksActive = () => [
-						<a key={1} onClick={this.restart.bind(this, row)} href="#" className={"btn btn-" + (this.themeSettings.body === 'dark' ? 'dark' : 'light') + " text-primary"} aria-hidden="true" title="Restart">
-							<i className="fas fa-redo-alt"/>
-						</a>,
-						<a key={2} onClick={this.stop.bind(this, row)} href="#" className={"btn btn-" + (this.themeSettings.body === 'dark' ? 'dark' : 'light') + " text-" + (this.themeSettings.body === 'dark' ? 'light' : 'dark')} aria-hidden="true" title="Stop">
-							<i className="fas fa-stop"/>
-						</a>,
-						<a key={3} onClick={this.handleOpenStart.bind(this, row, true)} href="#" className={"btn btn-" + (this.themeSettings.body === 'dark' ? 'dark' : 'light') + " text-info"} aria-hidden="true" title="Edit" data-toggle="modal" data-target="#modalSymfony">
-							<i className="fas fa-pencil-alt"/>
-						</a>
-					];
-					
-					const LinksOk = () => [
-						<a key={1} onClick={this.cacheAssetsReset.bind(this, row)} href="#" className={"btn btn-" + (this.themeSettings.body === 'dark' ? 'dark' : 'light') + " text-secondary"} aria-hidden="true" title="Cache &amp; assets reset">
-							<i className="fas fa-sync-alt"/>
-						</a>
-					];
+					//const LinksActive = () => [
+					//	<a key={1} onClick={this.restart.bind(this, row)} href="#" className={"btn btn-" + (this.themeSettings.body === 'dark' ? 'dark' : 'light') + " text-primary"} aria-hidden="true" title="Restart">
+					//		<i className="fas fa-redo-alt"/>
+					//	</a>,
+					//	<a key={2} onClick={this.stop.bind(this, row)} href="#" className={"btn btn-" + (this.themeSettings.body === 'dark' ? 'dark' : 'light') + " text-" + (this.themeSettings.body === 'dark' ? 'light' : 'dark')} aria-hidden="true" title="Stop">
+					//		<i className="fas fa-stop"/>
+					//	</a>,
+					//	<a key={3} onClick={this.handleOpenStart.bind(this, row, true)} href="#" className={"btn btn-" + (this.themeSettings.body === 'dark' ? 'dark' : 'light') + " text-info"} aria-hidden="true" title="Edit" data-toggle="modal" data-target="#modalSymfony">
+					//		<i className="fas fa-pencil-alt"/>
+					//	</a>
+					//];
+					//
+					//const LinksOk = () => [
+					//	<a key={1} onClick={this.cacheAssetsReset.bind(this, row)} href="#" className={"btn btn-" + (this.themeSettings.body === 'dark' ? 'dark' : 'light') + " text-secondary"} aria-hidden="true" title="Cache &amp; assets reset">
+					//		<i className="fas fa-sync-alt"/>
+					//	</a>
+					//];
 					
 					const contextMenuTrigger = 'context_menu_symfony_' + row.id;
 					const contextMenu = (
 						<ContextMenu id={contextMenuTrigger}>
-							<MenuItem onClick={this.handleOpenEditExecutable.bind(this, row)} attributes={{'data-toggle': 'modal', 'data-target': '#modalEditPhpExecutable'}}>
-								Edit php executable
-							</MenuItem>
-							<MenuItem onClick={this.recheck.bind(this, row)}>
-								Recheck configuration now
-							</MenuItem>
-							<MenuItem onClick={this.composerActivity.bind(this, row, 'install')}>
-								Composer install
-							</MenuItem>
-							
-							{!!row.currentGitBranch &&
-							<MenuItem onClick={this.handleOpenGitPull.bind(this, row)} attributes={{'data-toggle': 'modal', 'data-target': '#modalGitPull'}}>
-								Git pull
-							</MenuItem>
-							}
-							
-							<MenuItem divider />
-							
-							{!!row.ip &&
-								<MenuItem onClick={this.deleteInfo.bind(this, row)} attributes={{'className': 'text-danger'}}>
-									Delete info
+							{!!row.ok && !row.status &&
+								<MenuItem onClick={this.handleOpenStart.bind(this, row, false)} attributes={{'className': 'text-success', 'data-toggle': 'modal', 'data-target': '#modalSymfony'}}>
+									<i className="fas fa-play mr-2"/>
+									Start
 								</MenuItem>
 							}
 							
-							<MenuItem onClick={this.remove.bind(this, row)} attributes={{'className': 'text-danger'}}>
-								DELETE SYMFONY
-							</MenuItem>
+							{!!row.ok && !!row.status &&
+								<MenuItem onClick={this.restart.bind(this, row)} attributes={{'className': 'text-primary'}}>
+									<i className="fas fa-redo-alt mr-2"/>
+									Restart
+								</MenuItem>
+							}
+							
+							{!!row.ok && !!row.status &&
+								<MenuItem onClick={this.stop.bind(this, row)}>
+									<i className="fas fa-stop mr-2"/>
+									Stop
+								</MenuItem>
+							}
+							
+							{!!row.ok && !!row.status &&
+								<MenuItem onClick={this.handleOpenStart.bind(this, row, true)} attributes={{'className': 'text-info', 'data-toggle': 'modal', 'data-target': '#modalSymfony'}}>
+									<i className="fas fa-pencil-alt mr-2"/>
+									Edit
+								</MenuItem>
+							}
+							
+							{!!row.ok &&
+								<MenuItem onClick={this.cacheAssetsReset.bind(this, row)} attributes={{'className': 'text-secondary'}}>
+									<i className="fas fa-sync-alt mr-2"/>
+									Cache & assets reset
+								</MenuItem>
+							}
+							
+							<SubMenu title='Other actions' hoverDelay={1}>
+								<MenuItem onClick={this.handleOpenEditExecutable.bind(this, row)} attributes={{'data-toggle': 'modal', 'data-target': '#modalEditPhpExecutable'}}>
+									Edit php executable
+								</MenuItem>
+								<MenuItem onClick={this.recheck.bind(this, row)}>
+									Recheck configuration now
+								</MenuItem>
+								<MenuItem onClick={this.composerActivity.bind(this, row, 'install')}>
+									Composer install
+								</MenuItem>
+								
+								{!!row.currentGitBranch &&
+								<MenuItem onClick={this.handleOpenGitPull.bind(this, row)} attributes={{'data-toggle': 'modal', 'data-target': '#modalGitPull'}}>
+									Git pull
+								</MenuItem>
+								}
+								
+								<MenuItem divider />
+								
+								{!!row.ip &&
+									<MenuItem onClick={this.deleteInfo.bind(this, row)} attributes={{'className': 'text-danger'}}>
+										Delete info
+									</MenuItem>
+								}
+								
+								<MenuItem onClick={this.remove.bind(this, row)} attributes={{'className': 'text-danger'}}>
+									DELETE SYMFONY
+								</MenuItem>
+							</SubMenu>
 						</ContextMenu>
 					);
 					
@@ -591,42 +630,42 @@ class Dashboard extends Component {
 								</ul>
 								}
 							</td>
-							<td>
-								<div className="btn-group" role="group" aria-label="Operations">
-									{!!row.ok && !row.status &&
-									<a href="#" className={"btn btn-" + (this.themeSettings.body === 'dark' ? 'dark' : 'light') + " text-success"} aria-hidden="true" title="Start" data-toggle="modal" data-target="#modalSymfony" onClick={this.handleOpenStart.bind(this, row, false)}>
-										<i className="fas fa-play"/>
-									</a>
-									}
-									
-									{!!row.ok && !!row.status && <LinksActive/>}
-									
-									{!!row.ok && <LinksOk/>}
-									
-									<div className="btn-group" role="group">
-										<button id="btnGroupOperations" type="button" className={"btn btn-" + (this.themeSettings.body === 'dark' ? 'dark' : 'light') + " dropdown-toggle btn-sm"} data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-											Other actions
-										</button>
-										<div className="dropdown-menu bg-light" aria-labelledby="btnGroupOperations">
-											<a onClick={this.handleOpenEditExecutable.bind(this, row)} className="dropdown-item" href="#" data-toggle="modal" data-target="#modalEditPhpExecutable">Edit php executable</a>
-											<a onClick={this.recheck.bind(this, row)} className="dropdown-item" title={"Recheck the symfony configuration"} href="#">Recheck now</a>
-											
-											{/*<a className="dropdown-item composerShow" href="#" data-toggle="modal" data-target="#modalComposerShow">Composer show</a>*/}
-											<a onClick={this.composerActivity.bind(this, row, 'install')} className="dropdown-item" href="#">Composer install</a>
-											{/*<a onClick={this.composerActivity.bind(this, row.id, 'update')} className="dropdown-item" href="#">Composer update</a>*/}
-											
-											{!!row.currentGitBranch &&
-											<a onClick={this.handleOpenGitPull.bind(this, row)} className="dropdown-item" href="#" data-toggle="modal" data-target="#modalGitPull">Git pull</a>}
-											
-											{!!row.ip &&
-											<a onClick={this.deleteInfo.bind(this, row)} className="dropdown-item text-danger" href="#">Delete info</a>}
-											
-											<a onClick={this.remove.bind(this, row)} className="dropdown-item text-danger" href="#">DELETE SYMFONY</a>
-										</div>
-									</div>
-								
-								</div>
-							</td>
+							{/*<td>*/}
+								{/*<div className="btn-group" role="group" aria-label="Operations">*/}
+									{/*{!!row.ok && !row.status &&*/}
+									{/*<a href="#" className={"btn btn-" + (this.themeSettings.body === 'dark' ? 'dark' : 'light') + " text-success"} aria-hidden="true" title="Start" data-toggle="modal" data-target="#modalSymfony" onClick={this.handleOpenStart.bind(this, row, false)}>*/}
+										{/*<i className="fas fa-play"/>*/}
+									{/*</a>*/}
+									{/*}*/}
+									{/**/}
+									{/*{!!row.ok && !!row.status && <LinksActive/>}*/}
+									{/**/}
+									{/*{!!row.ok && <LinksOk/>}*/}
+									{/**/}
+									{/*<div className="btn-group" role="group">*/}
+										{/*<button id="btnGroupOperations" type="button" className={"btn btn-" + (this.themeSettings.body === 'dark' ? 'dark' : 'light') + " dropdown-toggle btn-sm"} data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">*/}
+											{/*Other actions*/}
+										{/*</button>*/}
+										{/*<div className="dropdown-menu bg-light" aria-labelledby="btnGroupOperations">*/}
+											{/*<a onClick={this.handleOpenEditExecutable.bind(this, row)} className="dropdown-item" href="#" data-toggle="modal" data-target="#modalEditPhpExecutable">Edit php executable</a>*/}
+											{/*<a onClick={this.recheck.bind(this, row)} className="dropdown-item" title={"Recheck the symfony configuration"} href="#">Recheck now</a>*/}
+											{/**/}
+											{/*/!*<a className="dropdown-item composerShow" href="#" data-toggle="modal" data-target="#modalComposerShow">Composer show</a>*!/*/}
+											{/*<a onClick={this.composerActivity.bind(this, row, 'install')} className="dropdown-item" href="#">Composer install</a>*/}
+											{/*/!*<a onClick={this.composerActivity.bind(this, row.id, 'update')} className="dropdown-item" href="#">Composer update</a>*!/*/}
+											{/**/}
+											{/*{!!row.currentGitBranch &&*/}
+											{/*<a onClick={this.handleOpenGitPull.bind(this, row)} className="dropdown-item" href="#" data-toggle="modal" data-target="#modalGitPull">Git pull</a>}*/}
+											{/**/}
+											{/*{!!row.ip &&*/}
+											{/*<a onClick={this.deleteInfo.bind(this, row)} className="dropdown-item text-danger" href="#">Delete info</a>}*/}
+											{/**/}
+											{/*<a onClick={this.remove.bind(this, row)} className="dropdown-item text-danger" href="#">DELETE SYMFONY</a>*/}
+										{/*</div>*/}
+									{/*</div>*/}
+								{/**/}
+								{/*</div>*/}
+							{/*</td>*/}
 						</ContextMenuTrigger>
 					);
 				})}
