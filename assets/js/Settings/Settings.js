@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {getTheme, getThemeSettings, THEMES} from "../Utils/theme";
-import {getLastVersion, loadInfo, longOperation, setDocumentTitle, SYMFONIES_STORAGE} from "../Utils/utils";
+import {CID_UPDATE, getLastVersion, loadInfo, longOperation, setDocumentTitle, SYMFONIES_STORAGE} from "../Utils/utils";
 import {deepCopy} from "../Utils/deepCopy";
 import toastr from "toastr";
 import Switch from 'react-toggle-switch';
@@ -153,7 +153,7 @@ class Settings extends Component {
 							</span>
 							
 							{checkUpdates && <div className={"float-right"}>
-								<button onClick={() => getLastVersion(true)} type={'button'} className={'btn btn-outline-secondary btn-sm'}>
+								<button onClick={this.checkUpdate} type={'button'} className={'btn btn-outline-secondary btn-sm'}>
 									<i className="fas fa-sync-alt mr-1" />
 									Check now
 								</button>
@@ -192,6 +192,17 @@ class Settings extends Component {
 				</div>
 			</div>
 		);
+	}
+	
+	checkUpdate(){
+		getLastVersion(true).then(() => {
+			if(parseInt(localStorage.getItem(CID_UPDATE), 10) === 0){
+				toastr.info('No update available');
+			}
+			else{
+				toastr.warning('New update available');
+			}
+		});
 	}
 	
 	editableField(field, value){
