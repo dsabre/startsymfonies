@@ -2,6 +2,7 @@
 
 namespace App\Utils\Services;
 
+use App\Entity\CustomCommand;
 use App\Entity\Symfony;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
@@ -291,9 +292,7 @@ class SymfoniesService{
 	 * @return $this
 	 */
 	public function restart(Symfony $symfony){
-		$this->stop($symfony)->start($symfony);
-		
-		return $this;
+		return $this->stop($symfony)->start($symfony);
 	}
 	
 	/**
@@ -847,7 +846,17 @@ class SymfoniesService{
 		$symfony->currentGitBranch = $this->getSymfonyCurrentGitBranch($symfony);
 		$symfony->faviconUrl = $this->getFaviconUrl($symfony);
 		
-		return $symfony->toArray();
+		$arr = $symfony->toArray();
+		
+		$arr['customCommands'] = array_map(function(CustomCommand $customCommand){
+			$command = $customCommand->toArray();
+			
+			unset($command['symfony']);
+			
+			return $command;
+		}, $this->container->get('doctrine')->getRepository(CustomCommand::class)->findBy(['symfony' => $symfony], ['label' => 'ASC']));
+		
+		return $arr;
 	}
 	
 	/**

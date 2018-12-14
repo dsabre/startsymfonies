@@ -214,6 +214,7 @@ class UtilService{
 			sprintf('%s pull -q', $gitExecutable),
 			sprintf('%s -s install', $yarnExecutable),
 			sprintf('%s bin/console -q doctrine:schema:update --force &', $phpExecutable),
+//			sprintf('%s bin/console doctrine:migrations:migrate -qn &', $phpExecutable),
 			sprintf('%s bin/console -q cache:clear &', $phpExecutable),
 			sprintf('%s dev', $yarnExecutable)
 		];

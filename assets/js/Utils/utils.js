@@ -77,7 +77,9 @@ export function onFaviconError(event){
 }
 
 export function longOperation($title, $button, $confirmButtonColor, $apiEndpoint, $successMessage, $component, $fakeTimer, $event){
-	$event.preventDefault();
+	if($event){
+		$event.preventDefault();
+	}
 	
 	$confirmButtonColor = $confirmButtonColor || '#007bff';
 	$fakeTimer          = parseInt($fakeTimer || 0, 10);
@@ -90,7 +92,7 @@ export function longOperation($title, $button, $confirmButtonColor, $apiEndpoint
 		$text  = $texts[1];
 	}
 	
-	swal({
+	return swal({
 		title               : $title,
 		text                : $text,
 		showCancelButton    : true,
@@ -126,11 +128,13 @@ export function longOperation($title, $button, $confirmButtonColor, $apiEndpoint
 				title : $successMessage,
 				type  : 'success'
 			}).then(() =>{
-				if($component.props.history.location.pathname === '/'){
-					window.location.href = '/?forced=1';
-				}
-				else{
-					$component.props.history.push('/?forced=1');
+				if($component){
+					if($component.props.history.location.pathname === '/'){
+						window.location.href = '/?forced=1';
+					}
+					else{
+						$component.props.history.push('/?forced=1');
+					}
 				}
 			});
 		}

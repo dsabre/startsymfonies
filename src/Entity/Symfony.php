@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -60,11 +62,17 @@ class Symfony{
 	private $status;
 	
 	/**
+	 * @ORM\OneToMany(targetEntity="App\Entity\CustomCommand", mappedBy="symfony", orphanRemoval=true)
+	 */
+	private $customCommands;
+	
+	/**
 	 * Symfony constructor.
 	 */
 	public function __construct(){
 		$this->setStarred(false);
 		$this->setStatus(Symfony::STATUS_STOPPED);
+		$this->customCommands = new ArrayCollection();
 	}
 	
 	public function getId(): ?int{
@@ -171,5 +179,33 @@ class Symfony{
 	 */
 	public function toArray(){
 		return get_object_vars($this);
+	}
+	
+	/**
+	 * @return Collection|CustomCommand[]
+	 */
+	public function getCustomCommands(): Collection{
+		return $this->customCommands;
+	}
+	
+	public function addCustomCommand(CustomCommand $customCommand): self{
+		if(!$this->customCommands->contains($customCommand)){
+			$this->customCommands[] = $customCommand;
+			$customCommand->setSymfony($this);
+		}
+		
+		return $this;
+	}
+	
+	public function removeCustomCommand(CustomCommand $customCommand): self{
+		if($this->customCommands->contains($customCommand)){
+			$this->customCommands->removeElement($customCommand);
+			// set the owning side to null (unless already changed)
+			if($customCommand->getSymfony() === $this){
+				$customCommand->setSymfony(null);
+			}
+		}
+		
+		return $this;
 	}
 }

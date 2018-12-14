@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\CustomCommand;
 use App\Entity\Symfony;
 use App\Utils\Services\SymfoniesService;
 use App\Utils\Services\UtilService;
@@ -26,6 +27,13 @@ class ApiController extends Controller{
 	 * @return JsonResponse
 	 */
 	public function getSymfonies(Symfony $symfony = null){
+//		$em = $this->getDoctrine()->getManager();
+//		foreach($this->getDoctrine()->getRepository(CustomCommand::class)->findAll() as $item){
+//			$em->remove($item);
+//		}
+//		$em->flush();
+//		die;
+		
 		$symfoniesService = $this->get(SymfoniesService::class);
 		
 		if($symfony === null){
@@ -529,6 +537,85 @@ class ApiController extends Controller{
 			$symfony = $symfoniesService->gitPullSymfony($symfony, $gitBranch);
 			
 			return new JsonResponse($symfoniesService->toArray($symfony));
+		}
+		catch(\Exception $exc){
+			$logger->error($exc);
+			
+			return new JsonResponse($exc->getMessage(), 500);
+		}
+	}
+	
+	/**
+	 * @Route("/new-custom-command")
+	 * @Route("/edit-custom-command/{customCommand}")
+	 *
+	 * @param CustomCommand|null $customCommand
+	 * @param Request            $request
+	 * @param LoggerInterface    $logger
+	 *
+	 * @return JsonResponse
+	 */
+	public function saveCustomCommand(CustomCommand $customCommand = null, Request $request, LoggerInterface $logger){
+		try{
+			$data = json_decode($request->getContent(), true);
+			
+			$label = trim($data['label']);
+			$weightOnPreStart = trim($data['weightOnPreStart']);
+			$weightOnPostStop = trim($data['weightOnPostStop']);
+			$weightOnGitPull = trim($data['weightOnGitPull']);
+			$weightOnComposerInstall = trim($data['weightOnComposerInstall']);
+			$weightOnCacheAssetsReset = trim($data['weightOnCacheAssetsReset']);
+			$command = trim($data['command']);
+			$symfonyId = (int)$data['symfonyId'];
+			$onPreStart = (int)$data['onPreStart'] === 1;
+			$onPostStop = (int)$data['onPostStop'] === 1;
+			$onGitPull = (int)$data['onGitPull'] === 1;
+			$onComposerInstall = (int)$data['onComposerInstall'] === 1;
+			$onCacheAssetsReset = (int)$data['onCacheAssetsReset'] === 1;
+			
+			$symfony = $this->getDoctrine()->getRepository(Symfony::class)->find($symfonyId);
+			
+			$customCommand = !$customCommand ? new CustomCommand() : $customCommand;
+			$customCommand->setLabel($label);
+			$customCommand->setWeightOnPreStart($weightOnPreStart);
+			$customCommand->setWeightOnPostStop($weightOnPostStop);
+			$customCommand->setWeightOnGitPull($weightOnGitPull);
+			$customCommand->setWeightOnComposerInstall($weightOnComposerInstall);
+			$customCommand->setWeightOnCacheAssetsReset($weightOnCacheAssetsReset);
+			$customCommand->setCommand($command);
+			$customCommand->setOnPreStart($onPreStart);
+			$customCommand->setOnPostStop($onPostStop);
+			$customCommand->setOnGitPull($onGitPull);
+			$customCommand->setOnComposerInstall($onComposerInstall);
+			$customCommand->setOnCacheAssetsReset($onCacheAssetsReset);
+			$customCommand->setSymfony($symfony);
+			
+			$em = $this->getDoctrine()->getManager();
+			$em->persist($customCommand);
+			$em->flush();
+			
+			return new JsonResponse($this->get(SymfoniesService::class)->toArray($symfony));
+		}
+		catch(\Exception $exc){
+			$logger->error($exc);
+			
+			return new JsonResponse($exc->getMessage(), 500);
+		}
+	}
+	
+	/**
+	 * @Route("/run-custom-command/{customCommand}")
+	 *
+	 * @param CustomCommand   $customCommand
+	 * @param LoggerInterface $logger
+	 *
+	 * @return JsonResponse
+	 */
+	public function runCustomCommand(CustomCommand $customCommand, LoggerInterface $logger){
+		try{
+			$this->get(UtilService::class)->processRun(true, true, $customCommand->getCommand(), $customCommand->getSymfony()->getPath());
+			
+			return new JsonResponse();
 		}
 		catch(\Exception $exc){
 			$logger->error($exc);
