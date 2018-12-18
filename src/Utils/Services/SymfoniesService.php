@@ -175,6 +175,9 @@ class SymfoniesService{
 	 * @return SymfoniesService
 	 */
 	public function start(Symfony $symfony){
+		// execute custom commands
+		$this->execSymfonyCustomCommandsByEventName($symfony, 'onPreStart');
+		
 		$dirConsole = $symfony->getVersion(true) === 2 ? 'app' : 'bin';
 		$phpExecutable = $this->getPhpExecutable($symfony);
 		
@@ -251,6 +254,9 @@ class SymfoniesService{
 		$em = $this->container->get('doctrine')->getManager();
 		$em->persist($symfony);
 		$em->flush();
+		
+		// execute custom commands
+		$this->execSymfonyCustomCommandsByEventName($symfony, 'onPostStop');
 		
 		return $this;
 	}
@@ -341,6 +347,10 @@ class SymfoniesService{
 			$em->persist($symfony);
 			$em->flush();
 		}
+		elseif($activity === 'install'){
+			// execute custom commands
+			$this->execSymfonyCustomCommandsByEventName($symfony, 'onComposerInstall');
+		}
 		
 		return $this;
 	}
@@ -415,6 +425,9 @@ class SymfoniesService{
 		foreach($commands as $command){
 			$this->container->get(UtilService::class)->processRun(true, true, $command, $symfony->getPath());
 		}
+		
+		// execute custom commands
+		$this->execSymfonyCustomCommandsByEventName($symfony, 'onCacheAssetsReset');
 		
 		return $this;
 	}
@@ -961,7 +974,48 @@ class SymfoniesService{
 		
 		$this->recheckSymfony($symfony);
 		
+		// execute custom commands
+		$this->execSymfonyCustomCommandsByEventName($symfony, 'onGitPull');
+		
 		return $symfony;
+	}
+	
+	/**
+	 * @param Symfony $symfony
+	 * @param string  $eventName
+	 *
+	 * @return CustomCommand[]
+	 *
+	 * @author Daniele Sabre 18/dic/2018
+	 */
+	public function getSymfonyCustomCommandsByEventName(Symfony $symfony, $eventName){
+		$commands = $symfony->getCustomCommands()->filter(function(CustomCommand $customCommand) use ($eventName){
+			return $customCommand->{$eventName};
+		})->getValues();
+		
+		$weightProperty = 'weight' . ucfirst($eventName);
+		
+		usort($commands, function(CustomCommand $a, CustomCommand $b) use ($weightProperty){
+			return $a->{$weightProperty} > $b->{$weightProperty};
+		});
+		
+		return $commands;
+	}
+	
+	/**
+	 * @param Symfony $symfony
+	 * @param string  $eventName
+	 *
+	 * @return $this
+	 *
+	 * @author Daniele Sabre 18/dic/2018
+	 */
+	public function execSymfonyCustomCommandsByEventName(Symfony $symfony, $eventName){
+		foreach($this->getSymfonyCustomCommandsByEventName($symfony, $eventName) as $customCommand){
+			$this->container->get(UtilService::class)->processRun(true, true, $customCommand->getCommand(), $symfony->getPath());
+		}
+		
+		return $this;
 	}
 	
 }

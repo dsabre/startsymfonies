@@ -95,6 +95,18 @@ class CustomCommand{
 		$this->{$name} = $value;
 	}
 	
+	/**
+	 * is utilized for reading data from inaccessible members.
+	 *
+	 * @param $name string
+	 *
+	 * @return mixed
+	 * @link http://php.net/manual/en/language.oop5.overloading.php#language.oop5.overloading.members
+	 */
+	public function __get($name){
+		return $this->{$name};
+	}
+	
 	public function getId(): ?int{
 		return $this->id;
 	}
