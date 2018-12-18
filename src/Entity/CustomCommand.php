@@ -82,6 +82,19 @@ class CustomCommand{
 	 */
 	private $weightOnCacheAssetsReset;
 	
+	/**
+	 * run when writing data to inaccessible members.
+	 *
+	 * @param $name  string
+	 * @param $value mixed
+	 *
+	 * @return void
+	 * @link http://php.net/manual/en/language.oop5.overloading.php#language.oop5.overloading.members
+	 */
+	public function __set($name, $value){
+		$this->{$name} = $value;
+	}
+	
 	public function getId(): ?int{
 		return $this->id;
 	}
@@ -222,7 +235,7 @@ class CustomCommand{
 	 * @author Daniele Sabre 14/dic/2018
 	 */
 	public function toArray(){
-	    return get_object_vars($this);
+		return get_object_vars($this);
 	}
 	
 }

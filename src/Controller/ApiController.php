@@ -27,12 +27,12 @@ class ApiController extends Controller{
 	 * @return JsonResponse
 	 */
 	public function getSymfonies(Symfony $symfony = null){
-//		$em = $this->getDoctrine()->getManager();
-//		foreach($this->getDoctrine()->getRepository(CustomCommand::class)->findAll() as $item){
-//			$em->remove($item);
-//		}
-//		$em->flush();
-//		die;
+		//		$em = $this->getDoctrine()->getManager();
+		//		foreach($this->getDoctrine()->getRepository(CustomCommand::class)->findAll() as $item){
+		//			$em->remove($item);
+		//		}
+		//		$em->flush();
+		//		die;
 		
 		$symfoniesService = $this->get(SymfoniesService::class);
 		
@@ -573,9 +573,14 @@ class ApiController extends Controller{
 			$onComposerInstall = (int)$data['onComposerInstall'] === 1;
 			$onCacheAssetsReset = (int)$data['onCacheAssetsReset'] === 1;
 			
-			$symfony = $this->getDoctrine()->getRepository(Symfony::class)->find($symfonyId);
+			if(!$customCommand){
+				$symfony = $this->getDoctrine()->getRepository(Symfony::class)->find($symfonyId);
+				$customCommand = new CustomCommand();
+			}
+			else{
+				$symfony = $customCommand->getSymfony();
+			}
 			
-			$customCommand = !$customCommand ? new CustomCommand() : $customCommand;
 			$customCommand->setLabel($label);
 			$customCommand->setWeightOnPreStart($weightOnPreStart);
 			$customCommand->setWeightOnPostStop($weightOnPostStop);
@@ -589,6 +594,64 @@ class ApiController extends Controller{
 			$customCommand->setOnComposerInstall($onComposerInstall);
 			$customCommand->setOnCacheAssetsReset($onCacheAssetsReset);
 			$customCommand->setSymfony($symfony);
+			
+			$em = $this->getDoctrine()->getManager();
+			$em->persist($customCommand);
+			$em->flush();
+			
+			return new JsonResponse($this->get(SymfoniesService::class)->toArray($symfony));
+		}
+		catch(\Exception $exc){
+			$logger->error($exc);
+			
+			return new JsonResponse($exc->getMessage(), 500);
+		}
+	}
+	
+	/**
+	 * @Route("/delete-custom-command/{customCommand}")
+	 *
+	 * @param CustomCommand   $customCommand
+	 * @param LoggerInterface $logger
+	 *
+	 * @return JsonResponse
+	 */
+	public function deleteCustomCommand(CustomCommand $customCommand, LoggerInterface $logger){
+		try{
+			$symfony = $customCommand->getSymfony();
+			
+			$em = $this->getDoctrine()->getManager();
+			$em->remove($customCommand);
+			$em->flush();
+			
+			return new JsonResponse($this->get(SymfoniesService::class)->toArray($symfony));
+		}
+		catch(\Exception $exc){
+			$logger->error($exc);
+			
+			return new JsonResponse($exc->getMessage(), 500);
+		}
+	}
+	
+	/**
+	 * @Route("/change-weight-custom-command/{customCommand}")
+	 *
+	 * @param CustomCommand   $customCommand
+	 * @param Request         $request
+	 * @param LoggerInterface $logger
+	 *
+	 * @return JsonResponse
+	 */
+	public function changeWeightCustomCommand(CustomCommand $customCommand, Request $request, LoggerInterface $logger){
+		try{
+			$symfony = $customCommand->getSymfony();
+			
+			$data = json_decode($request->getContent(), true);
+			
+			$weightProperty = trim($data['weightProperty']);
+			$newWeight = (int)trim($data['newWeight']);
+			
+			$customCommand->{$weightProperty} = $newWeight;
 			
 			$em = $this->getDoctrine()->getManager();
 			$em->persist($customCommand);

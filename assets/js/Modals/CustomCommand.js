@@ -16,8 +16,10 @@ class CustomCommand extends Component {
 		this.WEIGHT_STEPS        = 10;
 		
 		this.state = {
+			fromManager   : false,
 			customCommand : {
 				symfony                  : null,
+				id                       : null,
 				label                    : '',
 				command                  : '',
 				onPreStart               : false,
@@ -121,7 +123,7 @@ class CustomCommand extends Component {
 									</div>
 								</div>
 								<div className="modal-footer">
-									<button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+									<button onClick={this.cancelCommandForm.bind(this)} type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
 									<button type="submit" className="btn btn-primary">Save</button>
 								</div>
 							</form>
@@ -133,42 +135,67 @@ class CustomCommand extends Component {
 					<div className="modal-dialog modal-lg text-dark" role="document">
 						<div className="modal-content">
 							<div className="modal-header">
-								<h5 className="modal-title" id={this.ID_COMMANDS_MANAGER + 'Label'}>Custom commands manager</h5>
+								<h5 className="modal-title" id={this.ID_COMMANDS_MANAGER + 'Label'}>
+									Custom commands manager
+									<p className={'mb-0'}><small><i>{this.state.manager.symfony ? this.state.manager.symfony.path : ''}</i></small></p>
+								</h5>
 								<button type="button" className="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
 							</div>
-							<form onSubmit={this.saveCommand.bind(this)}>
-								<div className="modal-body">
-											{Object.keys(this.state.manager.commands).map((eventName, k) => {
-												if(this.state.manager.commands[eventName].length){
-													return (
-														<div key={k}>
-															<b>{eventName.replace(/([A-Z])/g, ' $1').toLowerCase().replace(/^./, str => str.toUpperCase())}</b>
-															
-															<table className="table table-bordered table-hover table-sm">
-																<tbody>
-																	{this.state.manager.commands[eventName].map((command, j) => {
-																		const weightAttr = 'weight' + (eventName.replace(/^./, str => str.toUpperCase()));
-																		
-																		return (
-																			<tr key={j}>
-																				<td>{command.label}</td>
-																				<td>{command[weightAttr]}</td>
-																			</tr>
-																		);
-																	})}
-																</tbody>
-															</table>
-														</div>
-													);
-												}
-											})}
-								</div>
-								<div className="modal-footer">
-									<button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-								</div>
-							</form>
+							<div className="modal-body">
+								{Object.keys(this.state.manager.commands).map((eventName, k) =>{
+									if(this.state.manager.commands[eventName].length){
+										return (
+											<div key={k}>
+												<i><b>{eventName.replace(/([A-Z])/g, ' $1').toLowerCase().replace(/^./, str => str.toUpperCase())}</b></i>
+												
+												<table className="table table-bordered table-hover table-sm table-striped">
+													<thead>
+													<tr>
+														<th>Label</th>
+														{eventName !== 'others' && <th className={'w-25'}>Weight</th>}
+														<th className={'w-25'}>Actions</th>
+													</tr>
+													</thead>
+													<tbody>
+													{this.state.manager.commands[eventName].map((command, j) =>{
+														const weightAttr = 'weight' + (eventName.replace(/^./, str => str.toUpperCase()));
+														
+														return (
+															<tr key={j}>
+																<td>{command.label}</td>
+																
+																{eventName !== 'others' && <td>
+																	<input onChange={this.changeCommandWeight.bind(this, command, weightAttr)} type="number" min="0" step="1" className="form-control form-control-sm" placeholder="Weight" value={command[weightAttr]}/>
+																</td>}
+																
+																<td className={'text-center'}>
+																	<button onClick={this.executeCommand.bind(this, command.id, command.label, this.state.manager.symfony)} className="btn btn-primary btn-sm w-25" title={'Run'}>
+																		<i className="fas fa-space-shuttle"/>
+																	</button>
+																	
+																	<button onClick={this.handleOpenCustomCommand.bind(this, this.state.manager.symfony, command)} className="btn btn-warning btn-sm w-25 mx-2" title={'Edit'} data-toggle="modal" data-target={"#" + this.ID_COMMAND_MODAL}>
+																		<i className="fas fa-pencil-alt"/>
+																	</button>
+																	
+																	<button onClick={this.deleteCommand.bind(this, command)} className="btn btn-danger btn-sm w-25" title={'Delete'}>
+																		<i className="fas fa-times"/>
+																	</button>
+																</td>
+															</tr>
+														);
+													})}
+													</tbody>
+												</table>
+											</div>
+										);
+									}
+								})}
+							</div>
+							<div className="modal-footer">
+								<button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -183,27 +210,41 @@ class CustomCommand extends Component {
 	getCommansByEventName(symfony, eventName){
 		return symfony.customCommands.filter(customCommand =>{
 			return customCommand[eventName];
+		}).sort((a, b) =>{
+			const weightAttr = 'weight' + (eventName.replace(/^./, str => str.toUpperCase()));
+			return a[weightAttr] - b[weightAttr];
 		});
 	}
 	
-	handleOpenCustomCommand(symfony){
+	getCommansWithoutEventName(symfony){
+		return symfony.customCommands.filter(customCommand =>{
+			return !customCommand.hasEvents;
+		});
+	}
+	
+	handleOpenCustomCommand(symfony, command){
 		let tmpState = deepCopy(this.state);
+		
+		$('#' + this.ID_COMMANDS_MANAGER).modal('hide');
 		
 		tmpState.customCommand = {
 			symfony                  : symfony,
-			label                    : '',
-			command                  : '',
-			onPreStart               : false,
-			onPostStop               : false,
-			onGitPull                : false,
-			onComposerInstall        : false,
-			onCacheAssetsReset       : false,
-			weightOnPreStart         : this.getWeights(symfony, 'onPreStart'),
-			weightOnPostStop         : this.getWeights(symfony, 'onPostStop'),
-			weightOnGitPull          : this.getWeights(symfony, 'onGitPull'),
-			weightOnComposerInstall  : this.getWeights(symfony, 'onComposerInstall'),
-			weightOnCacheAssetsReset : this.getWeights(symfony, 'onCacheAssetsReset')
+			id                       : command ? command.id : null,
+			label                    : command ? command.label : '',
+			command                  : command ? command.command : '',
+			onPreStart               : command ? command.onPreStart : false,
+			onPostStop               : command ? command.onPostStop : false,
+			onGitPull                : command ? command.onGitPull : false,
+			onComposerInstall        : command ? command.onComposerInstall : false,
+			onCacheAssetsReset       : command ? command.onCacheAssetsReset : false,
+			weightOnPreStart         : command ? command.weightOnPreStart : this.getWeights(symfony, 'onPreStart'),
+			weightOnPostStop         : command ? command.weightOnPostStop : this.getWeights(symfony, 'onPostStop'),
+			weightOnGitPull          : command ? command.weightOnGitPull : this.getWeights(symfony, 'onGitPull'),
+			weightOnComposerInstall  : command ? command.weightOnComposerInstall : this.getWeights(symfony, 'onComposerInstall'),
+			weightOnCacheAssetsReset : command ? command.weightOnCacheAssetsReset : this.getWeights(symfony, 'onCacheAssetsReset')
 		};
+		
+		tmpState.fromManager = command !== undefined;
 		
 		this.setState(tmpState);
 	}
@@ -219,8 +260,11 @@ class CustomCommand extends Component {
 				onGitPull          : this.getCommansByEventName(symfony, 'onGitPull'),
 				onComposerInstall  : this.getCommansByEventName(symfony, 'onComposerInstall'),
 				onCacheAssetsReset : this.getCommansByEventName(symfony, 'onCacheAssetsReset'),
+				others             : this.getCommansWithoutEventName(symfony),
 			}
 		};
+		
+		tmpState.fromManager = false;
 		
 		this.setState(tmpState);
 	}
@@ -240,7 +284,9 @@ class CustomCommand extends Component {
 		
 		let tmpState = deepCopy(this.state);
 		
-		fetch('/api/new-custom-command', {
+		const endpoint = !tmpState.customCommand.id ? '/api/new-custom-command' : '/api/edit-custom-command/' + tmpState.customCommand.id;
+		
+		fetch(endpoint, {
 			method  : 'POST',
 			headers : {
 				Accept         : 'application/json',
@@ -271,7 +317,18 @@ class CustomCommand extends Component {
 			if(this.props.onSubmit){
 				this.props.onSubmit(response);
 			}
+			
+			if(tmpState.fromManager){
+				this.handleOpenCustomCommandsManager(response);
+				$('#' + this.ID_COMMANDS_MANAGER).modal('show');
+			}
 		});
+	}
+	
+	cancelCommandForm(){
+		if(this.state.customCommand.id){
+			$('#' + this.ID_COMMANDS_MANAGER).modal('show');
+		}
 	}
 	
 	executeCommand(commandId, commandLabel, symfony){
@@ -284,6 +341,38 @@ class CustomCommand extends Component {
 			if(this.props.onExecute){
 				this.props.onExecute(commandId, commandLabel, symfony);
 			}
+		});
+	}
+	
+	deleteCommand(command){
+		longOperation('Delete command ' + command.label + '?', 'Delete', '#dc3545', 'delete-custom-command/' + command.id, 'Command deleted correctly').then(response =>{
+			if(this.props.onSubmit){
+				this.props.onSubmit(response);
+			}
+			
+			this.handleOpenCustomCommandsManager(response);
+		});
+	}
+	
+	changeCommandWeight(command, weightProperty, event){
+		fetch('/api/change-weight-custom-command/' + command.id, {
+			method  : 'POST',
+			headers : {
+				Accept         : 'application/json',
+				'Content-Type' : 'application/json'
+			},
+			body    : JSON.stringify({
+				weightProperty : weightProperty,
+				newWeight      : parseInt(event.target.value, 10)
+			})
+		})
+		.then(response => response.json())
+		.then(response =>{
+			if(this.props.onSubmit){
+				this.props.onSubmit(response);
+			}
+			
+			this.handleOpenCustomCommandsManager(response);
 		});
 	}
 }

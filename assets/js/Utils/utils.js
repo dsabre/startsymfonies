@@ -122,7 +122,7 @@ export function longOperation($title, $button, $confirmButtonColor, $apiEndpoint
 			}
 		},
 		allowOutsideClick   : () => !swal.isLoading()
-	}).then((result) =>{
+	}).then(result =>{
 		if(result.value){
 			swal({
 				title : $successMessage,
@@ -137,6 +137,8 @@ export function longOperation($title, $button, $confirmButtonColor, $apiEndpoint
 					}
 				}
 			});
+			
+			return result.value;
 		}
 	});
 }

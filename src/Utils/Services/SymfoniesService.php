@@ -850,6 +850,7 @@ class SymfoniesService{
 		
 		$arr['customCommands'] = array_map(function(CustomCommand $customCommand){
 			$command = $customCommand->toArray();
+			$command['hasEvents'] = $customCommand->getOnPreStart() || $customCommand->getOnPostStop() || $customCommand->getOnGitPull() || $customCommand->getOnComposerInstall() || $customCommand->getOnCacheAssetsReset();
 			
 			unset($command['symfony']);
 			
