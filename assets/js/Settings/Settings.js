@@ -252,7 +252,9 @@ class Settings extends Component {
 				directoriesToScan : tmpState.info.directoriesToScan
 			})
 		})
-		.then(() => this.setState(tmpState));
+		.then(() => this.setState(tmpState, () =>{
+			loadInfo(this, true);
+		}));
 	}
 	
 	removeDirectory(k, event){
