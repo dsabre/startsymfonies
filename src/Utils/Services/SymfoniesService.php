@@ -623,7 +623,7 @@ class SymfoniesService{
 		
 		$entryPoints = $symfony->getEntryPoint(true);
 		
-		if($symfony->getIp() == '127.0.0.1'){
+		if($symfony->getIp() == '127.0.0.1' || $symfony->getIp() == '0.0.0.0'){
 			$host = 'localhost';
 			
 			if($entryPoints){
