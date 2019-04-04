@@ -20,7 +20,7 @@ To auto-run the startsymfonies, 12 seconds after the boot of pc:<br>
 To auto-run all symfonies with an ip and a port, 15 seconds after the boot of pc:<br>
 `@reboot sleep 15 && /path/of/php /home/username/your_beautiful_project_directory/startsymfonies/bin/console app:symfonies:start-all`
 
-#### Flux
+#### Flux 
 1) When a symfony is found it will be inserted in a sqlite database created in the project directory at path `var/data/data.sqlite`.
 2) You can access to homepage of the startsymfonies and see a table with all symfony found.
 3) Through the list table you can start a symfony at a particular ip and port, this operation start a symfony and save the informations on the db.
