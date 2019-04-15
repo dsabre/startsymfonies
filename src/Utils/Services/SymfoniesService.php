@@ -586,6 +586,8 @@ class SymfoniesService{
 			$aliases = $this->getNipIos($symfony);
 		}
 		
+//		dump($aliases);die;
+		
 		$links = [];
 		$entryPoints = $symfony->getEntryPoint(true);
 		
@@ -677,6 +679,7 @@ class SymfoniesService{
 		$entryPoints = $symfony->getEntryPoint(true);
 		
 		$nipIos = $symfony->getNipIo();
+//		dump($nipIos);die;
 		$nipIos = $nipIos ? json_decode($nipIos) : [];
 		
 		$ip = str_replace('.', '-', $symfony->getIp());

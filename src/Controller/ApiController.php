@@ -188,8 +188,6 @@ class ApiController extends Controller{
 			$content['directoriesToScan'] = $data['directoriesToScan'];
 			$content = json_encode($content, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 			
-			dump($content);
-			
 			$fileSystem = new Filesystem();
 			$fileSystem->dumpFile($configPath, $content);
 			
@@ -359,22 +357,32 @@ class ApiController extends Controller{
 		try{
 			$data = json_decode($request->getContent(), true);
 			
-			$entry = $data['entry'];
-			$nipIo = $data['nipIo'];
+			$entry = trim($data['entry']);
+			$nipIo = trim($data['nipIo']);
 			
 			// generate a json for each entry inserted
-			$entry = explode(PHP_EOL, $entry);
-			foreach($entry as $k => $v){
-				$entry[$k] = trim($v);
+			if($entry){
+				$entry = explode(PHP_EOL, $entry);
+				foreach($entry as $k => $v){
+					$entry[$k] = trim($v);
+				}
+				$entry = json_encode($entry);
 			}
-			$entry = json_encode($entry);
+			else{
+				$entry = null;
+			}
 			
 			// generate a json for each nip.io domain inserted
-			$nipIo = explode(PHP_EOL, $nipIo);
-			foreach($nipIo as $k => $v){
-				$nipIo[$k] = trim($v);
+			if($nipIo){
+				$nipIo = explode(PHP_EOL, $nipIo);
+				foreach($nipIo as $k => $v){
+					$nipIo[$k] = trim($v);
+				}
+				$nipIo = json_encode($nipIo);
 			}
-			$nipIo = json_encode($nipIo);
+			else{
+				$nipIo = null;
+			}
 			
 			$symfony->setEntryPoint($entry);
 			$symfony->setNipIo($nipIo);
