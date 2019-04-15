@@ -67,6 +67,11 @@ class Symfony{
 	private $customCommands;
 	
 	/**
+	 * @ORM\Column(type="text", nullable=true)
+	 */
+	private $nipIo;
+	
+	/**
 	 * Symfony constructor.
 	 */
 	public function __construct(){
@@ -205,6 +210,16 @@ class Symfony{
 				$customCommand->setSymfony(null);
 			}
 		}
+		
+		return $this;
+	}
+	
+	public function getNipIo(): ?string{
+		return $this->nipIo;
+	}
+	
+	public function setNipIo(?string $nipIo): self{
+		$this->nipIo = $nipIo;
 		
 		return $this;
 	}

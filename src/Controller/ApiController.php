@@ -320,7 +320,21 @@ class ApiController extends Controller{
 				$entry = $symfony->getEntryPoint();
 			}
 			
-			$this->get(SymfoniesService::class)->startAndSave($symfony, $ip, $port, $entry);
+			if(!empty($data['nipIo'])){
+				$nipIo = $data['nipIo'];
+				
+				// generate a json for each entry inserted
+				$nipIo = explode(PHP_EOL, $nipIo);
+				foreach($nipIo as $k => $v){
+					$nipIo[$k] = trim($v);
+				}
+				$nipIo = json_encode($nipIo);
+			}
+			else{
+				$nipIo = $symfony->getNipIo();
+			}
+			
+			$this->get(SymfoniesService::class)->startAndSave($symfony, $ip, $port, $entry, $nipIo);
 			
 			$symfonyArray = $this->get(SymfoniesService::class)->toArray($symfony);
 			
@@ -346,6 +360,7 @@ class ApiController extends Controller{
 			$data = json_decode($request->getContent(), true);
 			
 			$entry = $data['entry'];
+			$nipIo = $data['nipIo'];
 			
 			// generate a json for each entry inserted
 			$entry = explode(PHP_EOL, $entry);
@@ -354,7 +369,15 @@ class ApiController extends Controller{
 			}
 			$entry = json_encode($entry);
 			
+			// generate a json for each nip.io domain inserted
+			$nipIo = explode(PHP_EOL, $nipIo);
+			foreach($nipIo as $k => $v){
+				$nipIo[$k] = trim($v);
+			}
+			$nipIo = json_encode($nipIo);
+			
 			$symfony->setEntryPoint($entry);
+			$symfony->setNipIo($nipIo);
 			
 			$em = $this->getDoctrine()->getManager();
 			$em->persist($symfony);

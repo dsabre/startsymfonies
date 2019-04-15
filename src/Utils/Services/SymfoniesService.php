@@ -197,18 +197,19 @@ class SymfoniesService{
 	/**
 	 * Start a symfony and update the database
 	 *
-	 * @param Symfony       $symfony
-	 *
-	 * @param               $ip
-	 * @param               $port
-	 * @param               $entry
+	 * @param Symfony $symfony
+	 * @param string  $ip
+	 * @param int     $port
+	 * @param string  $entry
+	 * @param string  $nipIo
 	 *
 	 * @return SymfoniesService
 	 */
-	public function startAndSave(Symfony $symfony, $ip, $port, $entry){
+	public function startAndSave(Symfony $symfony, $ip, $port, $entry, $nipIo){
 		$symfony->setIp($ip);
 		$symfony->setPort($port);
 		$symfony->setEntryPoint($entry);
+		$symfony->setNipIo($nipIo);
 		
 		// check for a symfony already working on the same location
 		//		if($this->container->get('doctrine')->getRepository(Symfony::class)->findOneBy(['ip' => $symfony->getIp(), 'port' => $symfony->getPort()])){
@@ -580,8 +581,14 @@ class SymfoniesService{
 		}
 		
 		$aliases = $this->getAliases($symfony);
+		
+		if(!$aliases){
+			$aliases = $this->getNipIos($symfony);
+		}
+		
 		$links = [];
 		$entryPoints = $symfony->getEntryPoint(true);
+		
 		if($entryPoints && !$aliases){
 			foreach($entryPoints as $entryPoint){
 				$links[] = 'http://' . $symfony->getIp() . ':' . $symfony->getPort() . $entryPoint;
@@ -651,6 +658,39 @@ class SymfoniesService{
 				else{
 					$aliases[] = 'http://' . $host . ':' . $symfony->getPort();
 				}
+			}
+		}
+		
+		return $aliases;
+	}
+	
+	/**
+	 * Return an eventual nip.io domains for the symfony
+	 *
+	 * @param Symfony $symfony
+	 *
+	 * @return array
+	 */
+	private function getNipIos(Symfony $symfony){
+		$aliases = [];
+		
+		$entryPoints = $symfony->getEntryPoint(true);
+		
+		$nipIos = $symfony->getNipIo();
+		$nipIos = $nipIos ? json_decode($nipIos) : [];
+		
+		$ip = str_replace('.', '-', $symfony->getIp());
+		
+		foreach($nipIos as $nipIo){
+			$host = sprintf('%s.%s.nip.io', $nipIo, $ip);
+			
+			if($entryPoints){
+				foreach($entryPoints as $entryPoint){
+					$aliases[] = 'http://' . $host . ':' . $symfony->getPort() . $entryPoint;
+				}
+			}
+			else{
+				$aliases[] = 'http://' . $host . ':' . $symfony->getPort();
 			}
 		}
 		

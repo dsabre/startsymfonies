@@ -25,6 +25,7 @@ class Dashboard extends Component {
 				ip    : '',
 				port  : '',
 				entry : '',
+				nipIo : '',
 				edit  : false
 			},
 			gitPull          : {
@@ -858,8 +859,13 @@ class Dashboard extends Component {
 								</div>
 								
 								<div className="form-group">
-									<label htmlFor="entry">Entry point <small>(one per line)</small></label>
-									<textarea name="entry" id="entry" className="form-control" rows="5" placeholder="Entry point" value={this.state.start.entry} onChange={this.handleChangeStart.bind(this, null, 'entry')}/>
+									<label htmlFor="entry">Entry points <small>(one per line)</small></label>
+									<textarea name="entry" id="entry" className="form-control" rows="5" placeholder="Entry points" value={this.state.start.entry} onChange={this.handleChangeStart.bind(this, null, 'entry')}/>
+								</div>
+								
+								<div className="form-group">
+									<label htmlFor="nipIo">nip.io domains <small>(one per line)</small></label>
+									<textarea name="nipIo" id="nipIo" className="form-control" rows="3" placeholder="nip.io domains" value={this.state.start.nipIo} onChange={this.handleChangeStart.bind(this, null, 'nipIo')}/>
 								</div>
 							</div>
 							<div className="modal-footer">
@@ -879,6 +885,7 @@ class Dashboard extends Component {
 		stateStart['id']    = symfony.id;
 		stateStart['path']  = symfony.path;
 		stateStart['entry'] = symfony.entryPoint !== null ? JSON.parse(symfony.entryPoint).join('\n') : '';
+		stateStart['nipIo'] = symfony.nipIo !== null ? JSON.parse(symfony.nipIo).join('\n') : '';
 		stateStart['edit']  = !!edit;
 		
 		if(symfony.ip !== null){
@@ -925,7 +932,8 @@ class Dashboard extends Component {
 				'Content-Type' : 'application/json'
 			},
 			body    : JSON.stringify({
-				entry : tmpState.start.entry
+				entry : tmpState.start.entry,
+				nipIo : tmpState.start.nipIo
 			})
 		})
 		.then(response => response.json())
@@ -946,7 +954,8 @@ class Dashboard extends Component {
 		const payload  = JSON.stringify({
 			ip    : tmpState.start.ip,
 			port  : tmpState.start.port,
-			entry : tmpState.start.entry
+			entry : tmpState.start.entry,
+			nipIo : tmpState.start.nipIo
 		});
 		
 		fetch(endpoint, {
