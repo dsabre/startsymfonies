@@ -65,7 +65,7 @@ class Dashboard extends Component {
 			}
 		});
 		
-		getPhpExecutables().then(phpExecutables =>{
+		getPhpExecutables(true).then(phpExecutables =>{
 			this.setState({phpExecutables : phpExecutables});
 		});
 		

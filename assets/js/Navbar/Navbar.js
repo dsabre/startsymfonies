@@ -35,7 +35,7 @@ class Navbar extends Component {
 	componentDidMount(){
 		loadInfo(this);
 		
-		getPhpExecutables().then(phpExecutables =>{
+		getPhpExecutables(true).then(phpExecutables =>{
 			this.setState({phpExecutables : phpExecutables});
 		});
 		
